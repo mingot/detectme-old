@@ -20,11 +20,6 @@
 @interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate>
 {
 
-    
-    NSMutableString *_timeHOG;
-    NSMutableString *_timeConv;
-    NSMutableString *_timeTotal;
-
     int sizeImage;
     double interval;
     

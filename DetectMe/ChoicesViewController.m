@@ -18,33 +18,17 @@
 @synthesize templateName = _templateName;
 
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        self.cameraViewController = [[CameraViewController alloc]initWithNibName:@"CameraViewController" bundle:NULL];
-        self.detectPhotoViewController = [[DetectPhotoViewController alloc]initWithNibName:@"DetectPhotoViewController" bundle:NULL];
-        self.optionsViewController = [[OptionsViewController alloc] initWithNibName:@"OptionsViewController" bundle:NULL];
-        self.templateViewController = [[TemplateViewController alloc] initWithNibName:@"TemplateViewController" bundle:NULL];
-        self.templateViewController.delegate = self;
-        self.templateName = [[NSString alloc] init];
-    }
-    return self;
-}
-
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    self.title = @"DetectMe";
-    self.templateName = @"bottle.txt";
-    [self selectedTemplate];
+    self.templateName = @"bottle.txt"; //Default template
+    [self selectedTemplate]; //TODO: needs to be done via segues
     self.label.text = [self.templateName substringToIndex:self.templateName.length-4];
+    NSLog(@"ChoicesViewController:viewDidLoad. Loaded template %@", self.templateName);
 }
 
 -(void)selectedTemplate
 {
-    self.cameraViewController.templateName = self.templateName;
     self.detectPhotoViewController.templateName = self.templateName;
     self.optionsViewController.templateName = self.templateName;
 }
@@ -57,8 +41,19 @@
 #pragma mark 
 #pragma mark - Buttons
 
+// Preapre for segueshowCameraVC showCameraVC
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"showCameraVC"]) {
+        CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
+        cameraVC.templateName = self.templateName;
+        NSLog(@"prepareForSegue: cameraVC template name set!");
+         
+    }
+}
 
 
+//TODO: needs to be passed through segue
 -(IBAction)photoAction:(id)sender
 {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {

@@ -8,22 +8,13 @@
 
 #import "TemplateViewController.h"
 
-@interface TemplateViewController ()
-
-@end
 
 @implementation TemplateViewController
+
+
 @synthesize items = _items;
 @synthesize scrollView = _scrollView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -38,20 +29,15 @@
 	self.scrollView.scrollEnabled = YES;
     [self.view addSubview:self.scrollView];
     [self reloadButtons];
-
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+
 -(void) reloadButtons{
     NSFileManager * filemng = [NSFileManager defaultManager];
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -109,9 +95,11 @@
 
 
 }
+
 -(IBAction)buttonAction:(id)sender{
     UIButton *button = (UIButton *) sender;
     [self.delegate setTemplate:[self.items objectAtIndex:button.tag]];
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 @end

@@ -4,12 +4,12 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Choices View Controller - DetectMe-->
         <scene sceneID="O3s-Z6-tHX">
             <objects>
-                <viewController id="Uup-2o-PkU" sceneMemberID="viewController">
+                <viewController id="Uup-2o-PkU" customClass="ChoicesViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vRV-El-AJc">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="z6b-Jl-4bf">
@@ -30,6 +30,9 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <segue destination="uV5-LT-6uM" kind="push" identifier="showCameraVC" id="476-Em-96Y"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="Wd9-v8-gOC">
                                 <rect key="frame" x="274" y="66" width="29" height="31"/>
@@ -54,12 +57,15 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="photoAction:" destination="Uup-2o-PkU" eventType="touchUpInside" id="yqa-tO-TAq"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="mkm-78-LKi">
-                                <rect key="frame" x="20" y="314" width="280" height="35"/>
+                                <rect key="frame" x="20" y="309" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="TEST">
+                                <state key="normal" title="OPTIONS">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -74,10 +80,10 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" id="TPF-JF-fr4">
-                                <rect key="frame" x="111" y="72" width="158" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3rZ-Ij-At7">
+                                <rect key="frame" x="145" y="72" width="114" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="italicSystem" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -86,11 +92,29 @@
                         <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                         <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     </view>
-                    <navigationItem key="navigationItem" id="frq-hp-pDH"/>
+                    <navigationItem key="navigationItem" title="DetectMe" id="frq-hp-pDH"/>
+                    <connections>
+                        <outlet property="label" destination="3rZ-Ij-At7" id="Cn6-ZO-jpn"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5PB-MQ-Ngw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1067" y="365"/>
+            <point key="canvasLocation" x="587" y="329"/>
+        </scene>
+        <!--Camera View Controller-->
+        <scene sceneID="MYk-Wy-R00">
+            <objects>
+                <viewController id="uV5-LT-6uM" customClass="CameraViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8J1-NS-Vyh">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="4oK-KO-4V1"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="75C-EP-Ptz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1205" y="186"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="jnx-Rm-4ch">
@@ -108,12 +132,27 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OTY-5W-QkK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="541" y="365"/>
+            <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="CameraViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="settingsAction:"/>
+            </relationships>
+        </class>
+        <class className="ChoicesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="photoAction:"/>
+                <relationship kind="outlet" name="label" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
 </document>

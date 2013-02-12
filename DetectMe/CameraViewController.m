@@ -15,9 +15,6 @@
 #import "ConvolutionHelper.h"
 
 
-@interface CameraViewController ()
-
-@end
 
 @implementation CameraViewController
 
@@ -34,47 +31,33 @@
 
 
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    //Initialization after loading the controller
-    
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-        self.HOGimageView = nil;
-        self.resultsImageView = nil;
-        self.prevLayer = nil;
-        self.customLayer = nil;
-        hogOnScreen = NO;
-        pyramid = YES;
-        numMax = 1;
-        cameraRoll = NO;
-        printResults = NO;
-        fullScreen = NO;
-        fileWritten = NO;
-        saving = NO;
-        interval = 10;
-        self.templateName = [[NSString alloc] init];
-        self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
-
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     // Initialitzation after the view load and all the outlets are hooked
-    
     [super viewDidLoad];
     
+    //From init with name
+    self.HOGimageView = nil;
+    self.resultsImageView = nil;
+    self.prevLayer = nil;
+    self.customLayer = nil;
     
-    _timeHOG = [[NSMutableString alloc] init];
-    _timeConv = [[NSMutableString alloc] init];
-    _timeTotal = [[NSMutableString alloc] init];
+    hogOnScreen = NO;
+    pyramid = YES;
+    numMax = 1;
+    cameraRoll = NO;
+    printResults = NO;
+    fullScreen = NO;
+    fileWritten = NO;
+    saving = NO;
+    interval = 10;
+    
+    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
+    
 
     sizeImage = 10; //??
     
-    //Global settings
+    //TODO: put in prepare for segue
     self.settings = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
     self.settings.delegate = self;
     
@@ -108,9 +91,9 @@
 	[self.captureSession addOutput:captureOutput];
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     
-    //Setting button in navigation bar
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settingsAction:)];
-    self.navigationItem.rightBarButtonItem = settingsButton;
+//    //Setting button in navigation bar
+//    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settingsAction:)];
+//    self.navigationItem.rightBarButtonItem = settingsButton;
     
 //	self.customLayer = [CALayer layer];
 //	self.customLayer.frame = self.view.bounds;
@@ -140,8 +123,6 @@
     
     //Select template
     templateWeights = [self readTemplate:self.templateName];
-    
-    NSLog(@"camera view controller and template loaded %@ loaded", self.templateName);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
