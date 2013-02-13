@@ -14,7 +14,6 @@
 @synthesize cameraViewController = _cameraViewController;
 @synthesize detectPhotoViewController = _detectPhotoViewController;
 @synthesize optionsViewController = _optionsViewController;
-@synthesize templateViewController = _templateViewController;
 @synthesize templateName = _templateName;
 
 
@@ -44,11 +43,14 @@
 // Preapre for segueshowCameraVC showCameraVC
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"showCameraVC"]) {
+    if ([segue.identifier isEqualToString:@"show TemplateVC"]) {
+        TemplateTableViewController *templateTableVC = (TemplateTableViewController *) segue.destinationViewController;
+        templateTableVC.delegate = self; // For obtaining the selected template
+        
+    } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
         CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
         cameraVC.templateName = self.templateName;
         NSLog(@"prepareForSegue: cameraVC template name set!");
-         
     }
 }
 
@@ -57,12 +59,12 @@
 -(IBAction)photoAction:(id)sender
 {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIActionSheet *photoSourceSheet = [[UIActionSheet
-                                            alloc] initWithTitle:@"Select source:" delegate:self
+        UIActionSheet *photoSourceSheet = [[UIActionSheet alloc] initWithTitle:@"Select source:" delegate:self
                                            cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
                                            otherButtonTitles:@"Take Photo", @"Choose Existing Photo", @"Test Images", nil];
         [photoSourceSheet showInView:self.view];
     }
+    
     else { // No camera, just use the library.
         
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -75,7 +77,7 @@
 
 
 #pragma mark
-#pragma mark - TemplateViewControllerDelegate method
+#pragma mark - TemplateTableViewControllerDelegate method
 
 -(void) setTemplate:(NSString *)name
 {
