@@ -27,23 +27,14 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @synthesize detectView = _detectView;
 @synthesize hogFeature = _hogFeature;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-        self.picture = [[UIImageView alloc]init];
-        self.originalImage = [[UIImage alloc] init];
-        self.templateName = [[NSString alloc] init];
-        self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8 ];
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     //self.picture.frame = CGRectMake(0, 0, 320, 416);
+    
+    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8 ];
+    
 
     self.picture.backgroundColor = [UIColor blackColor];
     //UIBarButtonItem *hog = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(settings:)];
@@ -61,18 +52,15 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     self.detectView.hidden = NO;
 
     templateWeights = [self readTemplate:self.templateName];
+    NSLog(@"detectPhotoVC end viewDidLoad");
     
 }
--(void)viewDidAppear:(BOOL)animated{
-    // NSLog(@"hay viewcontrolles = %d",self.navigationController.viewControllers.count);
-    
-    
-}
+
+
 -(void)viewDidDisappear:(BOOL)animated{
     [self.detectView reset];
     [self.detectView setNeedsDisplay];
     self.title = @"";
-    
     
 }
 

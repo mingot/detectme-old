@@ -10,20 +10,18 @@
 #import "DetectView.h"
 #import "HOGFeature.h"
 
-@interface DetectPhotoViewController : UIViewController
 
+
+@interface DetectPhotoViewController : UIViewController
 {
-    UIImageView *   _picture;
-    DetectView  *   _detectView;
-    UIImage     *   _originalImage;
-    BOOL             isHog;
-    BOOL             photoFromCamera;
-    NSString * _templateName;
+    BOOL isHog;
+    @public BOOL photoFromCamera;
     double *templateWeights;
 }
-@property (strong,nonatomic) UIImageView    *picture;
-@property (strong,nonatomic) DetectView     *detectView;
-@property (strong,nonatomic) UIImage        *originalImage;
+
+@property (strong,nonatomic) UIImageView *picture;
+@property (strong,nonatomic) UIImage *originalImage;
+@property (strong,nonatomic) DetectView *detectView;
 @property (strong, nonatomic) NSString *templateName;
 
 @property (nonatomic, strong) HOGFeature *hogFeature;

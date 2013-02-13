@@ -97,7 +97,8 @@
                     </view>
                     <navigationItem key="navigationItem" title="DetectMe" id="frq-hp-pDH"/>
                     <connections>
-                        <outlet property="label" destination="3rZ-Ij-At7" id="Cn6-ZO-jpn"/>
+                        <outlet property="selectedTemplateLabel" destination="3rZ-Ij-At7" id="ba9-Nj-8uL"/>
+                        <segue destination="qxJ-9s-hZo" kind="push" identifier="show DetectPhotoVC" id="sbg-hQ-btX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5PB-MQ-Ngw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -161,6 +162,21 @@
             </objects>
             <point key="canvasLocation" x="1206" y="329"/>
         </scene>
+        <!--Detect Photo View Controller-->
+        <scene sceneID="dFg-z6-CsC">
+            <objects>
+                <viewController id="qxJ-9s-hZo" customClass="DetectPhotoViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="xLm-f9-2LQ">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="zgh-9u-rDA"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kDf-MW-YA7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1248" y="1072"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="jnx-Rm-4ch">
             <objects>
@@ -184,24 +200,6 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CameraViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="settingsAction:"/>
-            </relationships>
-        </class>
-        <class className="ChoicesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="photoAction:"/>
-                <relationship kind="outlet" name="label" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="TemplateTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

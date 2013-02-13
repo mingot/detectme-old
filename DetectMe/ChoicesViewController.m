@@ -9,6 +9,30 @@
 #import "ChoicesViewController.h"
 #import "CameraViewController.h"
 
+
+@implementation FakePhotoViewController
+
+@synthesize picture = _picture;
+@synthesize originalImage = _originalImage;
+@synthesize detectView = _detectView;
+
+//lazy instantiantion
+- (UIImageView *) picture
+{
+    if(!_picture) _picture = [[UIImageView alloc] init];
+    return _picture;
+}
+
+- (DetectView *) detectView
+{
+    if(!_detectView) _detectView = [[DetectView alloc] init];
+    return _detectView;
+    
+}
+@end
+
+
+
 @implementation ChoicesViewController
 
 @synthesize detectPhotoViewController = _detectPhotoViewController;
@@ -21,13 +45,12 @@
     [super viewDidLoad];
     self.templateName = @"bottle.txt"; //Default template
     [self selectedTemplate]; //TODO: needs to be done via segues
-    self.label.text = [self.templateName substringToIndex:self.templateName.length-4];
+    self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
     NSLog(@"ChoicesViewController:viewDidLoad. Loaded template %@", self.templateName);
 }
 
 -(void)selectedTemplate
 {
-    self.detectPhotoViewController.templateName = self.templateName;
     self.optionsViewController.templateName = self.templateName;
 }
 
@@ -49,8 +72,16 @@
     } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
         CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
         cameraVC.templateName = self.templateName;
-        NSLog(@"prepareForSegue: cameraVC template name set!");
+        NSLog(@"prepareForSegue: cameraVC");
+    }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
+        DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
+        detectPhotoVC.picture = self.detectPhotoViewController.picture;
+        detectPhotoVC.originalImage = self.detectPhotoViewController.originalImage;
+        detectPhotoVC.detectView = self.detectPhotoViewController.detectView;
+        detectPhotoVC.templateName = self.templateName;
+        NSLog(@"prepareForSegue: detectPhotoVC");
     }
+    
 }
 
 
@@ -81,40 +112,44 @@
 -(void) setTemplate:(NSString *)name
 {
     self.templateName = name;
-    self.label.text = [self.templateName substringToIndex:self.templateName.length-4];
+    self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
     [self selectedTemplate];
 }
 
 
 #pragma mark - UIActionSheetDelegate methods
 
-- (void) actionSheet:(UIActionSheet * ) actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
+- (void) actionSheet:(UIActionSheet * ) actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    
+    if (buttonIndex == actionSheet.cancelButtonIndex)
+    {
         NSLog(@"The user cancelled adding an image.");
-    return;
+        return;
     }
     
     NSFileManager * filemng = [NSFileManager defaultManager];
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString * path = [NSString stringWithFormat:@"%@/TestImages",documentsDirectory];
-    UIImagePickerController *picker = [[UIImagePickerController alloc]
-                                   init];
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     NSArray *items = [filemng contentsOfDirectoryAtPath:path error:NULL ];
 
-    picker.delegate = self;
+    picker.delegate = self; //Once choose the photo, we are the delegate to manage the action done
+    
     //picker.allowsEditing = YES;
-    switch (buttonIndex) {
-        case 0:
+    switch (buttonIndex)
+    {
+        case 0: //@"Take Photo"
             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
             [self presentModalViewController:picker animated:YES];
             break;
             
-        case 1:
+        case 1: //@"Choose Existing Photo"
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             [self presentModalViewController:picker animated:YES];
             break;
             
-        case 2:
+        case 2: //@"Test Images"
             self.detectPhotoViewController.picture.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:[items objectAtIndex:8]]];
             self.detectPhotoViewController.originalImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:[items objectAtIndex:8]]];
             double f =self.detectPhotoViewController.originalImage.size.height/self.detectPhotoViewController.originalImage.size.width;
@@ -127,8 +162,8 @@
                 [self.detectPhotoViewController.detectView setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
                 
             }
-            
-            [self.navigationController pushViewController:self.detectPhotoViewController animated:YES];
+        
+            [self performSegueWithIdentifier:@"show DetectPhotoVC" sender:self]; 
             break;
     }
 }
@@ -136,16 +171,22 @@
 
 #pragma mark - UIImagePickerControllerDelegate methods
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
     
+    //TODO: clean up this methods
+    self.detectPhotoViewController  = [[FakePhotoViewController alloc] init];
     self.detectPhotoViewController.picture.image = [info objectForKey:UIImagePickerControllerOriginalImage];
     self.detectPhotoViewController.originalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+    
+    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) //Photo taken with the camera
+    {
         UIImageWriteToSavedPhotosAlbum([info objectForKey:UIImagePickerControllerOriginalImage], nil, nil, nil);
         [self.detectPhotoViewController setPhotoFromCamera:YES];
 
-    }else {
-        if (self.detectPhotoViewController.picture.image.size.width>self.detectPhotoViewController.picture.image.size.height){
+    }else { // Photo chosen from the library
+        if (self.detectPhotoViewController.picture.image.size.width > self.detectPhotoViewController.picture.image.size.height){
             [self.detectPhotoViewController setPhotoFromCamera:NO];
 
         }else {
@@ -155,7 +196,7 @@
     }
     
     [self dismissModalViewControllerAnimated:YES];
-    double f =self.detectPhotoViewController.originalImage.size.height/self.detectPhotoViewController.originalImage.size.width;
+    double f = self.detectPhotoViewController.originalImage.size.height / self.detectPhotoViewController.originalImage.size.width;
     
     if (416 - 320*f < 0) {
         [self.detectPhotoViewController.picture setFrame:CGRectMake((320-416/f)/2, 0, 416/f, 416)];
@@ -166,8 +207,8 @@
         [self.detectPhotoViewController.detectView setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
 
     }
-   
-    [self.navigationController pushViewController:self.detectPhotoViewController animated:YES];
+    
+    [self performSegueWithIdentifier:@"show DetectPhotoVC" sender:self]; 
 }
 
 
