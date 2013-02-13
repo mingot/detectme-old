@@ -24,7 +24,6 @@
 @synthesize customLayer = _customLayer;
 @synthesize prevLayer = _prevLayer;
 @synthesize detectView = _detectView;
-@synthesize settings = _settings;
 @synthesize templateName = _templateName;
 
 @synthesize hogFeature = _hogFeature;
@@ -45,6 +44,7 @@
     hogOnScreen = NO;
     pyramid = YES;
     numMax = 1;
+    
     cameraRoll = NO;
     printResults = NO;
     fullScreen = NO;
@@ -57,9 +57,6 @@
 
     sizeImage = 10; //??
     
-    //TODO: put in prepare for segue
-    self.settings = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
-    self.settings.delegate = self;
     
     //Capture input specifications
     AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput 
@@ -124,6 +121,20 @@
     //Select template
     templateWeights = [self readTemplate:self.templateName];
 }
+
+
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"show CameraVC settings"]) {
+        SettingsViewController *settingsVC = (SettingsViewController *) segue.destinationViewController;
+        settingsVC.delegate = self;
+        settingsVC.hog = hogOnScreen;
+        settingsVC.pyramid = pyramid;
+        settingsVC.numMaximums = (numMax==10 ? YES: NO);
+    }
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -293,11 +304,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark -
 #pragma mark Settings delegation
 
--(IBAction)settingsAction:(id)sender{
-    
-    [self.navigationController pushViewController:self.settings animated:YES];
-}
-
 -(void) setHOGValue:(BOOL) value{
     hogOnScreen = value;
   
@@ -311,12 +317,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 -(void) setNumMaximums:(BOOL) value{
-    if (value) {
-        numMax = 10;
-    }
-    else {
-        numMax = 1;
-    }
+    
+    numMax = value ? 10 : 1;
 }
 
 
@@ -331,7 +333,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.resultsImageView = nil;
 	self.customLayer = nil;
 	self.prevLayer = nil;
-    self.settings = nil;
     self.detectView = nil;
 }
 

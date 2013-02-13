@@ -10,6 +10,19 @@
 #import "CameraViewController.h"
 
 
+#pragma mark
+#pragma mark - Auxiliary class for PhotoDetectVC
+
+@interface FakePhotoViewController:NSObject //Auxiliar class to pass information to the DetectPhotoVC
+
+@property (strong,nonatomic) UIImageView *picture;
+@property (strong,nonatomic) UIImage *originalImage;
+@property (strong,nonatomic) DetectView *detectView;
+@property BOOL photoFromCamera;
+
+@end
+
+
 @implementation FakePhotoViewController
 
 @synthesize picture = _picture;
@@ -31,6 +44,13 @@
 }
 @end
 
+
+
+@interface ChoicesViewController ()
+
+@property (strong,nonatomic) FakePhotoViewController *detectPhotoViewController;
+
+@end
 
 
 @implementation ChoicesViewController

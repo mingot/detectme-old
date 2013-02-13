@@ -145,7 +145,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pjg-hH-5IN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1188" y="-360"/>
+            <point key="canvasLocation" x="1226" y="-364"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="MYk-Wy-R00">
@@ -156,11 +156,82 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="4oK-KO-4V1"/>
+                    <navigationItem key="navigationItem" id="4oK-KO-4V1">
+                        <barButtonItem key="rightBarButtonItem" title="Settings" id="c0G-VS-LXq">
+                            <connections>
+                                <segue destination="4aM-6Q-aZ3" kind="push" identifier="show CameraVC settings" id="JYv-VY-Nu3"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="75C-EP-Ptz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1206" y="329"/>
+            <point key="canvasLocation" x="1226" y="329"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="qEB-UY-XzI">
+            <objects>
+                <viewController id="4aM-6Q-aZ3" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dLU-t1-SNE">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="HOG" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="elI-nY-0G7">
+                                <rect key="frame" x="44" y="75" width="39" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10 - Pyramid" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O4t-4y-dX8">
+                                <rect key="frame" x="44" y="121" width="97" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10 Maximums" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zbx-nG-CdF">
+                                <rect key="frame" x="44" y="175" width="106" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="iZW-t0-PZh">
+                                <rect key="frame" x="223" y="72" width="79" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="hogAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="QnL-1O-mA3"/>
+                                    <action selector="hogChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="hr1-Xn-ff1"/>
+                                </connections>
+                            </switch>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="wYL-pE-gOp">
+                                <rect key="frame" x="223" y="118" width="79" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="pyramidChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="Arw-95-U83"/>
+                                </connections>
+                            </switch>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="TMN-Do-xwo">
+                                <rect key="frame" x="223" y="172" width="79" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="numMaximumsChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="Xbg-pc-DOV"/>
+                                </connections>
+                            </switch>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="3Uv-Zo-kpv"/>
+                    <connections>
+                        <outlet property="hogSwitch" destination="iZW-t0-PZh" id="sgO-jO-po0"/>
+                        <outlet property="numMaximumsSwitch" destination="TMN-Do-xwo" id="104-it-P2v"/>
+                        <outlet property="pyramidSwitch" destination="wYL-pE-gOp" id="kBG-8j-WWu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CBT-r4-VCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1813" y="336"/>
         </scene>
         <!--Detect Photo View Controller-->
         <scene sceneID="dFg-z6-CsC">

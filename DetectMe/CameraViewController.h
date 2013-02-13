@@ -23,9 +23,11 @@
     int sizeImage;
     double interval;
     
+    //settings
     BOOL hogOnScreen;
     BOOL pyramid;
     int numMax;
+    
     BOOL cameraRoll;
     BOOL printResults;
     BOOL fullScreen;
@@ -43,7 +45,6 @@
 @property (nonatomic, strong) CALayer *customLayer;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
 @property (nonatomic, strong) DetectView *detectView;
-@property (nonatomic, strong) SettingsViewController *settings;
 
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) HOGFeature *hogFeature;
@@ -51,6 +52,5 @@
 
 //-(void)findMax:(double *)c size:(int *)size numMax:  (int)nmax scores: (double *)scores results:(int *)results;
 
--(IBAction)settingsAction:(id)sender;
 
 @end

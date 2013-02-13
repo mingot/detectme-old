@@ -16,25 +16,28 @@
 - (void) setPyramidValue:(BOOL) value;
 - (void) setNumMaximums:(BOOL) value;
 
-
-
 @end
+
 
 @interface SettingsViewController : UIViewController
 
 @property (nonatomic, strong) id <SettingsViewControllerDelegate> delegate;
 
-@property (nonatomic, strong) IBOutlet UISwitch *hog;
-@property (nonatomic, strong) IBOutlet UISwitch *pyramid;
-@property (nonatomic, strong) IBOutlet UISwitch *numMaximums;
+@property BOOL hog;
+@property BOOL pyramid;
+@property BOOL numMaximums;
+
+
+@property (weak, nonatomic) IBOutlet UISwitch *hogSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *pyramidSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *numMaximumsSwitch;
 
 
 
--(IBAction)hogAction:(id)sender;
--(IBAction)pyramidAction:(id)sender;
--(IBAction)numMaximumsAction:(id)sender;
+- (IBAction)hogChangeAction:(UISwitch *)sender;
+- (IBAction)pyramidChangeAction:(UISwitch *)sender;
+- (IBAction)numMaximumsChangeAction:(UISwitch *)sender;
 
 
-//TODO: fix the done button
 
 @end
