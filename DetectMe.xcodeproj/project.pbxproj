@@ -27,7 +27,6 @@
 		FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */; };
 		FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */; };
 		FCBE9A2816CACEB60024CAE4 /* ChoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */; };
-		FCBE9A2916CACEB60024CAE4 /* TemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1516CACEB60024CAE4 /* TemplateViewController.m */; };
 		FCBE9A2A16CACEB60024CAE4 /* OptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */; };
 		FCBE9A2B16CACEB60024CAE4 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1916CACEB60024CAE4 /* SettingsViewController.m */; };
 		FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1B16CACEB60024CAE4 /* CameraViewController.m */; };
@@ -71,8 +70,6 @@
 		FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileStorageHelper.m; sourceTree = "<group>"; };
 		FCBE9A1216CACEB60024CAE4 /* ChoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChoicesViewController.h; sourceTree = "<group>"; };
 		FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChoicesViewController.m; sourceTree = "<group>"; };
-		FCBE9A1416CACEB60024CAE4 /* TemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateViewController.h; sourceTree = "<group>"; };
-		FCBE9A1516CACEB60024CAE4 /* TemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateViewController.m; sourceTree = "<group>"; };
 		FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionsViewController.h; sourceTree = "<group>"; };
 		FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionsViewController.m; sourceTree = "<group>"; };
 		FCBE9A1816CACEB60024CAE4 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
@@ -195,8 +192,6 @@
 			children = (
 				FCBE9A1216CACEB60024CAE4 /* ChoicesViewController.h */,
 				FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */,
-				FCBE9A1416CACEB60024CAE4 /* TemplateViewController.h */,
-				FCBE9A1516CACEB60024CAE4 /* TemplateViewController.m */,
 				FC43B6B916CB093400BF4048 /* TemplateTableViewController.h */,
 				FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */,
 				FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */,
@@ -280,7 +275,6 @@
 				FC00ACA616C539C800BE112E /* main.m in Sources */,
 				FC00ACAA16C539C800BE112E /* AppDelegate.m in Sources */,
 				FCBE9A2816CACEB60024CAE4 /* ChoicesViewController.m in Sources */,
-				FCBE9A2916CACEB60024CAE4 /* TemplateViewController.m in Sources */,
 				FCBE9A2A16CACEB60024CAE4 /* OptionsViewController.m in Sources */,
 				FCBE9A2B16CACEB60024CAE4 /* SettingsViewController.m in Sources */,
 				FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */,

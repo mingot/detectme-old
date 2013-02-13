@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CameraViewController.h"
+
 #import "DetectPhotoViewController.h"
 #import "OptionsViewController.h"
 #import "TemplateTableViewController.h"
@@ -17,7 +17,6 @@
 @interface ChoicesViewController : UIViewController <UIActionSheetDelegate, UIImagePickerControllerDelegate,UINavigationControllerDelegate, TemplateTableViewControllerDelegate>
 
 
-@property (strong,nonatomic) CameraViewController *cameraViewController;
 @property (strong,nonatomic) DetectPhotoViewController *detectPhotoViewController;
 @property (strong,nonatomic) OptionsViewController *optionsViewController;
 

@@ -7,11 +7,10 @@
 //
 
 #import "ChoicesViewController.h"
-
+#import "CameraViewController.h"
 
 @implementation ChoicesViewController
 
-@synthesize cameraViewController = _cameraViewController;
 @synthesize detectPhotoViewController = _detectPhotoViewController;
 @synthesize optionsViewController = _optionsViewController;
 @synthesize templateName = _templateName;
