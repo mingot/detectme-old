@@ -140,8 +140,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
               inDetectView:(DetectView *)detectView
             withHogFeature:(HOGFeature *)hogFeature
                   pyramids:(int ) numberPyramids
-
-
 {
     NSMutableArray *result = [[NSMutableArray alloc] init];
 

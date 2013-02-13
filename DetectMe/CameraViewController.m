@@ -141,41 +141,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
-
--(void) convOneLevelFeat:(CGImageRef)image
-                template:(NSString *)filename
-{
-    
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    double *res = [FileStorageHelper readTemplate:filename];
-    int r[3];
-    r[0]=(int)(*res);
-    r[1]=(int)(*(res+1));
-    r[2]=(int)(*(res+2));
-
-    CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image withRect:230];
-    // NSLog(@"resizedImage %zd x %zd",CGImageGetWidth(resizedImage),CGImageGetHeight(resizedImage));
-    
-    
-    [result addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage withTemplate:res orientation:3 withHogFeature:self.hogFeature]];
-    
-    NSArray *nmsArray = [ConvolutionHelper nms:result :0.25];
-    
-    [self.detectView setCorners:nmsArray];
-    
-    if (nmsArray.count > 0) {
-        ConvolutionPoint *score = [nmsArray objectAtIndex:0];
-        [self performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%3f",score.score.doubleValue] waitUntilDone:YES];
-        
-    }else{
-        [self performSelectorOnMainThread:@selector(setTitle:) withObject:@"No detection." waitUntilDone:YES];
-        
-    }
-
-    free(res);
-}
-
 #pragma mark -
 #pragma mark AVCaptureSession delegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput 
@@ -232,22 +197,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
          */
         
         int numPyramids=10;
-        if (pyramid) {  //Convolution using pyramid features
+        if (! pyramid)  numPyramids=1;
             
-            [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
-                               withTemplate:templateWeights
-                               inDetectView:self.detectView
-                             withHogFeature:self.hogFeature
-                                   pyramids:numPyramids];
+        [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
+                           withTemplate:templateWeights
+                           inDetectView:self.detectView
+                         withHogFeature:self.hogFeature
+                               pyramids:numPyramids];
             
-            [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-            
-        } else { //convolution using just one template
-            
-            [self convOneLevelFeat:[ImageProcessingHelper resizeImage:imageRef withRect:230 ] template:self.templateName];
-            
-        }
-            
+        [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
             
         if (hogOnScreen) { //Put the HOG picture on screen
             int blocks[2];
