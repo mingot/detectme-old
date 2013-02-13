@@ -119,7 +119,7 @@
     
     
     //Select template
-    templateWeights = [self readTemplate:self.templateName];
+    templateWeights = [FileStorageHelper readTemplate:self.templateName];
 }
 
 
@@ -142,31 +142,13 @@
 }
 
 
--(double *) readTemplate:(NSString *)filename //return pointer to template from filename
-{
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *path = [NSString stringWithFormat:@"%@/Templates/%@",documentsDirectory,filename];
-    NSString *content = [NSString stringWithContentsOfFile:path
-                                                  encoding:NSUTF8StringEncoding
-                                                     error:NULL];
-    NSArray *file = [content componentsSeparatedByString:@"\n"];
-
-    double *r = malloc((file.count)*sizeof(double));
-    for (int i=0; i<file.count; i++) {
-        NSString *str = [file objectAtIndex:i];
-        *(r+i) = [str doubleValue];
-    }
-
-    return r;
-}
-
 
 -(void) convOneLevelFeat:(CGImageRef)image
                 template:(NSString *)filename
 {
     
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    double *res = [self readTemplate:filename];
+    double *res = [FileStorageHelper readTemplate:filename];
     int r[3];
     r[0]=(int)(*res);
     r[1]=(int)(*(res+1));

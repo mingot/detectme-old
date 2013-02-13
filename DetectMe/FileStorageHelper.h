@@ -12,4 +12,6 @@
 
 + (NSString *) getPathForCurrentFileAndUpdateCounter:(NSString *)file;
 
++ (double *) readTemplate:(NSString *)filename;
+
 @end

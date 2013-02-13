@@ -11,6 +11,7 @@
 #import "UIViewController+writeFiles.h"
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
+#import "FileStorageHelper.h"
 
 
 static inline double min(double x, double y) { return (x <= y ? x : y); }
@@ -51,7 +52,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     [self.view addSubview:self.detectView];
     self.detectView.hidden = NO;
 
-    templateWeights = [self readTemplate:self.templateName];
+    templateWeights = [FileStorageHelper readTemplate:self.templateName];
     NSLog(@"detectPhotoVC end viewDidLoad");
     
 }
@@ -136,25 +137,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     }
 }
 
--(double *)readTemplate:(NSString *)filename //return pointer to template from filename
-{
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *path = [NSString stringWithFormat:@"%@/Templates/%@",documentsDirectory,filename];
-    NSString *content = [NSString stringWithContentsOfFile:path
-                                                  encoding:NSUTF8StringEncoding
-                                                     error:NULL];
-    NSArray *file = [content componentsSeparatedByString:@"\n"];
-    
-    double *r = malloc((file.count)*sizeof(double));
-    for (int i=0; i<file.count; i++) {
-        NSString *str = [file objectAtIndex:i];
-        *(r+i) = [str doubleValue];
-    }
-    
-    return r;
-}
 
-
+//TODO: does not bring to anywhere
 -(IBAction)settings:(id)sender{
     
 }

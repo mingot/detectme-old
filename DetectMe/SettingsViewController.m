@@ -17,6 +17,7 @@
 @synthesize pyramidSwitch = _pyramidSwitch;
 @synthesize numMaximumsSwitch = _numMaximumsSwitch;
 
+// TODO: Can it be done in an easier way?
 @synthesize hog=_hog;
 @synthesize pyramid=_pyramid;
 @synthesize numMaximums=_numMaximums;
@@ -30,6 +31,7 @@
 
 }
 
+//TODO: look for the overall rotation of the application
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -50,13 +52,5 @@
     [self.delegate setNumMaximums:sender.on];
 
 }
-
-
-//- (void)viewDidUnload {
-//    [self setHogSwitch:nil];
-//    [self setPyramidSwitch:nil];
-//    [self setNumMaximumsSwitch:nil];
-//    [super viewDidUnload];
-//}
 
 @end
