@@ -123,7 +123,6 @@
 }
 
 
-
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"show CameraVC settings"]) {
@@ -196,16 +195,29 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
          */
         
+        //TODO: make this a parameter that can be set via features.
         int numPyramids=10;
         if (! pyramid)  numPyramids=1;
-            
-        [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
-                           withTemplate:templateWeights
-                           inDetectView:self.detectView
-                         withHogFeature:self.hogFeature
-                               pyramids:numPyramids];
-            
+        
+        clock_t start = clock(); //Trace execution time
+                
+            NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
+                                                   withTemplate:templateWeights
+                                                 withHogFeature:self.hogFeature
+                                                       pyramids:numPyramids];
+        
+        NSLog(@"TOTAL TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
+        
+        [self.detectView setCorners:nmsArray];
         [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
+            
+        // Update the navigation controller title with some information about the detection
+        if (nmsArray.count > 0) {
+            ConvolutionPoint *score = [nmsArray objectAtIndex:0];
+            [self performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%3f",score.score.doubleValue] waitUntilDone:YES];
+        } else{
+            [self performSelectorOnMainThread:@selector(setTitle:) withObject:@"No detection." waitUntilDone:YES];
+        }
             
         if (hogOnScreen) { //Put the HOG picture on screen
             int blocks[2];
@@ -242,7 +254,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 } 
 
 #pragma mark -
-#pragma mark Settings delegation
+#pragma mark Settings delegate
 
 -(void) setHOGValue:(BOOL) value{
     hogOnScreen = value;

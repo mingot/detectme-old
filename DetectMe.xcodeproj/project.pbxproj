@@ -25,6 +25,7 @@
 		FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */; };
 		FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B716CADE9300BF4048 /* CoreMedia.framework */; };
 		FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */; };
+		FC43B73016CD725B00BF4048 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B72F16CD725A00BF4048 /* Accelerate.framework */; };
 		FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */; };
 		FCBE9A2816CACEB60024CAE4 /* ChoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */; };
 		FCBE9A2A16CACEB60024CAE4 /* OptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */; };
@@ -66,6 +67,7 @@
 		FC43B6B716CADE9300BF4048 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		FC43B6B916CB093400BF4048 /* TemplateTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateTableViewController.h; sourceTree = "<group>"; };
 		FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateTableViewController.m; sourceTree = "<group>"; };
+		FC43B72F16CD725A00BF4048 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileStorageHelper.h; sourceTree = "<group>"; };
 		FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileStorageHelper.m; sourceTree = "<group>"; };
 		FCBE9A1216CACEB60024CAE4 /* ChoicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChoicesViewController.h; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC43B73016CD725B00BF4048 /* Accelerate.framework in Frameworks */,
 				FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */,
 				FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */,
 				FC43B6B416CADB0400BF4048 /* CoreMotion.framework in Frameworks */,
@@ -114,7 +117,6 @@
 		FC00AC8D16C539C800BE112E = {
 			isa = PBXGroup;
 			children = (
-				FC43B6B716CADE9300BF4048 /* CoreMedia.framework */,
 				FC00AC9F16C539C800BE112E /* DetectMe */,
 				FC00AC9816C539C800BE112E /* Frameworks */,
 				FC00AC9716C539C800BE112E /* Products */,
@@ -132,6 +134,8 @@
 		FC00AC9816C539C800BE112E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FC43B72F16CD725A00BF4048 /* Accelerate.framework */,
+				FC43B6B716CADE9300BF4048 /* CoreMedia.framework */,
 				FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */,
 				FC43B6B316CADB0400BF4048 /* CoreMotion.framework */,
 				FC00AC9B16C539C800BE112E /* Foundation.framework */,

@@ -28,7 +28,6 @@
     self.hogSwitch.on = self.hog;
     self.pyramidSwitch.on = self.pyramid;
     self.numMaximumsSwitch.on = self.numMaximums;
-
 }
 
 //TODO: look for the overall rotation of the application

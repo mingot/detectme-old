@@ -201,22 +201,21 @@
                                 <rect key="frame" x="223" y="72" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="hogAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="QnL-1O-mA3"/>
-                                    <action selector="hogChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="hr1-Xn-ff1"/>
+                                    <action selector="hogChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="NpZ-Td-44F"/>
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="wYL-pE-gOp">
                                 <rect key="frame" x="223" y="118" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="pyramidChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="Arw-95-U83"/>
+                                    <action selector="pyramidChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="NR4-fN-es8"/>
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="TMN-Do-xwo">
                                 <rect key="frame" x="223" y="172" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="numMaximumsChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="Xbg-pc-DOV"/>
+                                    <action selector="numMaximumsChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="hnC-bE-kxi"/>
                                 </connections>
                             </switch>
                         </subviews>
@@ -224,9 +223,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="3Uv-Zo-kpv"/>
                     <connections>
-                        <outlet property="hogSwitch" destination="iZW-t0-PZh" id="sgO-jO-po0"/>
-                        <outlet property="numMaximumsSwitch" destination="TMN-Do-xwo" id="104-it-P2v"/>
-                        <outlet property="pyramidSwitch" destination="wYL-pE-gOp" id="kBG-8j-WWu"/>
+                        <outlet property="hogSwitch" destination="iZW-t0-PZh" id="WvJ-yQ-ztB"/>
+                        <outlet property="numMaximumsSwitch" destination="TMN-Do-xwo" id="S4z-in-zyB"/>
+                        <outlet property="pyramidSwitch" destination="wYL-pE-gOp" id="a6i-vk-X6H"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CBT-r4-VCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -271,6 +270,40 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="CameraViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
+        </class>
+        <class className="ChoicesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="photoAction:"/>
+                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="DetectPhotoViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="HOGAction:"/>
+                <relationship kind="action" name="detect:"/>
+                <relationship kind="action" name="settings:"/>
+            </relationships>
+        </class>
+        <class className="SettingsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="pyramidChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="pyramidSwitch" candidateClass="UISwitch"/>
+            </relationships>
+        </class>
+        <class className="TemplateTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

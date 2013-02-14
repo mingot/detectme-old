@@ -91,12 +91,12 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
    NSLog(@"Orientation: %d",self.picture.image.imageOrientation);
 
     
-    [ConvolutionHelper convPyraFeat:self.originalImage
-                       withTemplate:templateWeights
-                       inDetectView:self.detectView
-                     withHogFeature:self.hogFeature
-                           pyramids:10];
+    NSArray *nmsArray = [ConvolutionHelper convPyraFeat:self.originalImage
+                                           withTemplate:templateWeights
+                                         withHogFeature:self.hogFeature
+                                               pyramids:10];
     
+    [self.detectView setCorners:nmsArray];
     self.detectView.frame = self.picture.frame;
     
     [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];

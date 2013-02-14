@@ -38,14 +38,14 @@
 }
 
 
-@property (nonatomic, strong) AVCaptureSession *captureSession;
-@property (nonatomic, strong) UIImageView *HOGimageView;
 @property (nonatomic, strong) UIImageView *resultsImageView;
-
 @property (nonatomic, strong) CALayer *customLayer;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
-@property (nonatomic, strong) DetectView *detectView;
 
+@property (nonatomic, strong) UIImageView *HOGimageView;
+
+@property (nonatomic, strong) AVCaptureSession *captureSession;
+@property (nonatomic, strong) DetectView *detectView;
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) HOGFeature *hogFeature;
 

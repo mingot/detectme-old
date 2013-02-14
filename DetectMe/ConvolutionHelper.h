@@ -24,15 +24,10 @@
 
 + (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
               withTemplate:(double *) templateValues
-              inDetectView:(DetectView *)detectView
             withHogFeature:(HOGFeature *)hogFeature
                   pyramids:(int )numberPyramids;
               
-
-+ (NSArray *) convPyraFeatFromFile:(UIImage *)image
-                      withTemplate:(double *)templateValues
-                       withMaxSize:(int)maxSize
-                    withHogFeature:(HOGFeature *)hogFeature;
++ (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB;
 
 + (NSArray *)nms:(NSArray *)c //Compute non maximum supression
                 :(double) overlap;
