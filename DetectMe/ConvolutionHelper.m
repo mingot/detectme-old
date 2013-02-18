@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Dolores. All rights reserved.
 //
 
+#include <Accelerate/Accelerate.h>
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
 
@@ -33,20 +34,17 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 + (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
     int convolutionSize[2];
-    convolutionSize[0] = sizeA[0] - sizeB[0] + 1; //convolution size
+    convolutionSize[0] = sizeA[0] - sizeB[0] + 1; 
     convolutionSize[1] = sizeA[1] - sizeB[1] + 1;
-    if ((convolutionSize[0]<=0) || (convolutionSize[1]<=0)) { //discard if convolution size not positive
-        return;
-    }
     
-    for (int x = 0; x < convolutionSize[1]; x++) { //Actual 2D convolution for each of the 32 features
+    for (int x = 0; x < convolutionSize[1]; x++) { 
         for (int y = 0; y < convolutionSize[0]; y++)
         {
             double val = 0;
             for (int xp = 0; xp < sizeB[1]; xp++) {
                 double *A_off = matrixA + (x+xp)*sizeA[0] + y;
                 double *B_off = matrixB + xp*sizeB[0];
-                switch(sizeB[0]) { //depending on the template size r[0]. Use this hack to avoid an additional loop in common cases
+                switch(sizeB[0]) { //depending on the template size sizeB[0]. Use this hack to avoid an additional loop in common cases.
                     case 20: val += A_off[19] * B_off[19];
                     case 19: val += A_off[18] * B_off[18];
                     case 18: val += A_off[17] * B_off[17];
@@ -71,15 +69,103 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                     default:
                         for (int yp = 0; yp < sizeB[0]; yp++) {
                             val += *(A_off++) * *(B_off++);
-                            NSLog(@"%d: A: %f; B: %f; val: %f",yp,*(A_off), *B_off, val);
+//                            NSLog(@"%d: A: %f; B: %f; val: %f",yp,*(A_off), *B_off, val);
                         }
                 }
             }
             *(result++) += val;
             
-        }//it through conv size
+        }
     }
 }
+
++ (void) convolutionWithVDSP:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
+{
+    
+    double *result_aux = calloc(sizeA[0]*sizeA[1], sizeof(double));
+    vDSP_imgfirD(matrixA, (vDSP_Length)sizeA[0], (vDSP_Length)sizeA[1], matrixB, result_aux, (vDSP_Length)sizeB[0], (vDSP_Length)sizeB[1]);
+    
+    // copy values of the convoluted image to the result
+    for(int i=0; i<sizeA[0]; i++)
+        for(int j=0; j<sizeA[1]; j++)
+        {
+            double val = *(result_aux + i + j*sizeA[1]);
+            if (val!=0)
+            {
+                *result = val;
+                result++;
+            }
+        }
+}
+
++ (void) convolutionWithVImage:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
+{
+    vImage_Buffer src;
+    src.data = matrixA;
+    src.height = sizeA[0];
+    src.width = sizeA[1];
+    src.rowBytes = sizeA[1]*sizeof(float);
+    
+    vImage_Buffer dst;
+    dst.data = result;
+    dst.height = sizeA[0];
+    dst.width = sizeA[1];
+    dst.rowBytes = sizeA[1]*sizeof(float);
+    
+    vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
+    
+    result = dst.data;
+}
+
+
+
++ (void) convolutionWithFFT:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
+{
+    //FFT of the two signals
+    DSPSplitComplex signalImageIn;
+    signalImageIn.realp = calloc(sizeA[0]*sizeA[1],sizeof(float));
+    
+    for(int i=0;i<sizeA[0];i++)
+        for(int j=0;j<sizeA[1];j++)
+            *(signalImageIn.realp + i*sizeA[1] + j) = (float) *(matrixA + i*sizeA[1] + j);
+    
+    signalImageIn.imagp = calloc(sizeA[0]*sizeA[1],sizeof(float)); // initialize to 0
+    
+    
+    DSPSplitComplex signalFourierOut;
+    signalFourierOut.realp = calloc(sizeA[0]*sizeA[1],sizeof(float) );
+    signalFourierOut.imagp = calloc(sizeA[0]*sizeA[1],sizeof(float) );
+    
+    vDSP_fft2d_zrop(vDSP_create_fftsetup(8, kFFTRadix2), &signalImageIn, 1, 1, &signalFourierOut, 1, 1, 8, 8, kFFTDirection_Forward);
+    
+    
+    DSPSplitComplex templateImageIn;
+    templateImageIn.realp = (float *) matrixB;
+    templateImageIn.imagp = calloc(sizeB[0]*sizeB[1], sizeof(float));
+    
+    DSPSplitComplex templateFourierOut;
+    templateFourierOut.realp = calloc(sizeB[0]*sizeB[1],sizeof(float) );
+    templateFourierOut.imagp = calloc(sizeB[0]*sizeB[1],sizeof(float) );
+    
+    
+//    vDSP_fft2d_zrop(vDSP_create_fftsetup(8, kFFTRadix2), &templateImageIn, 1, 1, &templateFourierOut, 1, 1, 8, 8, kFFTDirection_Forward);
+    
+    NSLog(@"Real");
+    float *c = signalFourierOut.realp;
+    for(int i = 0;i<sizeA[0];i++)
+        for(int j = 0; j < sizeA[1]; j++)
+            NSLog(@"%f", *(c+i*sizeA[1]+j));
+    
+    
+    //Multiplication of the signals (what kind of multiplication? point to point)
+    
+    //FFT-1 of the signals
+    
+    
+}
+
+
+
 
 + (NSArray *)convTempFeat:(CGImageRef)image
              withTemplate:(double *)templateValues
@@ -111,54 +197,42 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *c = calloc(convolutionSize[0]*convolutionSize[1],sizeof(double)); //initialize the convolution result
     
     
-    for (int f = 0; f < templateSize[2]; f++)
+    for (int f = 0; f < templateSize[2]; f++) //For each of the 32 (or 31) features, make the convolution with the corresponding feature in the template
     {
+
         double *dst = c;
         double *A_src = feat + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
         double *B_src = w + f*templateSize[0]*templateSize[1];
-        
+//        double *dst1 = calloc(convolutionSize[0]*convolutionSize[1], sizeof(double));
+//        double *dst2 = calloc(convolutionSize[0]*convolutionSize[1], sizeof(double));
         [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+//        [ConvolutionHelper convolutionWithVDSP:dst2 matrixA:A_src :blocks matrixB:B_src :templateSize];
+//        [ConvolutionHelper convolutionWithFFT:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
         
-//        for (int x = 0; x < convolutionSize[1]; x++) { //Actual 2D convolution for each of the 32 features
-//            for (int y = 0; y < convolutionSize[0]; y++)
+        
+//        //Different convolution methods tried
+//        // Just working undet few conditions which include odd size for the filter!
+//        float *dst = calloc(6*7,sizeof(float));
+//        float A[6*7]={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+//        float B[5*5]={2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+//        int sizeA[2]={6,7};
+//        int sizeB[2]={5,5};
+//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A :sizeA matrixB:B :sizeB];
+//        [ConvolutionHelper convolutionWithVImage:dst matrixA:A :sizeA matrixB:B :sizeB];
+//
+//        for(int i=0;i<convolutionSize[0];i++)
+//            for(int j=0; j<convolutionSize[1];j++)
+//                NSLog(@"%f", *(dst1+j+i*convolutionSize[1]));
+        
+//        for(int i=0;i<convolutionSize[0];i++)
+//            for(int j=0; j<convolutionSize[1];j++)
 //            {
-//                double val = 0;
-//                for (int xp = 0; xp < templateSize[1]; xp++) {
-//                    double *A_off = A_src + (x+xp)*blocks[0] + y;
-//                    double *B_off = B_src + xp*templateSize[0];
-//                    switch(templateSize[0]) { //depending on the template size r[0]. Use this hack to avoid an additional loop in common cases
-//                        case 20: val += A_off[19] * B_off[19];
-//                        case 19: val += A_off[18] * B_off[18];
-//                        case 18: val += A_off[17] * B_off[17];
-//                        case 17: val += A_off[16] * B_off[16];
-//                        case 16: val += A_off[15] * B_off[15];
-//                        case 15: val += A_off[14] * B_off[14];
-//                        case 14: val += A_off[13] * B_off[13];
-//                        case 13: val += A_off[12] * B_off[12];
-//                        case 12: val += A_off[11] * B_off[11];
-//                        case 11: val += A_off[10] * B_off[10];
-//                        case 10: val += A_off[9]  * B_off[9];
-//                        case 9:  val += A_off[8]  * B_off[8];
-//                        case 8:  val += A_off[7]  * B_off[7];
-//                        case 7:  val += A_off[6]  * B_off[6];
-//                        case 6:  val += A_off[5]  * B_off[5];
-//                        case 5:  val += A_off[4]  * B_off[4];
-//                        case 4:  val += A_off[3]  * B_off[3];
-//                        case 3:  val += A_off[2]  * B_off[2];
-//                        case 2:  val += A_off[1]  * B_off[1];
-//                        case 1:  val += A_off[0]  * B_off[0];
-//                            break; 
-//                        default:
-//                            for (int yp = 0; yp < templateSize[0]; yp++) {
-//                                val += *(A_off++) * *(B_off++);
-//                                NSLog(@"%d: A: %f; B: %f; val: %f",yp,*(A_off), *B_off, val);
-//                            }
-//                    }
-//                }
-//                *(dst++) += val;
-//                
-//            }//it through conv size
-//        }
+////                NSLog(@"dst1: %f", *(dst1+j));
+//                NSLog(@"dst2: %f", *(dst2 + j*convolutionSize[1] + i));
+//            }
+//            
+//        NSLog(@"fin");
+        
     }
     
     //Once done the convolution, detect if something is the object!
@@ -207,7 +281,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     [result addObjectsFromArray:[self convTempFeat:resizedImage withTemplate:templateValues orientation:image.imageOrientation withHogFeature:hogFeature]];
     
-    NSLog(@"HOG TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
+//    NSLog(@"HOG TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
     
     for (int i = 1; i<numberPyramids; i++) { //Pyramid calculation
         

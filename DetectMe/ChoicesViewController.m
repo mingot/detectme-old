@@ -63,7 +63,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.templateName = @"bottle.txt"; //Default template
+    self.templateName = @"bus.txt"; //Default template
     [self selectedTemplate]; //TODO: needs to be done via segues
     self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
     NSLog(@"ChoicesViewController:viewDidLoad. Loaded template %@", self.templateName);
