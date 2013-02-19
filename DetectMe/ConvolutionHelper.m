@@ -23,7 +23,6 @@
 
 
 
-
 @implementation ConvolutionHelper
 
 static inline double min(double x, double y) { return (x <= y ? x : y); }
@@ -37,11 +36,12 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     convolutionSize[0] = sizeA[0] - sizeB[0] + 1; 
     convolutionSize[1] = sizeA[1] - sizeB[1] + 1;
     
-    for (int x = 0; x < convolutionSize[1]; x++) { 
-        for (int y = 0; y < convolutionSize[0]; y++)
+    for (int y = 0; y < convolutionSize[0]; y++) {
+        for (int x = 0; x < convolutionSize[1]; x++)
         {
             double val = 0;
-            for (int xp = 0; xp < sizeB[1]; xp++) {
+            
+            for(int xp=0;xp<sizeB[1];xp++){ //Assuming column-major representation
                 double *A_off = matrixA + (x+xp)*sizeA[0] + y;
                 double *B_off = matrixB + xp*sizeB[0];
                 switch(sizeB[0]) { //depending on the template size sizeB[0]. Use this hack to avoid an additional loop in common cases.
@@ -69,7 +69,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                     default:
                         for (int yp = 0; yp < sizeB[0]; yp++) {
                             val += *(A_off++) * *(B_off++);
-//                            NSLog(@"%d: A: %f; B: %f; val: %f",yp,*(A_off), *B_off, val);
                         }
                 }
             }
@@ -81,20 +80,35 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (void) convolutionWithVDSP:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
+    // Conversion from row-major to column-major matrix
+    double *matrixAModif = calloc(sizeA[0]*sizeA[1], sizeof(double));
+    double *matrixBModif = calloc(sizeB[0]*sizeB[1], sizeof(double));
     
+    int r=0;
+    for(int j=0; j<sizeA[1]; j++)
+        for(int i=0;i<sizeA[0];i++){
+            *(matrixAModif + j + i*sizeA[1]) = *(matrixA + r);
+            r++;
+        }
+    
+    r=0;
+    for(int j=0; j<sizeB[1]; j++)
+        for(int i=0;i<sizeB[0];i++){
+            *(matrixBModif + j + i*sizeB[1]) = *(matrixB + r);
+            r++;
+        }
+
+    
+    //Convolution of the size of the imageA
     double *result_aux = calloc(sizeA[0]*sizeA[1], sizeof(double));
-    vDSP_imgfirD(matrixA, (vDSP_Length)sizeA[0], (vDSP_Length)sizeA[1], matrixB, result_aux, (vDSP_Length)sizeB[0], (vDSP_Length)sizeB[1]);
+    vDSP_imgfirD(matrixAModif, (vDSP_Length)sizeA[0], (vDSP_Length)sizeA[1], matrixBModif, result_aux, (vDSP_Length)sizeB[0], (vDSP_Length)sizeB[1]);
     
-    // copy values of the convoluted image to the result
-    for(int i=0; i<sizeA[0]; i++)
-        for(int j=0; j<sizeA[1]; j++)
-        {
-            double val = *(result_aux + i + j*sizeA[1]);
-            if (val!=0)
-            {
-                *result = val;
-                result++;
-            }
+    
+    //Copy just the non null values to the result (of size convolutionSize).
+    for(int i=0; i<sizeA[0]*sizeA[1];i++)
+        if(*(result_aux+i)!=0){
+            *result += *(result_aux+i);
+            result++;
         }
 }
 
@@ -114,10 +128,10 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
     
-    result = dst.data;
+//    result = dst.data;
+//    for(int i=0;i<sizeA[0]*sizeA[1];i++)
+//        NSLog(@"result: %f", *(result + i));
 }
-
-
 
 + (void) convolutionWithFFT:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
@@ -166,7 +180,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 
 
-
 + (NSArray *)convTempFeat:(CGImageRef)image
              withTemplate:(double *)templateValues
               orientation:(int)orientation
@@ -203,35 +216,33 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         double *dst = c;
         double *A_src = feat + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
         double *B_src = w + f*templateSize[0]*templateSize[1];
-//        double *dst1 = calloc(convolutionSize[0]*convolutionSize[1], sizeof(double));
-//        double *dst2 = calloc(convolutionSize[0]*convolutionSize[1], sizeof(double));
-        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
-//        [ConvolutionHelper convolutionWithVDSP:dst2 matrixA:A_src :blocks matrixB:B_src :templateSize];
+        
+        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+//        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 //        [ConvolutionHelper convolutionWithFFT:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+
+        
+//        for(int i=0;i<convolutionSize[1];i++)
+//            for(int j=0;j<convolutionSize[0];j++)
+//            {
+//                NSLog(@"dst1: %f", *(dst1 + j + i*convolutionSize[0]));
+//                NSLog(@"dst2: %f", *(dst2 + j + i*convolutionSize[0]));
+//            }
         
         
-//        //Different convolution methods tried
-//        // Just working undet few conditions which include odd size for the filter!
-//        float *dst = calloc(6*7,sizeof(float));
-//        float A[6*7]={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-//        float B[5*5]={2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+        //Different convolution methods tried
+        // Just working undet few conditions which include odd size for the filter!
+//        double *dst1 = calloc(6*7,sizeof(float));
+//        double *dst2 = calloc(6*7,sizeof(float));
+//        double A[6*7]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42};
+//        double B[5*5]={2,7,2,2,1,2,3,2,2,2,2,2,2,2,2,1,2,2,2,2,3,2,2,2,1};
 //        int sizeA[2]={6,7};
 //        int sizeB[2]={5,5};
-//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A :sizeA matrixB:B :sizeB];
-//        [ConvolutionHelper convolutionWithVImage:dst matrixA:A :sizeA matrixB:B :sizeB];
-//
-//        for(int i=0;i<convolutionSize[0];i++)
-//            for(int j=0; j<convolutionSize[1];j++)
-//                NSLog(@"%f", *(dst1+j+i*convolutionSize[1]));
+//        [ConvolutionHelper convolution:dst1 matrixA:A :sizeA matrixB:B :sizeB];
+//        [ConvolutionHelper convolutionWithVDSP:dst2 matrixA:A :sizeA matrixB:B :sizeB];
+//        [ConvolutionHelper convolutionWithFFT:dst1 matrixA:A :sizeA matrixB:B :sizeB];
+
         
-//        for(int i=0;i<convolutionSize[0];i++)
-//            for(int j=0; j<convolutionSize[1];j++)
-//            {
-////                NSLog(@"dst1: %f", *(dst1+j));
-//                NSLog(@"dst2: %f", *(dst2 + j*convolutionSize[1] + i));
-//            }
-//            
-//        NSLog(@"fin");
         
     }
     
