@@ -8,7 +8,6 @@
 
 
 #import "DetectPhotoViewController.h"
-#import "UIViewController+writeFiles.h"
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
 #import "FileStorageHelper.h"

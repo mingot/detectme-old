@@ -11,7 +11,17 @@
 @interface FileStorageHelper : NSObject
 
 + (NSString *) getPathForCurrentFileAndUpdateCounter:(NSString *)file;
-
 + (double *) readTemplate:(NSString *)filename;
++ (void) writeImageToDisk:(CGImageRef)image withTitle:(NSString *)title;
+
+
+// For storing data
++ (void)writeFeatures:(double *)vect withSize:(int *)size withTitle:(NSString *) filename;
++ (void)writeImage:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename;
++ (void)write:(double *)vect withSize:(int *)size withTitle:(NSString *) filename;
++ (void)writeImages:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename;
++ (void)writeConv:(double *)vect withSize:(int *)size withTitle:(NSString *) filename;
++ (void)writeConvWithArray:(NSArray *)conv withSize:(int *)size withTitle:(NSString *) filename;
+
 
 @end

@@ -7,12 +7,14 @@
 //
 
 #import "LearnViewController.h"
+#import "FileStorageHelper.h"    
 
 @interface LearnViewController ()
 {
-bool takePhoto; // change state when learnAction button is pressed
+    bool takePhoto; // change state when learnAction button is pressed
+    int numberOfTrainingImages;
+    NSMutableArray *listOfTrainingImages;
 }
-    
 @end
 
 @implementation LearnViewController
@@ -25,13 +27,20 @@ bool takePhoto; // change state when learnAction button is pressed
 {
     [super viewDidLoad];
     
+    takePhoto = NO;
+    numberOfTrainingImages = 0;
+    //TODO: current fixed maximum capacity for the number of example images
+    listOfTrainingImages = [[NSMutableArray alloc] initWithCapacity:10];
+    
+    // NavigatinoBar buttons and labels
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addAction:)];
     
     UIBarButtonItem *learnButton = [[UIBarButtonItem alloc] initWithTitle:@"Learn" style:UIBarButtonItemStyleBordered target:self action:@selector(learnAction:)];
     
     self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: learnButton, addButton, nil];
     
-    takePhoto = NO;
+    // Bar label with the number of images stored as positive training examples
+    self.navigationItem.title = [NSString stringWithFormat:@"%d",numberOfTrainingImages];
     
     // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
@@ -115,6 +124,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             ImWidth = self.view.frame.size.width;
             ImHeigth = self.view.frame.size.height;
             CGImageRef newIm = CGImageCreateWithImageInRect(imageRef, CGRectMake(ImWidth/4, ImHeigth/4, ImWidth/2, ImHeigth/2));
+            [listOfTrainingImages addObject:(__bridge id)(newIm)];
+            [FileStorageHelper writeImageToDisk:newIm  withTitle:@"petita_prova"];
+            
+            numberOfTrainingImages++;
+            [self.navigationItem performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",numberOfTrainingImages] waitUntilDone:YES];
             takePhoto = NO;
         }
         

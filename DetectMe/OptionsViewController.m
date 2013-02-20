@@ -7,7 +7,6 @@
 //
 
 #import "OptionsViewController.h"
-#import "UIViewController+writeFiles.h"
 
 @interface OptionsViewController ()
 

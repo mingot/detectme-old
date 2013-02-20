@@ -38,7 +38,6 @@
 		FCBE9A2E16CACEB60024CAE4 /* HOGFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1F16CACEB60024CAE4 /* HOGFeature.m */; };
 		FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */; };
 		FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */; };
-		FCBE9A3116CACEB60024CAE4 /* UIViewController+writeFiles.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2516CACEB60024CAE4 /* UIViewController+writeFiles.m */; };
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
 /* End PBXBuildFile section */
 
@@ -95,8 +94,6 @@
 		FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvolutionHelper.m; sourceTree = "<group>"; };
 		FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageProcessingHelper.h; sourceTree = "<group>"; };
 		FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageProcessingHelper.m; sourceTree = "<group>"; };
-		FCBE9A2416CACEB60024CAE4 /* UIViewController+writeFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+writeFiles.h"; sourceTree = "<group>"; };
-		FCBE9A2516CACEB60024CAE4 /* UIViewController+writeFiles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+writeFiles.m"; sourceTree = "<group>"; };
 		FCBE9A2616CACEB60024CAE4 /* DetectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectView.h; sourceTree = "<group>"; };
 		FCBE9A2716CACEB60024CAE4 /* DetectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -174,8 +171,6 @@
 				FC18515916D4338500630140 /* FourierTransform.m */,
 				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
 				FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */,
-				FCBE9A2416CACEB60024CAE4 /* UIViewController+writeFiles.h */,
-				FCBE9A2516CACEB60024CAE4 /* UIViewController+writeFiles.m */,
 				FCBE9A2616CACEB60024CAE4 /* DetectView.h */,
 				FCBE9A2716CACEB60024CAE4 /* DetectView.m */,
 				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
@@ -301,7 +296,6 @@
 				FCBE9A2E16CACEB60024CAE4 /* HOGFeature.m in Sources */,
 				FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */,
 				FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */,
-				FCBE9A3116CACEB60024CAE4 /* UIViewController+writeFiles.m in Sources */,
 				FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */,
 				FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */,
 				FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */,
