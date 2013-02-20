@@ -38,19 +38,14 @@
 }
 
 
-@property (nonatomic, strong) UIImageView *resultsImageView;
-@property (nonatomic, strong) CALayer *customLayer;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
-
-@property (nonatomic, strong) UIImageView *HOGimageView;
-
 @property (nonatomic, strong) AVCaptureSession *captureSession;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
+@property (nonatomic, strong) UIImageView *resultsImageView;
+@property (nonatomic, strong) UIImageView *HOGimageView;
 @property (nonatomic, strong) DetectView *detectView;
+
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) HOGFeature *hogFeature;
-
-
-//-(void)findMax:(double *)c size:(int *)size numMax:  (int)nmax scores: (double *)scores results:(int *)results;
 
 
 @end

@@ -22,6 +22,8 @@
 		FC00ACD416C56EE600BE112E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC00ACD316C56EE600BE112E /* QuartzCore.framework */; };
 		FC00ACD916C56F2A00BE112E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC00ACD716C56F2A00BE112E /* CoreVideo.framework */; };
 		FC18515A16D4338500630140 /* FourierTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515916D4338500630140 /* FourierTransform.m */; };
+		FC18515D16D5195C00630140 /* LearnViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515C16D5195C00630140 /* LearnViewController.m */; };
+		FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515F16D533DA00630140 /* RectFrameLearnView.m */; };
 		FC43B6B416CADB0400BF4048 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B316CADB0400BF4048 /* CoreMotion.framework */; };
 		FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */; };
 		FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B716CADE9300BF4048 /* CoreMedia.framework */; };
@@ -65,6 +67,10 @@
 		FC00ACD816C56F2A00BE112E /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MobileCoreServices.framework; sourceTree = "<group>"; };
 		FC18515816D4338500630140 /* FourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FourierTransform.h; sourceTree = "<group>"; };
 		FC18515916D4338500630140 /* FourierTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FourierTransform.m; sourceTree = "<group>"; };
+		FC18515B16D5195C00630140 /* LearnViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LearnViewController.h; sourceTree = "<group>"; };
+		FC18515C16D5195C00630140 /* LearnViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LearnViewController.m; sourceTree = "<group>"; };
+		FC18515E16D533D900630140 /* RectFrameLearnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectFrameLearnView.h; sourceTree = "<group>"; };
+		FC18515F16D533DA00630140 /* RectFrameLearnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RectFrameLearnView.m; sourceTree = "<group>"; };
 		FC43B6B316CADB0400BF4048 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FC43B6B716CADE9300BF4048 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -172,6 +178,8 @@
 				FCBE9A2516CACEB60024CAE4 /* UIViewController+writeFiles.m */,
 				FCBE9A2616CACEB60024CAE4 /* DetectView.h */,
 				FCBE9A2716CACEB60024CAE4 /* DetectView.m */,
+				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
+				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
 				FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */,
 				FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */,
 				FC00ACC916C56CEC00BE112E /* MainStoryboard.storyboard */,
@@ -203,6 +211,8 @@
 				FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */,
 				FC43B6B916CB093400BF4048 /* TemplateTableViewController.h */,
 				FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */,
+				FC18515B16D5195C00630140 /* LearnViewController.h */,
+				FC18515C16D5195C00630140 /* LearnViewController.m */,
 				FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */,
 				FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */,
 				FCBE9A1816CACEB60024CAE4 /* SettingsViewController.h */,
@@ -296,6 +306,8 @@
 				FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */,
 				FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */,
 				FC18515A16D4338500630140 /* FourierTransform.m in Sources */,
+				FC18515D16D5195C00630140 /* LearnViewController.m in Sources */,
+				FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

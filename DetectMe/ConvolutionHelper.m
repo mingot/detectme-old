@@ -129,7 +129,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     dst.rowBytes = sizeA[1]*sizeof(float);
     
     //TODO: Fix the fact that can not deal with doubles
-    vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
+//    vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
     
 //    result = dst.data;
 //    for(int i=0;i<sizeA[0]*sizeA[1];i++)
@@ -222,8 +222,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         double *A_src = feat + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
         double *B_src = w + f*templateSize[0]*templateSize[1];
         
-        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
-//        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 //        [ConvolutionHelper convolutionWithFFT:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 
         

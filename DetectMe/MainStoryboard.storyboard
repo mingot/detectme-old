@@ -20,10 +20,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="YmK-aF-fdv">
-                                <rect key="frame" x="20" y="159" width="280" height="35"/>
+                                <rect key="frame" x="20" y="193" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
-                                <state key="normal" title="VIDEO">
+                                <state key="normal" title="VIDEO DETECT">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -50,10 +50,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ST1-aj-Nol">
-                                <rect key="frame" x="20" y="236" width="280" height="35"/>
+                                <rect key="frame" x="20" y="277" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="PHOTO">
+                                <state key="normal" title="PHOTO DETECT">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -65,7 +65,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="mkm-78-LKi">
-                                <rect key="frame" x="20" y="309" width="280" height="44"/>
+                                <rect key="frame" x="20" y="353" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="OPTIONS">
@@ -90,6 +90,21 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="47v-0k-AWL">
+                                <rect key="frame" x="20" y="122" width="280" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="LEARN">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="AbW-iB-fji" kind="push" id="nOx-23-W8O"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
@@ -145,7 +160,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pjg-hH-5IN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1226" y="-364"/>
+            <point key="canvasLocation" x="1226" y="-1126"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="MYk-Wy-R00">
@@ -230,7 +245,23 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CBT-r4-VCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1813" y="336"/>
+            <point key="canvasLocation" x="1815" y="329"/>
+        </scene>
+        <!--Learn View Controller-->
+        <scene sceneID="86t-cj-fPu">
+            <objects>
+                <viewController id="AbW-iB-fji" customClass="LearnViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wq8-PO-KHh">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="Uvp-R3-T3t"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EPB-aS-ZDS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1226" y="-390"/>
         </scene>
         <!--Detect Photo View Controller-->
         <scene sceneID="dFg-z6-CsC">
@@ -270,40 +301,6 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CameraViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
-        </class>
-        <class className="ChoicesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="photoAction:"/>
-                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="DetectPhotoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="HOGAction:"/>
-                <relationship kind="action" name="detect:"/>
-                <relationship kind="action" name="settings:"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="pyramidChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="pyramidSwitch" candidateClass="UISwitch"/>
-            </relationships>
-        </class>
-        <class className="TemplateTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

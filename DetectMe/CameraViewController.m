@@ -19,13 +19,12 @@
 @implementation CameraViewController
 
 @synthesize captureSession = _captureSession;
-@synthesize HOGimageView = _HOGimageView;
-@synthesize resultsImageView = _resultsImageView;
-@synthesize customLayer = _customLayer;
 @synthesize prevLayer = _prevLayer;
+@synthesize resultsImageView = _resultsImageView;
+@synthesize HOGimageView = _HOGimageView;
 @synthesize detectView = _detectView;
-@synthesize templateName = _templateName;
 
+@synthesize templateName = _templateName;
 @synthesize hogFeature = _hogFeature;
 
 
@@ -35,11 +34,9 @@
     // Initialitzation after the view load and all the outlets are hooked
     [super viewDidLoad];
     
-    //From init with name
     self.HOGimageView = nil;
     self.resultsImageView = nil;
     self.prevLayer = nil;
-    self.customLayer = nil;
     
     hogOnScreen = NO;
     pyramid = YES;
@@ -52,12 +49,16 @@
     saving = NO;
     interval = 10;
     
-    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
-    
-
     sizeImage = 10; //??
     
+    // initialize kind of hog that is going to be used
+    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
     
+    //Select template
+    templateWeights = [FileStorageHelper readTemplate:self.templateName];
+    
+    
+    // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
     AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput 
 										  deviceInputWithDevice:[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] 
@@ -72,14 +73,11 @@
 	[captureOutput setSampleBufferDelegate:self queue:queue];
 	dispatch_release(queue);
     
-    //data compression specifications for camera capture
-	/*
-    NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey;
-	NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
-	NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key]; 
-    */
-    NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];
+    // Set the video output to store frame in BGRA (It is supposed to be faster)
+    NSDictionary *videoSettings = [NSDictionary
+                                   dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA],
+                                   kCVPixelBufferPixelFormatTypeKey,
+                                   nil];
 	[captureOutput setVideoSettings:videoSettings]; 
     
     //Capture session definition
@@ -87,39 +85,28 @@
 	[self.captureSession addInput:captureInput];
 	[self.captureSession addOutput:captureOutput];
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
-    
-//    //Setting button in navigation bar
-//    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settingsAction:)];
-//    self.navigationItem.rightBarButtonItem = settingsButton;
-    
-//	self.customLayer = [CALayer layer];
-//	self.customLayer.frame = self.view.bounds;
-//	self.customLayer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI/2.0f, 0, 0, 1);
-//	self.customLayer.contentsGravity = kCAGravityResizeAspectFill;
-//	[self.view.layer addSublayer:self.customLayer];
 
-    // Image views layers initialization for the different views
-	//self.HOGimageView.frame = CGRectMake(0, 0, 160, 208);
-    //self.resultsImageView.frame = CGRectMake(0, 208, 160, 208);
-    self.HOGimageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 160, 208)];
+    // Subviews initialization
+    self.HOGimageView = [[UIImageView alloc] initWithFrame:self.view.frame];//(0, 0, 160, 208)];
     self.resultsImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 208, 160, 208)];
+    self.detectView = [[DetectView alloc] initWithFrame:self.view.frame]; //CGRectMake(0, 0, 320, 416)];
 
-    
+    // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
 	self.prevLayer.frame = self.view.frame;  //CGRectMake(100, 0, 100, 100);
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
-	
-    // We start the capture
-    self.detectView = [[DetectView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)];
-	//[self.captureSession startRunning]; Done in viewdidappear
+    
     [self.view addSubview:self.HOGimageView];
     [self.view addSubview:self.resultsImageView];
     [self.view addSubview:self.detectView];
-    
-    
-    //Select template
-    templateWeights = [FileStorageHelper readTemplate:self.templateName];
+}
+
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    //Start the capture
+    [self.captureSession startRunning];
 }
 
 
@@ -133,6 +120,7 @@
         settingsVC.numMaximums = (numMax==10 ? YES: NO);
     }
 }
+
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -190,9 +178,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
         // Draw into the context; this scales the image
         CGContextDrawImage(bitmap, newRect, imageRef);
+         
         // Get the resized image from the context and a UIImage
         CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
-        
          */
         
         //TODO: make this a parameter that can be set via features.
@@ -201,14 +189,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
         clock_t start = clock(); //Trace execution time
                 
-            NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
-                                                   withTemplate:templateWeights
-                                                 withHogFeature:self.hogFeature
-                                                       pyramids:numPyramids];
+        NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
+                                               withTemplate:templateWeights
+                                             withHogFeature:self.hogFeature
+                                                   pyramids:numPyramids];
         
         NSLog(@"TOTAL TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
         
+        // set boundaries of the detection
         [self.detectView setCorners:nmsArray];
+        
+        // redraw the view with the updated buondaries
         [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
             
         // Update the navigation controller title with some information about the detection
@@ -240,9 +231,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             free(feat); //?? Need to be freed?
             free(pic);
         }
-        else {
-            [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:nil waitUntilDone:YES];
-        }
         
             
         //We unlock the  image buffer
@@ -258,7 +246,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 -(void) setHOGValue:(BOOL) value{
     hogOnScreen = value;
-  
+    if(!value) [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:nil waitUntilDone:YES];
 }
 
 -(void) setPyramidValue:(BOOL) value{
@@ -283,7 +271,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 	self.HOGimageView = nil;
     self.resultsImageView = nil;
-	self.customLayer = nil;
 	self.prevLayer = nil;
     self.detectView = nil;
 }
@@ -292,10 +279,5 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.captureSession stopRunning];
     [self.detectView reset];
 }
-
--(void)viewDidAppear:(BOOL)animated{
-    [self.captureSession startRunning];
-}
-
 
 @end
