@@ -80,6 +80,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (void) convolutionWithVDSP:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
+    // Convolution making use of the vDSP library
     // Conversion from row-major to column-major matrix
     double *matrixAModif = calloc(sizeA[0]*sizeA[1], sizeof(double));
     double *matrixBModif = calloc(sizeB[0]*sizeB[1], sizeof(double));
@@ -114,6 +115,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (void) convolutionWithVImage:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
+    // Convolution using the implemented features of vImage
     vImage_Buffer src;
     src.data = matrixA;
     src.height = sizeA[0];
@@ -126,6 +128,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     dst.width = sizeA[1];
     dst.rowBytes = sizeA[1]*sizeof(float);
     
+    //TODO: Fix the fact that can not deal with doubles
     vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
     
 //    result = dst.data;
@@ -135,6 +138,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (void) convolutionWithFFT:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
+    
+    //TODO: finish the implementation of the convolution with the FFT
     //FFT of the two signals
     DSPSplitComplex signalImageIn;
     signalImageIn.realp = calloc(sizeA[0]*sizeA[1],sizeof(float));

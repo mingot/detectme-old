@@ -102,7 +102,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             double dx, dy, v, dx2, dy2, v2, dx3, dy3, v3;
             switch (orientation) {
                 case 0:
-                    s = im + min_int(x, dims[1]-2)*4 + min_int(y, dims[0]-2)*dims[1]*4; //pointer to the image pixel
+                    s = im + min_int(x, dims[1]-2)*4 + min_int(y, dims[0]-2)*dims[1]*4; //pointer to the image pixel, column-major matrix structure
                     
                     // first color channel
                     dx = (double)*(s+4) - *(s-4);
