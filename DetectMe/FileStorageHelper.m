@@ -66,7 +66,7 @@
     // Write a UIImage to JPEG with minimum compression (best quality)
     // The value 'image' must be a UIImage object
     // The value '1.0' represents image compression quality as value from 0.0 to 1.0
-    [UIImageJPEGRepresentation([UIImage imageWithCGImage:image], 1.0) writeToFile:jpgPath atomically:YES];
+    [UIImageJPEGRepresentation([UIImage imageWithCGImage:image scale:1.0 orientation:3], 1.0) writeToFile:jpgPath atomically:YES];
     
     
 //    // Let's check to see if files were successfully written    

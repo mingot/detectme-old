@@ -7,15 +7,21 @@
 //
 
 #import "LearnViewController.h"
-#import "FileStorageHelper.h"    
+#import "FileStorageHelper.h"  
+
 
 @interface LearnViewController ()
 {
     bool takePhoto; // change state when learnAction button is pressed
-    int numberOfTrainingImages;
-    NSMutableArray *listOfTrainingImages;
 }
+
+@property (strong, nonatomic) NSMutableArray *listOfTrainingImages;
+@property UIBarButtonItem *numberOfTrainingButton; //defined outside the viewDidLoad to change easily it's title
+
+
 @end
+
+
 
 @implementation LearnViewController
 
@@ -23,24 +29,24 @@
 @synthesize prevLayer = _prevLayer;
 @synthesize detectFrameView = _detectFrameView;
 
+@synthesize listOfTrainingImages =_listOfTrainingImages;
+@synthesize numberOfTrainingButton = _numberOfTrainingButton;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     takePhoto = NO;
-    numberOfTrainingImages = 0;
     //TODO: current fixed maximum capacity for the number of example images
-    listOfTrainingImages = [[NSMutableArray alloc] initWithCapacity:10];
+    self.listOfTrainingImages = [[NSMutableArray alloc] initWithCapacity:10];
     
     // NavigatinoBar buttons and labels
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addAction:)];
-    
     UIBarButtonItem *learnButton = [[UIBarButtonItem alloc] initWithTitle:@"Learn" style:UIBarButtonItemStyleBordered target:self action:@selector(learnAction:)];
+    self.numberOfTrainingButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d",[self.listOfTrainingImages count]] style:UIBarButtonItemStyleBordered target:self action:@selector(numberOfTrainingAction:)];
     
-    self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: learnButton, addButton, nil];
+    self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: learnButton, addButton, self.numberOfTrainingButton, nil];
     
-    // Bar label with the number of images stored as positive training examples
-    self.navigationItem.title = [NSString stringWithFormat:@"%d",numberOfTrainingImages];
     
     // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
@@ -66,11 +72,11 @@
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     
     // Subviews initialization
-    self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.frame];
+    self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.frame]; //TO change to self.prevLayer.frame
    
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = self.view.frame;  //CGRectMake(100, 0, 100, 100);
+	self.prevLayer.frame = self.view.frame;
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
 
@@ -116,19 +122,28 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         CGContextRelease(newContext);
         CGColorSpaceRelease(colorSpace);
         
-//        [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
         
-        if(takePhoto)
+        if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
             CGFloat ImWidth, ImHeigth;
-            ImWidth = self.view.frame.size.width;
-            ImHeigth = self.view.frame.size.height;
-            CGImageRef newIm = CGImageCreateWithImageInRect(imageRef, CGRectMake(ImWidth/4, ImHeigth/4, ImWidth/2, ImHeigth/2));
-            [listOfTrainingImages addObject:(__bridge id)(newIm)];
-            [FileStorageHelper writeImageToDisk:newIm  withTitle:@"petita_prova"];
+            ImWidth = self.detectFrameView.frame.size.width;
+            ImHeigth = self.detectFrameView.frame.size.height;
+//            NSLog(@"prevLayer hegith:%f width:%f", self.prevLayer.frame.size.height, self.prevLayer.frame.size.width);
+//            NSLog(@"detectLayer hegith:%f width:%f", self.detectFrameView.frame.size.height, self.detectFrameView.frame.size.width);
+//            NSLog(@"photo height:%f, width;:%f", height, width);
             
-            numberOfTrainingImages++;
-            [self.navigationItem performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",numberOfTrainingImages] waitUntilDone:YES];
+            //TODO: fix the non correlation between prevLayer and imageRef to make concide the detection frame rectangle with the actual image stored
+            UIImage *rotatedImage = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]; //Rotate the image to get it in the correct orientation
+//            CGImageRef newIm = CGImageCreateWithImageInRect([rotatedImage CGImage], CGRectMake(ImHeigth/4, ImWidth/4, ImHeigth/2,ImWidth/2));
+            
+            
+            [self.listOfTrainingImages addObject:(__bridge id)([rotatedImage CGImage])];
+            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
+//            []
+            
+            
+            [self.numberOfTrainingButton performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",[self.listOfTrainingImages count]] waitUntilDone:YES];
+
             takePhoto = NO;
         }
         
@@ -140,16 +155,56 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"show Training Set of Images"]) {
+        TrainingImagesTableViewController *trainingImagesTVC = (TrainingImagesTableViewController *) segue.destinationViewController;
+        trainingImagesTVC.delegate = self;
+        trainingImagesTVC.listOfImages = self.listOfTrainingImages; //TODO: passing a mutable array. Needs to be a fixed array?
+    }
+//        
+//    } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
+//        CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
+//        cameraVC.templateName = self.templateName;
+//        
+//    }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
+//        DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
+//        detectPhotoVC.picture = self.detectPhotoViewController.picture;
+//        detectPhotoVC.originalImage = self.detectPhotoViewController.originalImage;
+//        detectPhotoVC.detectView = self.detectPhotoViewController.detectView;
+//        detectPhotoVC.templateName = self.templateName;
+//        
+//    }
+    
+}
+
 //TODO: hog view of the detect frame
 
 
-- (IBAction)learnAction:(id)sender {
+- (IBAction)learnAction:(id)sender
+{
     
 }
 
 - (IBAction)addAction:(id)sender
 {
     takePhoto = YES;
+}
+
+- (IBAction)numberOfTrainingAction:(id)sender
+{
+    //Perform segue to table view of learning images
+    [self performSegueWithIdentifier:@"show Training Set of Images" sender:self];
+}
+
+
+#pragma mark -
+#pragma mark TrainingImagesTVC delegate
+
+- (void) setPhotos:(NSArray *)photos
+{
+    
 }
 
 @end

@@ -14,7 +14,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setBackgroundColor:[UIColor clearColor ]];
+        [self setBackgroundColor:[UIColor clearColor]]; // make the view transparent
     }
     return self;
 }

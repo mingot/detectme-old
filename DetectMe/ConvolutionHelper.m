@@ -260,10 +260,10 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             if( ((p.score.doubleValue) < -1)) {
                 continue;
             }
-            p.xmin = [NSNumber numberWithDouble:(double)(x+2)/((double)blocks[1]+2)];
-            p.xmax = [NSNumber numberWithDouble:(double)(x+2)/((double)blocks[1]+2) + ((double)templateSize[1]/((double)blocks[1]+2))];
-            p.ymin = [NSNumber numberWithDouble:(double)(y+2)/((double)blocks[0]+2)];
-            p.ymax = [NSNumber numberWithDouble:(double)(y+2)/((double)blocks[0]+2) + ((double)templateSize[0]/((double)blocks[0]+2))];
+            p.xmin = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2)];
+            p.xmax = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
+            p.ymin = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2)];
+            p.ymax = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2))];
 
             [result addObject:p];
         }

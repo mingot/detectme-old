@@ -66,7 +66,6 @@
     self.templateName = @"bottle.txt"; //Default template
     [self selectedTemplate]; //TODO: needs to be done via segues
     self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
-    NSLog(@"ChoicesViewController:viewDidLoad. Loaded template %@", self.templateName);
 }
 
 -(void)selectedTemplate
@@ -92,14 +91,14 @@
     } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
         CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
         cameraVC.templateName = self.templateName;
-        NSLog(@"prepareForSegue: cameraVC");
+
     }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
         DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
         detectPhotoVC.picture = self.detectPhotoViewController.picture;
         detectPhotoVC.originalImage = self.detectPhotoViewController.originalImage;
         detectPhotoVC.detectView = self.detectPhotoViewController.detectView;
         detectPhotoVC.templateName = self.templateName;
-        NSLog(@"prepareForSegue: detectPhotoVC");
+
     }
     
 }

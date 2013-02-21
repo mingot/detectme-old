@@ -42,9 +42,9 @@
 {
     
     UITableViewCell *cell;
-    cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    cell = [tableView dequeueReusableCellWithIdentifier:@"ChooseTemplateCell"];
     if(!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"ChooseTemplateCell"];
     }
     
     NSString *templateName = [self.templateList objectAtIndex:indexPath.row];

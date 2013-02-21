@@ -39,6 +39,8 @@
 		FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */; };
 		FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */; };
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
+		FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */; };
+		FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +98,10 @@
 		FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageProcessingHelper.m; sourceTree = "<group>"; };
 		FCBE9A2616CACEB60024CAE4 /* DetectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectView.h; sourceTree = "<group>"; };
 		FCBE9A2716CACEB60024CAE4 /* DetectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectView.m; sourceTree = "<group>"; };
+		FCFB1BE216D675FF004F0B54 /* TrainingImagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingImagesTableViewController.h; sourceTree = "<group>"; };
+		FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingImagesTableViewController.m; sourceTree = "<group>"; };
+		FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShowTrainingImageViewController.h; path = ../ShowTrainingImageViewController.h; sourceTree = "<group>"; };
+		FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShowTrainingImageViewController.m; path = ../ShowTrainingImageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,10 +177,6 @@
 				FC18515916D4338500630140 /* FourierTransform.m */,
 				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
 				FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */,
-				FCBE9A2616CACEB60024CAE4 /* DetectView.h */,
-				FCBE9A2716CACEB60024CAE4 /* DetectView.m */,
-				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
-				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
 				FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */,
 				FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */,
 				FC00ACC916C56CEC00BE112E /* MainStoryboard.storyboard */,
@@ -202,22 +204,62 @@
 		FCA6A1FD16CAD31300E81581 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FCFB1BE516D68DFB004F0B54 /* Main */,
+				FCFB1BE616D68E06004F0B54 /* Train */,
+				FCFB1BE716D68E29004F0B54 /* Detect Video */,
+				FCFB1BE816D68E37004F0B54 /* Detect Photo */,
+				FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */,
+				FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */,
+				FCBE9A2616CACEB60024CAE4 /* DetectView.h */,
+				FCBE9A2716CACEB60024CAE4 /* DetectView.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		FCFB1BE516D68DFB004F0B54 /* Main */ = {
+			isa = PBXGroup;
+			children = (
 				FCBE9A1216CACEB60024CAE4 /* ChoicesViewController.h */,
 				FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */,
 				FC43B6B916CB093400BF4048 /* TemplateTableViewController.h */,
 				FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */,
-				FC18515B16D5195C00630140 /* LearnViewController.h */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		FCFB1BE616D68E06004F0B54 /* Train */ = {
+			isa = PBXGroup;
+			children = (
 				FC18515C16D5195C00630140 /* LearnViewController.m */,
-				FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */,
-				FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */,
-				FCBE9A1816CACEB60024CAE4 /* SettingsViewController.h */,
-				FCBE9A1916CACEB60024CAE4 /* SettingsViewController.m */,
+				FC18515B16D5195C00630140 /* LearnViewController.h */,
+				FCFB1BE216D675FF004F0B54 /* TrainingImagesTableViewController.h */,
+				FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */,
+				FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */,
+				FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */,
+				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
+				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
+			);
+			name = Train;
+			sourceTree = "<group>";
+		};
+		FCFB1BE716D68E29004F0B54 /* Detect Video */ = {
+			isa = PBXGroup;
+			children = (
 				FCBE9A1A16CACEB60024CAE4 /* CameraViewController.h */,
 				FCBE9A1B16CACEB60024CAE4 /* CameraViewController.m */,
+				FCBE9A1816CACEB60024CAE4 /* SettingsViewController.h */,
+				FCBE9A1916CACEB60024CAE4 /* SettingsViewController.m */,
+			);
+			name = "Detect Video";
+			sourceTree = "<group>";
+		};
+		FCFB1BE816D68E37004F0B54 /* Detect Photo */ = {
+			isa = PBXGroup;
+			children = (
 				FCBE9A1C16CACEB60024CAE4 /* DetectPhotoViewController.h */,
 				FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */,
 			);
-			name = Controllers;
+			name = "Detect Photo";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -302,6 +344,8 @@
 				FC18515A16D4338500630140 /* FourierTransform.m in Sources */,
 				FC18515D16D5195C00630140 /* LearnViewController.m in Sources */,
 				FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */,
+				FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */,
+				FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,8 +13,9 @@
 #import <CoreMedia/CoreMedia.h>
 
 #import "RectFrameLearnView.h"
+#import "TrainingImagesTableViewController.h"
 
-@interface LearnViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface LearnViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, TrainingImagesTableViewControlleDelegate>
 
 
 @property (nonatomic, strong) AVCaptureSession *captureSession;
@@ -24,6 +25,7 @@
 
 - (IBAction)learnAction:(id)sender;
 - (IBAction)addAction:(id)sender;
+- (IBAction)numberOfTrainingAction:(id)sender;
 
 @end
 
