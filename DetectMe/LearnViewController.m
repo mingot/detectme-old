@@ -6,8 +6,14 @@
 //  Copyright (c) 2013 Josep Marc Mingot Hidalgo. All rights reserved.
 //
 
+
+#include <stdlib.h> // For random number generation using arc4random
+
 #import "LearnViewController.h"
 #import "FileStorageHelper.h"  
+#import "ImageProcessingHelper.h"
+#import "UIImage+Resize.h"
+
 
 
 @interface LearnViewController ()
@@ -31,6 +37,7 @@
 
 @synthesize listOfTrainingImages =_listOfTrainingImages;
 @synthesize numberOfTrainingButton = _numberOfTrainingButton;
+@synthesize trainingClassifier = _trainingClassifier;
 
 - (void)viewDidLoad
 {
@@ -91,10 +98,6 @@
     [self.captureSession startRunning];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
 
 #pragma mark -
 #pragma mark AVCaptureSession delegate
@@ -105,7 +108,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     @autoreleasepool {
         
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-        CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer ??Why
+        CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer
         
         //Get information about the image
         uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
@@ -125,23 +128,35 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
         if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
-            CGFloat ImWidth, ImHeigth;
-            ImWidth = self.detectFrameView.frame.size.width;
-            ImHeigth = self.detectFrameView.frame.size.height;
-//            NSLog(@"prevLayer hegith:%f width:%f", self.prevLayer.frame.size.height, self.prevLayer.frame.size.width);
-//            NSLog(@"detectLayer hegith:%f width:%f", self.detectFrameView.frame.size.height, self.detectFrameView.frame.size.width);
-//            NSLog(@"photo height:%f, width;:%f", height, width);
+            // Make the UIImage and change the orientation
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
             
-            //TODO: fix the non correlation between prevLayer and imageRef to make concide the detection frame rectangle with the actual image stored
-            UIImage *rotatedImage = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]; //Rotate the image to get it in the correct orientation
-//            CGImageRef newIm = CGImageCreateWithImageInRect([rotatedImage CGImage], CGRectMake(ImHeigth/4, ImWidth/4, ImHeigth/2,ImWidth/2));
+            //Crop it to the desired size (taking into account the orientation)
+            // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area).
+            UIImage *croppedImage = [image croppedImage:CGRectMake(image.size.width/4, image.size.height/4, image.size.width/2, image.size.height/2)];
             
+            [self.listOfTrainingImages addObject:croppedImage]; 
+//            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
             
-            [self.listOfTrainingImages addObject:(__bridge id)([rotatedImage CGImage])];
-            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
-//            []
+            //For each positive training image, take 5 random crops of the same image
+            int maxX = (int)(image.size.height - image.size.width/2);
+            int maxY = (int)(image.size.width - image.size.height/2);
+            for(int i=0;i<4;i++)
+            {
+                int randomX = arc4random() % maxX;
+                int randomY = arc4random() % maxY;
+                
+                if(i%4==0) randomX=0; //selecting the negative examples around the selected surface
+                else if(i%4==1) randomX=maxX;
+                else if(i%4==2) randomY=0;
+                else if(i%4==3) randomY = maxY;
+                
+                UIImage *croppedImageNegative = [image croppedImage:CGRectMake(randomX, randomY, image.size.width/2, image.size.height/2)];
+                [self.listOfTrainingImages addObject:croppedImageNegative];
+               
+            }
             
-            
+            // update the number of training images
             [self.numberOfTrainingButton performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",[self.listOfTrainingImages count]] waitUntilDone:YES];
 
             takePhoto = NO;
@@ -161,22 +176,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if ([segue.identifier isEqualToString:@"show Training Set of Images"]) {
         TrainingImagesTableViewController *trainingImagesTVC = (TrainingImagesTableViewController *) segue.destinationViewController;
         trainingImagesTVC.delegate = self;
-        trainingImagesTVC.listOfImages = self.listOfTrainingImages; //TODO: passing a mutable array. Needs to be a fixed array?
+        trainingImagesTVC.listOfImages = self.listOfTrainingImages; 
     }
-//        
-//    } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
-//        CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
-//        cameraVC.templateName = self.templateName;
-//        
-//    }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
-//        DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
-//        detectPhotoVC.picture = self.detectPhotoViewController.picture;
-//        detectPhotoVC.originalImage = self.detectPhotoViewController.originalImage;
-//        detectPhotoVC.detectView = self.detectPhotoViewController.detectView;
-//        detectPhotoVC.templateName = self.templateName;
-//        
-//    }
-    
 }
 
 //TODO: hog view of the detect frame
@@ -184,7 +185,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (IBAction)learnAction:(id)sender
 {
+    // Modal for choosing a name
+    self.trainingClassifier = [[TrainingClassifier alloc] init];
+    self.trainingClassifier.listOfTrainingImages = self.listOfTrainingImages;
+    [self.trainingClassifier trainTheClassifier];
     
+    //Learn creating a new queue
+    
+    //Store the template in the main directory
 }
 
 - (IBAction)addAction:(id)sender

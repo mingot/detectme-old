@@ -73,12 +73,8 @@
     self.optionsViewController.templateName = self.templateName;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
 
-#pragma mark 
+#pragma mark
 #pragma mark - Buttons
 
 // Preapre for segueshowCameraVC showCameraVC

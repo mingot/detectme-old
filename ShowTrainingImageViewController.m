@@ -15,16 +15,11 @@
 @synthesize image = _image;
 
 
-// -(UIImageView *) imageView
-//{
-//    if(!_imageView) _imageView = [[UIImageView alloc] init];
-//    return _imageView;
-//    
-//}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	self.imageView.image = self.image;
 }
 

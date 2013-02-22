@@ -41,6 +41,10 @@
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
 		FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */; };
 		FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */; };
+		FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */; };
+		FCFB1BF216D6BF8F004F0B54 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */; };
+		FCFB1BF516D6BF9A004F0B54 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */; };
+		FCFB1BF816D6F364004F0B54 /* TrainingClassifier.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF716D6F364004F0B54 /* TrainingClassifier.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,6 +106,14 @@
 		FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingImagesTableViewController.m; sourceTree = "<group>"; };
 		FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShowTrainingImageViewController.h; path = ../ShowTrainingImageViewController.h; sourceTree = "<group>"; };
 		FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShowTrainingImageViewController.m; path = ../ShowTrainingImageViewController.m; sourceTree = "<group>"; };
+		FCFB1BEC16D6BEE5004F0B54 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		FCFB1BF016D6BF8F004F0B54 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		FCFB1BF316D6BF9A004F0B54 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		FCFB1BF616D6F363004F0B54 /* TrainingClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingClassifier.h; sourceTree = "<group>"; };
+		FCFB1BF716D6F364004F0B54 /* TrainingClassifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingClassifier.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +180,7 @@
 		FC00AC9F16C539C800BE112E /* DetectMe */ = {
 			isa = PBXGroup;
 			children = (
+				FCFB1BEF16D6BF43004F0B54 /* UIImage Categories */,
 				FCA6A1FD16CAD31300E81581 /* Controllers */,
 				FCBE9A1E16CACEB60024CAE4 /* HOGFeature.h */,
 				FCBE9A1F16CACEB60024CAE4 /* HOGFeature.m */,
@@ -175,6 +188,8 @@
 				FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */,
 				FC18515816D4338500630140 /* FourierTransform.h */,
 				FC18515916D4338500630140 /* FourierTransform.m */,
+				FCFB1BF616D6F363004F0B54 /* TrainingClassifier.h */,
+				FCFB1BF716D6F364004F0B54 /* TrainingClassifier.m */,
 				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
 				FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */,
 				FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */,
@@ -230,8 +245,8 @@
 		FCFB1BE616D68E06004F0B54 /* Train */ = {
 			isa = PBXGroup;
 			children = (
-				FC18515C16D5195C00630140 /* LearnViewController.m */,
 				FC18515B16D5195C00630140 /* LearnViewController.h */,
+				FC18515C16D5195C00630140 /* LearnViewController.m */,
 				FCFB1BE216D675FF004F0B54 /* TrainingImagesTableViewController.h */,
 				FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */,
 				FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */,
@@ -260,6 +275,19 @@
 				FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */,
 			);
 			name = "Detect Photo";
+			sourceTree = "<group>";
+		};
+		FCFB1BEF16D6BF43004F0B54 /* UIImage Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FCFB1BEC16D6BEE5004F0B54 /* UIImage+Resize.h */,
+				FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */,
+				FCFB1BF016D6BF8F004F0B54 /* UIImage+Alpha.h */,
+				FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */,
+				FCFB1BF316D6BF9A004F0B54 /* UIImage+RoundedCorner.h */,
+				FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */,
+			);
+			name = "UIImage Categories";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,6 +374,10 @@
 				FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */,
 				FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */,
 				FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */,
+				FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */,
+				FCFB1BF216D6BF8F004F0B54 /* UIImage+Alpha.m in Sources */,
+				FCFB1BF516D6BF9A004F0B54 /* UIImage+RoundedCorner.m in Sources */,
+				FCFB1BF816D6F364004F0B54 /* TrainingClassifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

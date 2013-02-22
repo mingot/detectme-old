@@ -30,12 +30,6 @@
     self.numMaximumsSwitch.on = self.numMaximums;
 }
 
-//TODO: look for the overall rotation of the application
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 #pragma mark -
 #pragma mark Switches
 

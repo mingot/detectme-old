@@ -9,13 +9,6 @@
 #import "TrainingImagesTableViewController.h"
 #import "ShowTrainingImageViewController.h"
 
-@interface TrainingImagesTableViewController ()
-{
-    int selectedImage;
-}
-
-
-@end
 
 @implementation TrainingImagesTableViewController
 
@@ -60,7 +53,7 @@
     }
     
     cell.textLabel.text = [NSString stringWithFormat:@"Image%d",indexPath.row];
-    cell.imageView.image = [UIImage imageWithCGImage:(__bridge CGImageRef)([self.listOfImages objectAtIndex:indexPath.row])];
+    cell.imageView.image = [self.listOfImages objectAtIndex:indexPath.row];
     
     return cell;
 }
@@ -97,7 +90,7 @@
     {
         ShowTrainingImageViewController *showImageVC = (ShowTrainingImageViewController *) segue.destinationViewController;
         NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
-        showImageVC.image = [UIImage imageWithCGImage:(__bridge CGImageRef)([self.listOfImages objectAtIndex:selectedPath.row])];
+        showImageVC.image = [self.listOfImages objectAtIndex:selectedPath.row];
     }
 }
 

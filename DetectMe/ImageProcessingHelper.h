@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+//TODO: implement this class inside the UIImage category
+
 @interface ImageProcessingHelper : NSObject
 
 + (CGImageRef)resizeImage:(CGImageRef)imageRef
@@ -17,5 +19,6 @@
                    scale:(double) sc;
 
 + (UIImage *)turnGreyScaleImage:(CGImageRef)imageRef;
+
 
 @end
