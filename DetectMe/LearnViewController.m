@@ -134,7 +134,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             
             
             //Crop it to the desired size (taking into account the orientation)
-            // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area).
+            // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
             UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((360-320*480/504)/2, 0, 320*480/504, image.size.height)];
             UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
             
