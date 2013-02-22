@@ -11,7 +11,7 @@
 
 @implementation TrainingClassifier
 
-@synthesize listOfTrainingImages =_listOfTrainingImages;
+@synthesize listOfTrainingImages = _listOfTrainingImages;
 
 
 - (void) trainTheClassifier
@@ -23,7 +23,6 @@
 
 - (void) obtainHOGFeatures
 {
-    
     int numImages = [self.listOfTrainingImages count];
     listOfHogFeatures = malloc(numImages*sizeof(double));
     HOGFeature *hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
@@ -41,9 +40,9 @@
         feat = [hogFeature HOGOrientationWithDimension:blocks forImage:imageRef withPhoneOrientation:uImage.imageOrientation];
         
         NSLog(@"%d, %d, %d", blocks[0], blocks[1], blocks[2]);
-        if(i==0)
-            for(int j=0; j<blocks[0]*blocks[1]*blocks[2] ;j++)
-                NSLog(@"%f", *(feat +j));
+//        if(i==0)
+//            for(int j=0; j<blocks[0]*blocks[1]*blocks[2] ;j++)
+//                NSLog(@"%f", *(feat +j));
         
         listOfHogFeatures = feat;
         listOfHogFeatures ++;

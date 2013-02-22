@@ -24,9 +24,11 @@
 - (void)drawRect:(CGRect)rect
 {
     CGFloat width, heigth;
-    width = self.frame.size.width;
-    heigth = self.frame.size.height;
-
+    width = self.superview.frame.size.width;
+    heigth = self.superview.frame.size.height;
+    
+    NSLog(@"rect frame: width:%f, height: %f", width, heigth);
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGRect box = CGRectMake(width/4, heigth/4, width/2, heigth/2);
     CGContextSetLineWidth(context, 4);

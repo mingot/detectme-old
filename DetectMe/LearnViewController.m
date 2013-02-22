@@ -79,12 +79,12 @@
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     
     // Subviews initialization
-    self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.frame]; //TO change to self.prevLayer.frame
+    self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.bounds]; //TO change to self.prevLayer.frame
    
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = self.view.frame;
-	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+	self.prevLayer.frame = self.view.bounds;
+	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;//
 	[self.view.layer addSublayer: self.prevLayer];
 
     [self.view addSubview:self.detectFrameView];
@@ -131,16 +131,19 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             // Make the UIImage and change the orientation
             UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
             
+            
+            
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area).
-            UIImage *croppedImage = [image croppedImage:CGRectMake(image.size.width/4, image.size.height/4, image.size.width/2, image.size.height/2)];
+            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((360-320*480/504)/2, 0, 320*480/504, image.size.height)];
+            UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
             
-            [self.listOfTrainingImages addObject:croppedImage]; 
+            [self.listOfTrainingImages addObject:croppedImage];
 //            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
             
             //For each positive training image, take 5 random crops of the same image
-            int maxX = (int)(image.size.height - image.size.width/2);
-            int maxY = (int)(image.size.width - image.size.height/2);
+            int maxX = (int)(croppedImageToFitScreen.size.height - croppedImageToFitScreen.size.width/2);
+            int maxY = (int)(croppedImageToFitScreen.size.width - croppedImageToFitScreen.size.height/2);
             for(int i=0;i<4;i++)
             {
                 int randomX = arc4random() % maxX;

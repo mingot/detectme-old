@@ -251,8 +251,8 @@
 				FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */,
 				FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */,
 				FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */,
-				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
 				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
+				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
 			);
 			name = Train;
 			sourceTree = "<group>";
