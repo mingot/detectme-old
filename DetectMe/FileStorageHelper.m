@@ -89,6 +89,25 @@
 
 //****************************************************************************************************************************************
 
+//TODO: float vector to double!
++ (void)writeTemplate:(float *)vect withSize:(int *)size withTitle:(NSString *) filename
+{
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *path = [NSString stringWithFormat:@"%@/Templates/%@",documentsDirectory,filename];
+    
+    NSMutableString *content = [NSMutableString stringWithCapacity:size[0]*size[1]*32+2];
+    [content appendFormat:@"%d\n",size[0]];
+    [content appendFormat:@"%d\n",size[1]];
+    [content appendFormat:@"31\n"];
+    for (int i = 0; i<size[1]*size[0]*31+1; i++)
+        [content appendFormat:@"%f\n",*(vect + i)];
+    
+    if([content writeToFile:path atomically:NO encoding:NSUTF8StringEncoding error:NULL]){
+        NSLog(@"Write Template Work!");
+    }
+}
+
+
 + (void)writeImage:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename
 {
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -120,35 +139,11 @@
     [content appendFormat:@"%d\n",size[1]];
     for (int x = 0; x<size[1]*size[0]; x++) {
         [content appendFormat:@"%f\n",*(vect +x)];
-        
-        
     }
     
     [content writeToFile:path atomically:NO encoding:NSUTF8StringEncoding error:NULL];
-    
-    
-    
 }
 
-+(void)writeFeatures:(double *)vect withSize:(int *)size withTitle:(NSString *) filename
-{
-    /* NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-     NSString * path = [NSString stringWithFormat:@"%@/%@",documentsDirectory,filename];*/
-    
-    
-    NSMutableString *content = [NSMutableString stringWithCapacity:size[0]*size[1]*32+2];
-    [content appendFormat:@"%d\n",size[0]];
-    [content appendFormat:@"%d\n",size[1]];
-    for (int x = 0; x<size[1]*size[0]*32; x++) {
-        [content appendFormat:@"%f\n",*(vect +x)];
-        
-        
-    }
-    
-    if([content writeToFile:filename atomically:NO encoding:NSUTF8StringEncoding error:NULL]){
-        NSLog(@"Ok1");
-    }
-}
 
 
 + (void)writeImages:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename

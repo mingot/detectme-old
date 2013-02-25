@@ -16,7 +16,8 @@
 
 
 // For storing data
-+ (void)writeFeatures:(double *)vect withSize:(int *)size withTitle:(NSString *) filename;
+
++ (void)writeTemplate:(float *)vect withSize:(int *)size withTitle:(NSString *) filename;
 + (void)writeImage:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename;
 + (void)write:(double *)vect withSize:(int *)size withTitle:(NSString *) filename;
 + (void)writeImages:(UInt8 *)vect withSize:(int *)size withTitle:(NSString *) filename;

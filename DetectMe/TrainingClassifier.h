@@ -11,6 +11,9 @@
 @interface TrainingClassifier : NSObject
 {
     double *listOfHogFeatures; //array of pointers to the hog features of each image
+    int numOfFeatures;
+    float *svmWeights;
+    int blocks[3]; //HOG features size
 }
 
 

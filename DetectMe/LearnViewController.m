@@ -132,13 +132,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
             
             
-            
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
             UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((360-320*480/504)/2, 0, 320*480/504, image.size.height)];
             UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
             
-            [self.listOfTrainingImages addObject:croppedImage];
+            CGSize resizingSize;
+            resizingSize.height = croppedImage.size.height/3;
+            resizingSize.width = croppedImage.size.width/3;
+            [self.listOfTrainingImages addObject:[croppedImage resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
 //            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
             
             //For each positive training image, take 5 random crops of the same image
@@ -154,8 +156,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                 else if(i%4==2) randomY=0;
                 else if(i%4==3) randomY = maxY;
                 
-                UIImage *croppedImageNegative = [image croppedImage:CGRectMake(randomX, randomY, image.size.width/2, image.size.height/2)];
-                [self.listOfTrainingImages addObject:croppedImageNegative];
+                UIImage *croppedImageNegative = [image croppedImage:CGRectMake(randomX, randomY, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
+                [self.listOfTrainingImages addObject:[croppedImageNegative resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
                
             }
             
