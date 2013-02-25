@@ -9,6 +9,7 @@
 #import "TemplateTableViewController.h"
 #import "ShowTrainingImageViewController.h"
 #import "FileStorageHelper.h"
+#import "HOGFeature.h"
 
 @interface TemplateTableViewController ()
 @property (strong, nonatomic) NSArray *templateList;
@@ -32,16 +33,23 @@
 }
 
 
-//-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    if([segue.identifier isEqualToString:@"show hog template"])
-//    {
-//        ShowTrainingImageViewController *showImageVC = (ShowTrainingImageViewController *) segue.destinationViewController;
-//        NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
-//        double *templateWeights = [FileStorageHelper readTemplate:[self.templateList objectAtIndex:selectedPath.row]];
-//        showImageVC.image = [self.listOfImages objectAtIndex:selectedPath.row];
-//    }
-//}
+-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"show hog template"])
+    {
+        ShowTrainingImageViewController *showImageVC = (ShowTrainingImageViewController *) segue.destinationViewController;
+        NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
+        double *templateWeights = [FileStorageHelper readTemplate:[self.templateList objectAtIndex:selectedPath.row]];
+        
+        HOGFeature *hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
+        int blocks[3];
+        blocks[0] = *(templateWeights); //size 1
+        blocks[1] = *(templateWeights+1); //size 2
+        blocks[2] = *(templateWeights+2); //number of features per block
+    
+        showImageVC.image = [hogFeature hogImageFromFeatures:templateWeights+3 withSize:blocks];
+    }
+}
 
 #pragma mark - Table view data source
 

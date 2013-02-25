@@ -109,27 +109,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         isHog = NO;
         
     }else {
-        int blocks[3];
-        double *feat = NULL;
-        
-        feat = [self.hogFeature HOGOrientationWithDimension:blocks forImage:[ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230] withPhoneOrientation:self.originalImage.imageOrientation];
-        
-        int pix = 12;
-        UInt8 *pic = [self.hogFeature HOGpicture:feat :pix :blocks[1] :blocks[0]];
-        
-        CGContextRef context;
-        context = CGBitmapContextCreate(pic,
-                                        blocks[1]*pix,
-                                        blocks[0]*pix,
-                                        8,
-                                        blocks[1]*pix*4,
-                                        CGColorSpaceCreateDeviceRGB(),
-                                        kCGImageAlphaPremultipliedLast );
-        
-        CGImageRef ima = CGBitmapContextCreateImage (context);
-        //UIImage* rawImage = [UIImage imageWithCGImage:ima ];  
-        CGContextRelease(context); 
-        UIImage *image= [UIImage imageWithCGImage:ima scale:1.0 orientation:UIImageOrientationUp];
+  
+        UIImage *image = [self.hogFeature hogImage:[ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230]];
         //self.originalImage = self.picture.image;
         self.picture.image = image;
         isHog = YES;

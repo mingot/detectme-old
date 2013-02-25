@@ -22,12 +22,10 @@
                               forImage:(CGImageRef)imageRef
                   withPhoneOrientation:(int) orientation;
 
-- (UIImage *) HOGImage:(CGImageRef) imageRef;
 
-- (UInt8 *)HOGpicture:(double *)features
-                    :(int)bs //number of pixels used for representing each feature
-                    :(int)blockw //width size for HOG features
-                    :(int)blockh; //height size for HOG features
+- (UIImage *) hogImageFromFeatures:(double *) hogFeatures withSize:(int *) blocks;
+
+- (UIImage *) hogImage:(CGImageRef) imageRef;
 
 - (void)blockPicture:(double *)features // compute the block picture for a block of HOG
                    :(UInt8 *)im //Image where to store the results

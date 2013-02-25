@@ -165,16 +165,18 @@
             </objects>
             <point key="canvasLocation" x="1226" y="-1126"/>
         </scene>
-        <!--View Controller-->
+        <!--Show Training Image View Controller-->
         <scene sceneID="2WG-z1-eUv">
             <objects>
-                <viewController id="emo-0h-zLk" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Pgn-tZ-EjC">
+                <viewController id="emo-0h-zLk" customClass="ShowTrainingImageViewController" sceneMemberID="viewController">
+                    <imageView key="view" userInteractionEnabled="NO" contentMode="scaleToFill" id="CQs-xs-iml">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </imageView>
                     <navigationItem key="navigationItem" id="eyD-IC-LPr"/>
+                    <connections>
+                        <outlet property="imageView" destination="CQs-xs-iml" id="jLz-cG-8iZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bmg-gg-zMe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -381,6 +383,57 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="CameraViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
+        </class>
+        <class className="ChoicesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="photoAction:"/>
+                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="DetectPhotoViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="HOGAction:"/>
+                <relationship kind="action" name="detect:"/>
+                <relationship kind="action" name="settings:"/>
+            </relationships>
+        </class>
+        <class className="LearnViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/LearnViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="addAction:"/>
+                <relationship kind="action" name="learnAction:"/>
+                <relationship kind="action" name="numberOfTrainingAction:"/>
+            </relationships>
+        </class>
+        <class className="SettingsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="pyramidChangeAction:" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="pyramidSwitch" candidateClass="UISwitch"/>
+            </relationships>
+        </class>
+        <class className="ShowTrainingImageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ShowTrainingImageViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="TemplateTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
+        </class>
+        <class className="TrainingImagesTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/TrainingImagesTableViewController.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
