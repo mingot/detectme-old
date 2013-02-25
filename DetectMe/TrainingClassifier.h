@@ -13,14 +13,12 @@
     double *listOfHogFeatures; //array of pointers to the hog features of each image
     int numOfFeatures;
     float *svmWeights;
-    int blocks[3]; //HOG features size
+    @public int blocks[3]; //HOG features size
 }
 
+@property (strong,nonatomic) NSArray *listOfTrainingImages; //UIImages
 
-@property (strong,nonatomic) NSArray *listOfTrainingImages; //UIImages actually
-//template solution
+- (float *) trainTheClassifier;
 
-
-- (void) trainTheClassifier;
 
 @end

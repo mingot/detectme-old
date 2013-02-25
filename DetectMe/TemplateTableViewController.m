@@ -7,6 +7,8 @@
 //
 
 #import "TemplateTableViewController.h"
+#import "ShowTrainingImageViewController.h"
+#import "FileStorageHelper.h"
 
 @interface TemplateTableViewController ()
 @property (strong, nonatomic) NSArray *templateList;
@@ -29,6 +31,17 @@
     self.templateList = [filemng contentsOfDirectoryAtPath:path error:NULL];
 }
 
+
+//-(void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//    if([segue.identifier isEqualToString:@"show hog template"])
+//    {
+//        ShowTrainingImageViewController *showImageVC = (ShowTrainingImageViewController *) segue.destinationViewController;
+//        NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
+//        double *templateWeights = [FileStorageHelper readTemplate:[self.templateList objectAtIndex:selectedPath.row]];
+//        showImageVC.image = [self.listOfImages objectAtIndex:selectedPath.row];
+//    }
+//}
 
 #pragma mark - Table view data source
 

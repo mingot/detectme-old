@@ -323,6 +323,41 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     return mfeat;
 }
 
+- (UIImage *) HOGImage:(CGImageRef) imageRef
+{
+    int blocks[3];
+    double *feat = [self HOGOrientationWithDimension:blocks forImage:imageRef withPhoneOrientation:3];
+    int pix = 12;
+    
+    UInt8 *imageBuffer = calloc(pix*pix*blocks[1]*blocks[0]*4,sizeof(UInt8)); //4 referring to the number of channels present in a RGB image
+    double *f = malloc(9*sizeof(double));
+    
+    for (int x=0; x<blocks[1]; x++) {
+        for (int y=0; y<blocks[0]; y++) {
+            for (int i=0; i<9; i++) { //?? just take unoriented features
+                *(f + i) = *(feat + y + x*blocks[0] + blocks[1]*blocks[0]*i); // for each block, we store in *f the features sequentially
+            }
+            [self blockPicture:f :imageBuffer :pix :x :y :blocks[1] :blocks[0]];
+        }
+    }
+
+    
+    CGContextRef context = CGBitmapContextCreate(imageBuffer, //data
+                                                 blocks[1]*pix, //width
+                                                 blocks[0]*pix, //height
+                                                 8, //bits per component
+                                                 blocks[1]*pix*4, //bytes per row
+                                                 CGColorSpaceCreateDeviceRGB(),
+                                                 kCGImageAlphaPremultipliedLast ); //bitmap info
+    CGImageRef ima = CGBitmapContextCreateImage(context);
+    //            UIImage* rawImage = [UIImage imageWithCGImage:ima];
+    CGContextRelease(context);
+    UIImage *image = [UIImage imageWithCGImage:ima scale:1.0 orientation:UIImageOrientationUp];
+    return(image);
+}
+
+
+
 
 -(UInt8 *)HOGpicture:(double *)features
                     :(int)bs //number of pixels used for representing each feature

@@ -205,25 +205,24 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
             
         if (hogOnScreen) { //Put the HOG picture on screen
-            int blocks[2];
-            double *feat = [self.hogFeature HOGOrientationWithDimension:blocks forImage:[ImageProcessingHelper resizeImage:imageRef withRect:230] withPhoneOrientation:3];
-            int pix = 12;
-            UInt8 *pic = [self.hogFeature HOGpicture:feat :pix :blocks[1] :blocks[0]];
-            CGContextRef context = CGBitmapContextCreate(pic, //data
-                                            blocks[1]*pix, //width
-                                            blocks[0]*pix, //height
-                                            8, //bits per component
-                                            blocks[1]*pix*4, //bytes per row
-                                            CGColorSpaceCreateDeviceRGB(),
-                                            kCGImageAlphaPremultipliedLast ); //bitmap info
-            CGImageRef ima = CGBitmapContextCreateImage(context);
-//            UIImage* rawImage = [UIImage imageWithCGImage:ima];
-            CGContextRelease(context);
-            UIImage *image = [UIImage imageWithCGImage:ima scale:1.0 orientation:UIImageOrientationUp]; 
+//            int blocks[2];
+//            double *feat = [self.hogFeature HOGOrientationWithDimension:blocks forImage:[ImageProcessingHelper resizeImage:imageRef withRect:230] withPhoneOrientation:3];
+//            int pix = 12;
+//            UInt8 *pic = [self.hogFeature HOGpicture:feat :pix :blocks[1] :blocks[0]];
+//            CGContextRef context = CGBitmapContextCreate(pic, //data
+//                                            blocks[1]*pix, //width
+//                                            blocks[0]*pix, //height
+//                                            8, //bits per component
+//                                            blocks[1]*pix*4, //bytes per row
+//                                            CGColorSpaceCreateDeviceRGB(),
+//                                            kCGImageAlphaPremultipliedLast ); //bitmap info
+//            CGImageRef ima = CGBitmapContextCreateImage(context);
+////            UIImage* rawImage = [UIImage imageWithCGImage:ima];
+//            CGContextRelease(context);
+//            UIImage *image = [UIImage imageWithCGImage:ima scale:1.0 orientation:UIImageOrientationUp];
+            UIImage *image = [self.hogFeature HOGImage:[ImageProcessingHelper resizeImage:imageRef withRect:230]];
             
             [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES]; //ask the main thread to put the HOG image
-            free(feat); //?? Need to be freed?
-            free(pic);
         }
         
             

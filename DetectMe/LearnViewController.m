@@ -187,17 +187,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 //TODO: hog view of the detect frame
 
-
 - (IBAction)learnAction:(id)sender
 {
     // Modal for choosing a name
     self.trainingClassifier = [[TrainingClassifier alloc] init];
     self.trainingClassifier.listOfTrainingImages = self.listOfTrainingImages;
-    [self.trainingClassifier trainTheClassifier];
+    float *svmWeights = [self.trainingClassifier trainTheClassifier];
     
+    // write the template to a file
+    [FileStorageHelper writeTemplate:svmWeights withSize:self.trainingClassifier->blocks withTitle:@"prova.txt"];
+
     //Learn creating a new queue
-    
-    //Store the template in the main directory
+
 }
 
 - (IBAction)addAction:(id)sender

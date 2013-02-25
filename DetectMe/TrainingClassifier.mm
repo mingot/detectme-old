@@ -11,7 +11,6 @@
 
 #import "TrainingClassifier.h"
 #import "HOGFeature.h"
-#import "FileStorageHelper.h"
 
 
 using namespace cv;
@@ -21,28 +20,26 @@ using namespace cv;
 @synthesize listOfTrainingImages = _listOfTrainingImages;
 
 
-
-- (void) trainTheClassifier
+- (float *) trainTheClassifier
 {
     // Get the HOG Features of each image and store it in listOfH
     listOfHogFeatures = [self obtainHOGFeatures];
     
     int numOfTrainingSamples = [self.listOfTrainingImages count];
     
-    
     // Set up training data
     float *labels = (float *) malloc(numOfTrainingSamples*sizeof(float));
     for(int i=0; i<numOfTrainingSamples; i++)
     {
         *(labels+i) = -1.0;
-        if(i%5==0) *(labels+i)=1.0;
+        if(i%5==0) *(labels+i) = 1.0;
     }
-    float *listOfHogFeatures2 = (float *) malloc(numOfFeatures*sizeof(float));
+    float *listOfHogFeaturesFloat = (float *) malloc(numOfFeatures*sizeof(float));
     for(int i=0; i<numOfFeatures*numOfTrainingSamples;i++)
-        *(listOfHogFeatures2+i) = (float) *(listOfHogFeatures+i);
+        *(listOfHogFeaturesFloat+i) = (float) *(listOfHogFeatures+i);
     
     Mat labelsMat(numOfTrainingSamples,1,CV_32FC1, labels); //labels
-    Mat trainingDataMat(numOfTrainingSamples,numOfFeatures , CV_32FC1, listOfHogFeatures2); //training data
+    Mat trainingDataMat(numOfTrainingSamples,numOfFeatures , CV_32FC1, listOfHogFeaturesFloat); //training data
     
     // Set up SVM's parameters
     CvSVMParams params;
@@ -53,7 +50,7 @@ using namespace cv;
     // Train the SVM
     CvSVM SVM;
     SVM.train(trainingDataMat, labelsMat, Mat(), Mat(), params);            
-    std::cout << trainingDataMat << std::endl; //output learning matrix
+//    std::cout << trainingDataMat << std::endl; //output learning matrix
     
     // get the svm weights by multiplying the support vectors by the alpha values
     int numSupportVectors = SVM.get_support_vector_count();
@@ -66,10 +63,9 @@ using namespace cv;
         for(int j=0;j<numOfFeatures;j++)
             *(svmWeights + j) += alpha * *(supportVector+j);
     }
-    *(svmWeights + numOfFeatures) = - dec[0].rho; //FIXME: the sign of rho vs. the bias term!
+    *(svmWeights + numOfFeatures) = - dec[0].rho; // The sign of the bias and rho have opposed signs.
     
-    // write the template to a file
-    [FileStorageHelper writeTemplate:svmWeights withSize:blocks withTitle:@"prova.txt"];
+    return(svmWeights);
 }
 
 
@@ -102,9 +98,5 @@ using namespace cv;
     return(result);
 }
 
-- (void) saveTemplate
-{
-    
-}
 
 @end
