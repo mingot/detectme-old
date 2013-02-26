@@ -25,12 +25,12 @@
 + (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
               withTemplate:(double *) templateValues
             withHogFeature:(HOGFeature *)hogFeature
-                  pyramids:(int )numberPyramids;
+                  pyramids:(int )numberPyramids
+            scoreThreshold:(double)scoreThreshold;
               
 + (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB;
 
-+ (NSArray *)nms:(NSArray *)c //Compute non maximum supression
-                :(double) overlap;
++ (NSArray *)nms:(NSArray *)convolutionPointsCandidates maxOverlapArea:(double)overlap minScoreThreshold:(double)scoreThreshold;
 
 
 @end

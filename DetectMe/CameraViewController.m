@@ -26,7 +26,7 @@
 
 @synthesize templateName = _templateName;
 @synthesize hogFeature = _hogFeature;
-
+@synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
 
 
 - (void)viewDidLoad
@@ -44,7 +44,6 @@
     printResults = NO;
     fullScreen = NO;
     fileWritten = NO;
-    saving = NO;
     interval = 10;
     
     sizeImage = 10; //??
@@ -105,7 +104,8 @@
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"show CameraVC settings"]) {
+    if ([segue.identifier isEqualToString:@"show CameraVC settings"])
+    {
         SettingsViewController *settingsVC = (SettingsViewController *) segue.destinationViewController;
         settingsVC.delegate = self;
         settingsVC.hog = hogOnScreen;
@@ -115,16 +115,17 @@
 }
 
 
+
+
 #pragma mark -
 #pragma mark AVCaptureSession delegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput 
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
 	   fromConnection:(AVCaptureConnection *)connection 
 {
-	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. So we have to create an autorelease pool for the thread we are in.
     
-    if (!saving) {
-        @autoreleasepool { //?? Autorelease pool translated automatically from ARC conversion
+	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. So we have to create an autorelease pool for the thread we are in.
+    @autoreleasepool { 
         
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
         CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer ??Why
@@ -134,7 +135,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer); 
         size_t width = CVPixelBufferGetWidth(imageBuffer); 
         size_t height = CVPixelBufferGetHeight(imageBuffer);  
-//        NSLog(@"Pixels: %zu x %zu",width ,height );
 
         //Create a CGImageRef from the CVImageBufferRef
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB(); 
@@ -171,17 +171,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
          */
         
         //TODO: make this a parameter that can be set via features.
-        int numPyramids=10;
-        if (! pyramid)  numPyramids=1;
-        
-        clock_t start = clock(); //Trace execution time
+        int numPyramids = 10;
+        if (! pyramid)  numPyramids = 1;
                 
         NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
                                                withTemplate:templateWeights
                                              withHogFeature:self.hogFeature
-                                                   pyramids:numPyramids];
-        
-        NSLog(@"TOTAL TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
+                                                   pyramids:numPyramids
+                                             scoreThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value]; //make the slider sweep in the range [-1,-0.8];
         
         // set boundaries of the detection
         [self.detectView setCorners:nmsArray];
@@ -197,20 +194,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         } else{
             [self performSelectorOnMainThread:@selector(setTitle:) withObject:@"No detection." waitUntilDone:YES];
         }
-            
-        if (hogOnScreen) //Put the HOG picture on screen
+        
+        //Put the HOG picture on screen
+        if (hogOnScreen) 
         { 
             UIImage *image = [self.hogFeature hogImage:[ImageProcessingHelper resizeImage:imageRef withRect:230]];
-            
-            //ask the main thread to put the HOG image
             [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES];
         }
         
-            
         //We unlock the  image buffer
         CVPixelBufferUnlockBaseAddress(imageBuffer,0);
         CGImageRelease(imageRef);
-        }
     }
 } 
 
@@ -236,6 +230,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark Memory management
 
 - (void)viewDidUnload {
+    [self setDetectionThresholdSliderButton:nil];
     NSLog(@"viewdidunload");
 
 	self.prevLayer = nil;
@@ -245,5 +240,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.captureSession stopRunning];
     [self.detectView reset];
 }
+
 
 @end

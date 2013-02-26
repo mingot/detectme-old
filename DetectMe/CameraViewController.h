@@ -32,7 +32,6 @@
     BOOL printResults;
     BOOL fullScreen;
     BOOL fileWritten;
-    BOOL saving;
     double *templateWeights;
     
 }
@@ -47,5 +46,6 @@
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) HOGFeature *hogFeature;
 
+@property (weak, nonatomic) IBOutlet UISlider *detectionThresholdSliderButton;
 
 @end

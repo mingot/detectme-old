@@ -180,7 +180,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     //FFT-1 of the signals
     
-    
 }
 
 
@@ -257,15 +256,15 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             
             ConvolutionPoint *p = [[ConvolutionPoint alloc]init];
             p.score = [NSNumber numberWithDouble:(*(c + x*convolutionSize[0] + y) - b)];
-            if( ((p.score.doubleValue) < -1)) {
-                continue;
-            }
-            p.xmin = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2)];
-            p.xmax = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
-            p.ymin = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2)];
-            p.ymax = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2))];
+            if( ((p.score.doubleValue) > -1))
+            {
+                p.xmin = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2)];
+                p.xmax = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
+                p.ymin = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2)];
+                p.ymax = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2))];
 
-            [result addObject:p];
+                [result addObject:p];
+            }
         }
     }
     
@@ -279,8 +278,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
               withTemplate:(double *)templateValues
             withHogFeature:(HOGFeature *)hogFeature
                   pyramids:(int ) numberPyramids
+            scoreThreshold:(double)scoreThreshold
 {
-    NSMutableArray *result = [[NSMutableArray alloc] init]; 
+    NSMutableArray *result = [[NSMutableArray alloc] init];
 
     // TODO: choose max size for the image
     // int maxsize = (int) (max(image.size.width,image.size.height));
@@ -293,11 +293,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     //int *max = malloc(2*nm*interval*sizeof(int));
     //double *scores = malloc(sizeof(double)*nm*interval);
     
-    clock_t start = clock(); //Trace execution time
+//    clock_t start = clock(); //Trace execution time
     
     [result addObjectsFromArray:[self convTempFeat:resizedImage withTemplate:templateValues orientation:image.imageOrientation withHogFeature:hogFeature]];
-    
-//    NSLog(@"HOG TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
     
     for (int i = 1; i<numberPyramids; i++) { //Pyramid calculation
         
@@ -311,99 +309,55 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         CGImageRelease(scaledImage);
     }
     
-    NSLog(@"CONVOLUTION TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
-    
-    NSArray *nmsArray = [self nms:result :0.25];
-    
-    NSLog(@"NMS TIME: %f", (double)(clock()-start) / CLOCKS_PER_SEC);
+    NSArray *nmsArray = [self nms:result maxOverlapArea:0.25 minScoreThreshold:scoreThreshold];
     
     return nmsArray;
 }
 
 
-+ (NSArray *)nms:(NSArray *)c
-               :(double) overlap
++ (NSArray *)nms:(NSArray *)convolutionPointsCandidates maxOverlapArea:(double)overlap minScoreThreshold:(double)scoreThreshold
 {
     double area1;
     double area2;
     double unionArea;
     double intersectionArea;
-    double ov;
-    //double *sorted = [self sortHightoLow:c :size :&numbral];
+    
+    // Sort the convolution points by its score descending
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"score" ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    NSArray *sortedArray = [c sortedArrayUsingDescriptors:sortDescriptors];
-    if (sortedArray.count <= 0) {
+    NSArray *sortedArray = [convolutionPointsCandidates sortedArrayUsingDescriptors:sortDescriptors];
+    if (sortedArray.count <= 0)
         return nil;
-    }
-    NSMutableArray *result = [[NSMutableArray alloc] initWithObjects:[sortedArray objectAtIndex:0], nil ];
+
+    NSMutableArray *result = [[NSMutableArray alloc] init];
     
-    for (int i = 1; i<sortedArray.count; i++) {
-        BOOL ok = YES;
+    for (int i = 0; i<sortedArray.count; i++)
+    {
+        BOOL selected = YES;
         ConvolutionPoint *point2 = [sortedArray objectAtIndex:i];
+    
         
-        for (int j = 0; j<result.count; j++) {
+        if ([point2.score doubleValue] < scoreThreshold)
+            break;
+        
+        for (int j = 0; j<result.count; j++)
+        {
             ConvolutionPoint *point1 = [result objectAtIndex:j];
             area1 = ([point1.xmax doubleValue] - [point1.xmin doubleValue]) * ([point1.ymax doubleValue] - [point1.ymin doubleValue]);
             area2 = ([point2.xmax doubleValue] - [point2.xmin doubleValue]) * ([point2.ymax doubleValue] - [point2.ymin doubleValue]);
             intersectionArea = ( min([point1.xmax doubleValue], [point2.xmax doubleValue]) - max([point1.xmin doubleValue], [point2.xmin doubleValue])) * (min([point1.ymax doubleValue], [point2.ymax doubleValue]) - max([point1.ymin doubleValue], [point2.ymin doubleValue]));
             unionArea = area1 + area2 - intersectionArea;
-            ov =  intersectionArea/ unionArea;
-            if (ov > overlap) {
-                ok = NO;
+            
+            if (intersectionArea/unionArea > overlap) {
+                selected = NO;
                 break;
             }
         }
-        if (ok) {
-            [result addObject:point2];
-        }
-        
+        if (selected) [result addObject:point2];
     }
-    return result;
-}
-
-
-
--(double *)sortHightoLow:(double *)c
-                        :(int) size
-                        :(int *) num
-{
     
-    //TODO: (Dolores) todos los valores que he visto dan negativos, el mayor que he visto ha sido -0.09
-    double max = 1000000;
-    double maxant;
-    int index;
-    //*num = 0;
-    int total = 0;
-    double *result = malloc(size*5*sizeof(double));
-    for (int i=0; i<size; i++){  // quizas utilizar un while en lugar de un for + if -> break (te ahorras el incremento cada vez pq el acceso a memoria lo haces igual)
-        maxant = max;
-        max=-1000000;
-        for (int j=0;j<size; j++) {
-            if (*(c+j*5)<=maxant) {
-                if (*(c+j*5)>max) {
-                    max = *(c+j*5); // quizas guardando el indice ya basta
-                    index =j;
-                }
-            }
-            
-            
-        }
-        if (max < 0) { // el umbral
-            break;
-        }
-        *(result + total*5   ) = *(c + index*5   );
-        *(result + total*5 +1) = *(c + index*5 +1);
-        *(result + total*5 +2) = *(c + index*5 +2);
-        *(result + total*5 +3) = *(c + index*5 +3);
-        *(result + total*5 +4) = *(c + index*5 +4);
-        *(c + index*5) = -10000;  // para que no vuelva a pasar y pueda coger otro valor que pueda ser igual
-        total++;
-        
-        
-    }
-    *num = total;
     return result;
 }
+
 
 @end

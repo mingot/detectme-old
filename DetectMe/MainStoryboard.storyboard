@@ -217,6 +217,7 @@
                     <connections>
                         <outlet property="HOGimageView" destination="ZaY-1I-QkW" id="TSp-6r-vto"/>
                         <outlet property="detectView" destination="vrb-MF-neo" id="cr8-6S-gGN"/>
+                        <outlet property="detectionThresholdSliderButton" destination="dbT-az-Zl2" id="Vgb-ml-neE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="75C-EP-Ptz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -403,64 +404,6 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CameraViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="HOGimageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="detectView" candidateClass="DetectView"/>
-            </relationships>
-        </class>
-        <class className="ChoicesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="photoAction:"/>
-                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="DetectPhotoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="HOGAction:"/>
-                <relationship kind="action" name="detect:"/>
-                <relationship kind="action" name="settings:"/>
-            </relationships>
-        </class>
-        <class className="DetectView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectView.h"/>
-        </class>
-        <class className="LearnViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LearnViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addAction:"/>
-                <relationship kind="action" name="learnAction:"/>
-                <relationship kind="action" name="numberOfTrainingAction:"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="pyramidChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="pyramidSwitch" candidateClass="UISwitch"/>
-            </relationships>
-        </class>
-        <class className="ShowTrainingImageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ShowTrainingImageViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="TemplateTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
-        </class>
-        <class className="TrainingImagesTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TrainingImagesTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

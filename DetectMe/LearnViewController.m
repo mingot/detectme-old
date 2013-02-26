@@ -144,6 +144,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             float scale = image.size.height / self.view.frame.size.height;
             
             UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
+            
+            
+            
             UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
             
             CGSize resizingSize;

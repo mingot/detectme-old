@@ -77,8 +77,6 @@
 }
 */
 
-
-
 -(void)reset{
     self.corners = nil;
 }

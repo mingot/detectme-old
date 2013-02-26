@@ -11,6 +11,30 @@
 
 #import "TrainingClassifier.h"
 #import "HOGFeature.h"
+#import "UIImage+Resize.h"
+
+
+@implementation TrainingSet
+
+@synthesize listOfImages = _listOfImages;
+@synthesize listOfBoundingBoxes = _listOfBoundingBoxes;
+@synthesize listOfPositives = _listOfPositives;
+@synthesize listOfNegatives = _listOfNegatives;
+
+- (void) convertImagesToFeatures
+{
+    
+//    //Allocate memory for the features and the labels
+//    imageFeatures = malloc([listOfPositives count]*[listOfNegatives count]**sizeof(double));
+//    
+//    
+//    // transform each image to hog feature
+    
+}
+
+
+@end
+
 
 
 using namespace cv;
