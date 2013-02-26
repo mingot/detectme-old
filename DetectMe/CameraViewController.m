@@ -20,7 +20,7 @@
 
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
-@synthesize resultsImageView = _resultsImageView;
+
 @synthesize HOGimageView = _HOGimageView;
 @synthesize detectView = _detectView;
 
@@ -35,7 +35,6 @@
     [super viewDidLoad];
     
     self.HOGimageView = nil;
-    self.resultsImageView = nil;
     self.prevLayer = nil;
     
     hogOnScreen = NO;
@@ -88,17 +87,15 @@
 
     // Subviews initialization
     self.HOGimageView = [[UIImageView alloc] initWithFrame:self.view.frame];//(0, 0, 160, 208)];
-    self.resultsImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 208, 160, 208)];
     self.detectView = [[DetectView alloc] initWithFrame:self.view.frame]; //CGRectMake(0, 0, 320, 416)];
 
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = self.view.frame;  //CGRectMake(100, 0, 100, 100);
+	self.prevLayer.frame = self.view.bounds;  
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
     
     [self.view addSubview:self.HOGimageView];
-    [self.view addSubview:self.resultsImageView];
     [self.view addSubview:self.detectView];
 }
 
@@ -231,9 +228,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 -(void) setPyramidValue:(BOOL) value{
     pyramid = value;
-    if (!pyramid) {
-        [self.resultsImageView performSelectorOnMainThread:@selector(setImage:) withObject:nil waitUntilDone:NO];
-    }
 }
 
 -(void) setNumMaximums:(BOOL) value{
@@ -250,7 +244,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSLog(@"viewdidunload");
 
 	self.HOGimageView = nil;
-    self.resultsImageView = nil;
 	self.prevLayer = nil;
     self.detectView = nil;
 }

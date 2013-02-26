@@ -65,14 +65,10 @@
 {
     [super viewDidLoad];
     self.templateName = @"bottle.txt"; //Default template
-    [self selectedTemplate]; //TODO: needs to be done via segues
     self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
 }
 
--(void)selectedTemplate
-{
-    self.optionsViewController.templateName = self.templateName;
-}
+
 
 
 #pragma mark
@@ -129,7 +125,6 @@
 {
     self.templateName = name;
     self.selectedTemplateLabel.text = [self.templateName substringToIndex:self.templateName.length-4];
-    [self selectedTemplate];
 }
 
 
@@ -186,7 +181,6 @@
 
 
 #pragma mark - UIImagePickerControllerDelegate methods
-
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {

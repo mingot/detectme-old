@@ -131,16 +131,25 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             // Make the UIImage and change the orientation
             UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
             
+            // Dimensions
+            CGRect screenBound = [[UIScreen mainScreen] bounds];
+            NSLog(@"Dimension of the total screen (w x h): %f x %f", screenBound.size.width, screenBound.size.height);
+            NSLog(@"Dimension of image captured: %f x %f", image.size.width, image.size.height);
+            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
+
             
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
-            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((360-320*480/504)/2, 0, 320*480/504, image.size.height)];
+            // Image obtained by the camera is 360x480. This image is also displayed in prevLayer resized mantaining aspect ratio to fit in 320x504.
+            float scale = image.size.height / self.view.frame.size.height;
+            
+            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
             UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
             
             CGSize resizingSize;
             resizingSize.height = croppedImage.size.height/3;
             resizingSize.width = croppedImage.size.width/3;
-            [self.listOfTrainingImages addObject:[croppedImage resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
+            [self.listOfTrainingImages addObject:croppedImageToFitScreen];//[croppedImage resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
 //            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
             
             //For each positive training image, take 5 random crops of the same image

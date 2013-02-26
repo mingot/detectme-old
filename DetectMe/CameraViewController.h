@@ -40,7 +40,7 @@
 
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
-@property (nonatomic, strong) UIImageView *resultsImageView;
+
 @property (nonatomic, strong) UIImageView *HOGimageView;
 @property (nonatomic, strong) DetectView *detectView;
 
