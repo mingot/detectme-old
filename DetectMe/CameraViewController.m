@@ -34,7 +34,6 @@
     // Initialitzation after the view load and all the outlets are hooked
     [super viewDidLoad];
     
-    self.HOGimageView = nil;
     self.prevLayer = nil;
     
     hogOnScreen = NO;
@@ -85,16 +84,13 @@
 	[self.captureSession addOutput:captureOutput];
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
 
-    // Subviews initialization
-    self.HOGimageView = [[UIImageView alloc] initWithFrame:self.view.frame];//(0, 0, 160, 208)];
-    self.detectView = [[DetectView alloc] initWithFrame:self.view.frame]; //CGRectMake(0, 0, 320, 416)];
-
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
 	self.prevLayer.frame = self.view.bounds;  
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
     
+    // Add subviews in front of  the prevLayer
     [self.view addSubview:self.HOGimageView];
     [self.view addSubview:self.detectView];
 }
@@ -231,7 +227,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 -(void) setNumMaximums:(BOOL) value{
-    
     numMax = value ? 10 : 1;
 }
 
@@ -243,9 +238,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)viewDidUnload {
     NSLog(@"viewdidunload");
 
-	self.HOGimageView = nil;
 	self.prevLayer = nil;
-    self.detectView = nil;
 }
 
 -(void)viewDidDisappear:(BOOL)animated{

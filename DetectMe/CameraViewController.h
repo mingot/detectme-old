@@ -41,8 +41,8 @@
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
 
-@property (nonatomic, strong) UIImageView *HOGimageView;
-@property (nonatomic, strong) DetectView *detectView;
+@property (nonatomic, weak) IBOutlet UIImageView *HOGimageView;
+@property (nonatomic, weak) IBOutlet DetectView *detectView;
 
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) HOGFeature *hogFeature;
