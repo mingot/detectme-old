@@ -9,7 +9,6 @@
 #import "TemplateTableViewController.h"
 #import "ShowTrainingImageViewController.h"
 #import "FileStorageHelper.h"
-#import "HOGFeature.h"
 #import "UIImage+HOG.h"
 
 @interface TemplateTableViewController ()

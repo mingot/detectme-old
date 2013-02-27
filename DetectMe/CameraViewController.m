@@ -25,7 +25,6 @@
 @synthesize detectView = _detectView;
 
 @synthesize templateName = _templateName;
-@synthesize hogFeature = _hogFeature;
 @synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
 
 
@@ -175,7 +174,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                 
         NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
                                                withTemplate:templateWeights
-                                             withHogFeature:self.hogFeature
                                                    pyramids:numPyramids
                                              scoreThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value]; //make the slider sweep in the range [-1,-0.8];
         

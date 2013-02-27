@@ -10,9 +10,12 @@
 #include <opencv2/ml/ml.hpp>
 
 #import "TrainingClassifier.h"
-#import "HOGFeature.h"
 #import "UIImage+Resize.h"
 #import "UIImage+HOG.h"
+
+
+#pragma mark -
+#pragma mark TrainingSet
 
 @implementation TrainingSet
 
@@ -20,15 +23,27 @@
 @synthesize listOfBoundingBoxes = _listOfBoundingBoxes;
 @synthesize listOfPositives = _listOfPositives;
 @synthesize listOfNegatives = _listOfNegatives;
+@synthesize imageFeatures = _imageFeatures;
+@synthesize labels = _labels;
+
 
 - (void) convertImagesToFeatures
 {
+    // Convert all the frames of positive examples and negative examples to an array of hog features with its corresponding labels
     
-//    //Allocate memory for the features and the labels
-//    imageFeatures = malloc([listOfPositives count]*[listOfNegatives count]**sizeof(double));
-//    
-//    
-//    // transform each image to hog feature
+    //Allocate memory for the features and the labels
+    self.imageFeatures = (double *) malloc([self.listOfPositives count]*[self.listOfNegatives count]*sizeof(double));
+    self.labels = (int *) malloc([self.listOfPositives count]*[self.listOfNegatives count]*sizeof(double));
+    
+    // transform each image to hog feature
+    for(int i=0; i<[self.listOfPositives count]; i++)
+    {
+        UIImage *img = [self.listOfPositives objectAtIndex:i];
+        double *feat = [img obtainHogFeatures];
+        *(self.labels + i) = 1;
+//        *(self.imageFeatures + i) = feat;
+    }
+    
     
 }
 
@@ -36,6 +51,8 @@
 @end
 
 
+#pragma mark -
+#pragma mark TrainingClassifier
 
 using namespace cv;
 

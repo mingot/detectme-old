@@ -27,7 +27,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @synthesize originalImage = _originalImage;
 @synthesize templateName = _templateName;
 @synthesize detectView = _detectView;
-@synthesize hogFeature = _hogFeature;
 
 
 - (void)viewDidLoad
@@ -92,7 +91,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     NSArray *nmsArray = [ConvolutionHelper convPyraFeat:self.originalImage
                                            withTemplate:templateWeights
-                                         withHogFeature:self.hogFeature
                                                pyramids:10
                                          scoreThreshold:-1]; //score -1 is like not having score
     

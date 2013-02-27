@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "DetectView.h"
-#import "HOGFeature.h"
 
 
 
@@ -24,7 +23,6 @@
 @property (strong,nonatomic) DetectView *detectView;
 @property (strong, nonatomic) NSString *templateName;
 
-@property (nonatomic, strong) HOGFeature *hogFeature;
 
 
 -(void)setPhotoFromCamera:(BOOL)value;

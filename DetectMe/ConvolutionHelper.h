@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "HOGFeature.h"
 #import "DetectView.h"
 
 
@@ -19,12 +18,10 @@
 
 + (NSArray *)convTempFeat:(CGImageRef)image //Return the points with a score greater than -1
              withTemplate:(double *) templateValues
-              orientation:(int)orientation 
-           withHogFeature:(HOGFeature *)hogFeature;
+              orientation:(int)orientation;
 
 + (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
               withTemplate:(double *) templateValues
-            withHogFeature:(HOGFeature *)hogFeature
                   pyramids:(int )numberPyramids
             scoreThreshold:(double)scoreThreshold;
               

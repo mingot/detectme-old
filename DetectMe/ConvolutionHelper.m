@@ -7,6 +7,7 @@
 //
 
 #include <Accelerate/Accelerate.h>
+
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
 #import "UIImage+HOG.h"
@@ -187,7 +188,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 + (NSArray *)convTempFeat:(CGImageRef)image
              withTemplate:(double *)templateValues
               orientation:(int)orientation
-           withHogFeature:(HOGFeature *)hogFeature
 
 {
     int templateSize[3]; //template sizes
@@ -202,8 +202,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *feat = NULL; //initialization of the pointer to the features
     feat = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeatures];
     blocks = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainDimensionsOfHogFeatures];
-    
-//    feat = [hogFeature HOGOrientationWithDimension:blocks forImage:image withPhoneOrientation:orientation];
     
     int convolutionSize[2];
     convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size
@@ -279,7 +277,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
               withTemplate:(double *)templateValues
-            withHogFeature:(HOGFeature *)hogFeature
                   pyramids:(int ) numberPyramids
             scoreThreshold:(double)scoreThreshold
 {
@@ -298,7 +295,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
 //    clock_t start = clock(); //Trace execution time
     
-    [result addObjectsFromArray:[self convTempFeat:resizedImage withTemplate:templateValues orientation:image.imageOrientation withHogFeature:hogFeature]];
+    [result addObjectsFromArray:[self convTempFeat:resizedImage withTemplate:templateValues orientation:image.imageOrientation]];
     
     for (int i = 1; i<numberPyramids; i++) { //Pyramid calculation
         
@@ -306,8 +303,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         [result addObjectsFromArray:
             [self convTempFeat:scaledImage                              
                   withTemplate:templateValues
-                   orientation:image.imageOrientation
-                withHogFeature:hogFeature]];
+                   orientation:image.imageOrientation]];
 
         CGImageRelease(scaledImage);
     }

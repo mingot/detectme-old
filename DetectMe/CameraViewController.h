@@ -14,7 +14,6 @@
 
 #import "DetectView.h"
 #import "SettingsViewController.h"
-#import "HOGFeature.h"
 
 
 @interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate>
@@ -44,7 +43,6 @@
 @property (nonatomic, weak) IBOutlet DetectView *detectView;
 
 @property (nonatomic, strong) NSString *templateName;
-@property (nonatomic, strong) HOGFeature *hogFeature;
 
 @property (weak, nonatomic) IBOutlet UISlider *detectionThresholdSliderButton;
 

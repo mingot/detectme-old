@@ -11,15 +11,14 @@
 
 @interface TrainingSet : NSObject
 
-{
-    double *imageFeatures; //the features for the wole trainingset
-    double *labels; //the corresponding labels
-}
 
 @property (strong, nonatomic) NSArray *listOfImages; //UIImage
 @property (strong, nonatomic) NSArray *listOfBoundingBoxes; //CGRectmake
 @property (strong, nonatomic) NSArray *listOfPositives; //UIImage
 @property (strong, nonatomic) NSArray *listOfNegatives; //UIImage
+
+@property double *imageFeatures; //the features for the wole trainingset
+@property int *labels; //the corresponding labels
 
 // Convert the list of positiva and negative images in features to pass to the SVM
 - (void) convertImagesToFeatures;

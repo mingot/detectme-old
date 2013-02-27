@@ -8,6 +8,8 @@
 
 #import "ImageProcessingHelper.h"
 
+
+
 @implementation ImageProcessingHelper
 
 + (CGImageRef)resizeImage:(CGImageRef)imageRef

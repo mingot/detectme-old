@@ -40,7 +40,6 @@
 		FCBE9A2B16CACEB60024CAE4 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1916CACEB60024CAE4 /* SettingsViewController.m */; };
 		FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1B16CACEB60024CAE4 /* CameraViewController.m */; };
 		FCBE9A2D16CACEB60024CAE4 /* DetectPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */; };
-		FCBE9A2E16CACEB60024CAE4 /* HOGFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1F16CACEB60024CAE4 /* HOGFeature.m */; };
 		FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */; };
 		FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */; };
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
@@ -106,8 +105,6 @@
 		FCBE9A1B16CACEB60024CAE4 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
 		FCBE9A1C16CACEB60024CAE4 /* DetectPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectPhotoViewController.h; sourceTree = "<group>"; };
 		FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectPhotoViewController.m; sourceTree = "<group>"; };
-		FCBE9A1E16CACEB60024CAE4 /* HOGFeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HOGFeature.h; sourceTree = "<group>"; };
-		FCBE9A1F16CACEB60024CAE4 /* HOGFeature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HOGFeature.m; sourceTree = "<group>"; };
 		FCBE9A2016CACEB60024CAE4 /* ConvolutionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvolutionHelper.h; sourceTree = "<group>"; };
 		FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvolutionHelper.m; sourceTree = "<group>"; };
 		FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageProcessingHelper.h; sourceTree = "<group>"; };
@@ -198,8 +195,6 @@
 			children = (
 				FCFB1BEF16D6BF43004F0B54 /* UIImage Categories */,
 				FCA6A1FD16CAD31300E81581 /* Controllers */,
-				FCBE9A1E16CACEB60024CAE4 /* HOGFeature.h */,
-				FCBE9A1F16CACEB60024CAE4 /* HOGFeature.m */,
 				FCBE9A2016CACEB60024CAE4 /* ConvolutionHelper.h */,
 				FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */,
 				FC18515816D4338500630140 /* FourierTransform.h */,
@@ -385,7 +380,6 @@
 				FCBE9A2B16CACEB60024CAE4 /* SettingsViewController.m in Sources */,
 				FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */,
 				FCBE9A2D16CACEB60024CAE4 /* DetectPhotoViewController.m in Sources */,
-				FCBE9A2E16CACEB60024CAE4 /* HOGFeature.m in Sources */,
 				FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */,
 				FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */,
 				FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */,

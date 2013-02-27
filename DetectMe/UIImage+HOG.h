@@ -8,8 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+
+@interface HogFeature : NSObject
+{
+    @public int numBlocksX;
+    @public int numBlocksY;
+    @public int numFeatures;
+    @public double *features;
+}
+
+@end
+
 @interface UIImage (HOG)
 
+
+- (HogFeature *) obtainHogFeaturesReturningHog;
 - (double *) obtainHogFeatures;
 - (int *) obtainDimensionsOfHogFeatures;
 - (UIImage *) convertToHogImage;

@@ -37,6 +37,12 @@ static inline double max(double x, double y) { return (x <= y ? y : x); }
 static inline int min_int(int x, int y) { return (x <= y ? x : y); }
 static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
+
+@implementation HogFeature
+
+@end
+
+
 @interface UIImage () // private method of the category
 
 + (void)blockPicture:(double *)features // compute the block picture for a block of HOG
@@ -51,6 +57,23 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @end
 
 @implementation UIImage (HOG)
+
+
+- (HogFeature *) obtainHogFeaturesReturningHog
+{
+    HogFeature *hog = [[HogFeature alloc] init];
+    int * blocks = (int *) malloc(3*sizeof(int));
+    blocks = [self obtainDimensionsOfHogFeatures];
+    hog->features = [self obtainHogFeatures];
+    hog->numBlocksX = blocks[0];
+    hog->numBlocksY = blocks[1];
+    hog->numFeatures = blocks[2];
+    
+
+    return hog;
+}
+
+
 
 - (double *) obtainHogFeatures
 {
@@ -99,8 +122,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     int visible[2]; // Each visible pixel (ie taking into account the round made in defining blocks size and neglecting the edge pixels)
     visible[0] = blocks[0]*sbin;
     visible[1] = blocks[1]*sbin;
-    // tiempos date = [NSDate date];
-    for (int x = 1; x < visible[1]-1; x++) { //Take care to begin with the first one and end befor the last one: not calculating the gradient at the edge
+
+    
+    for (int x = 1; x < visible[1]-1; x++) { //Take care to begin with the first one and end before the last one: not calculating the gradient at the edge
         for (int y = 1; y < visible[0]-1; y++) {
             
             UInt8 *s = 0; //pointer to the image pixel
