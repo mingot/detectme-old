@@ -11,6 +11,8 @@
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
 #import "FileStorageHelper.h"
+#import "UIImage+HOG.h"
+
 
 
 static inline double min(double x, double y) { return (x <= y ? x : y); }
@@ -32,8 +34,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 {
     [super viewDidLoad];
     //self.picture.frame = CGRectMake(0, 0, 320, 416);
-    
-    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8 ];
     
 
     self.picture.backgroundColor = [UIColor blackColor];
@@ -110,8 +110,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         isHog = NO;
         
     }else {
-  
-        UIImage *image = [self.hogFeature hogImage:[ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230]];
+        CGImageRef img = [ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230];
+        UIImage *image = [[UIImage imageWithCGImage:img] convertToHogImage];
         //self.originalImage = self.picture.image;
         self.picture.image = image;
         isHog = YES;

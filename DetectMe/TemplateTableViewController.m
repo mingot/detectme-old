@@ -10,6 +10,7 @@
 #import "ShowTrainingImageViewController.h"
 #import "FileStorageHelper.h"
 #import "HOGFeature.h"
+#import "UIImage+HOG.h"
 
 @interface TemplateTableViewController ()
 @property (strong, nonatomic) NSArray *templateList;
@@ -41,13 +42,12 @@
         NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
         double *templateWeights = [FileStorageHelper readTemplate:[self.templateList objectAtIndex:selectedPath.row]];
         
-        HOGFeature *hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
         int blocks[3];
         blocks[0] = *(templateWeights); //size 1
         blocks[1] = *(templateWeights+1); //size 2
         blocks[2] = *(templateWeights+2); //number of features per block
     
-        showImageVC.image = [hogFeature hogImageFromFeatures:templateWeights+3 withSize:blocks];
+        showImageVC.image = [UIImage hogImageFromFeatures:templateWeights+3 withSize:blocks];
     }
 }
 

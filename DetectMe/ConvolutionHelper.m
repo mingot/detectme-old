@@ -9,7 +9,7 @@
 #include <Accelerate/Accelerate.h>
 #import "ConvolutionHelper.h"
 #import "ImageProcessingHelper.h"
-
+#import "UIImage+HOG.h"
 
 @implementation ConvolutionPoint
 
@@ -198,9 +198,12 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *w = templateValues + 3; //template weights
     double b = *(templateValues + 3 + templateSize[0]*templateSize[1]*templateSize[2]); //template b parameter
     
-    int blocks[3]; //number of cells of the hog descriptor of the image (image hog size)
+    int *blocks = calloc(3, sizeof(int)); //number of cells of the hog descriptor of the image (image hog size)
     double *feat = NULL; //initialization of the pointer to the features
-    feat = [hogFeature HOGOrientationWithDimension:blocks forImage:image withPhoneOrientation:orientation];
+    feat = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeatures];
+    blocks = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainDimensionsOfHogFeatures];
+    
+//    feat = [hogFeature HOGOrientationWithDimension:blocks forImage:image withPhoneOrientation:orientation];
     
     int convolutionSize[2];
     convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size

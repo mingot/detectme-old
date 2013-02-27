@@ -13,7 +13,7 @@
 #import "FileStorageHelper.h"
 #import "ImageProcessingHelper.h"
 #import "ConvolutionHelper.h"
-
+#import "UIImage+HOG.h"
 
 
 @implementation CameraViewController
@@ -48,8 +48,6 @@
     
     sizeImage = 10; //??
     
-    // initialize kind of hog that is going to be used
-    self.hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
     
     //Select template
     templateWeights = [FileStorageHelper readTemplate:self.templateName];
@@ -110,7 +108,7 @@
         settingsVC.delegate = self;
         settingsVC.hog = hogOnScreen;
         settingsVC.pyramid = pyramid;
-        settingsVC.numMaximums = (numMax==10 ? YES: NO);
+        settingsVC.numMaximums = (numMax==10 ? YES : NO);
     }
 }
 
@@ -125,7 +123,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     
 	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. So we have to create an autorelease pool for the thread we are in.
-    @autoreleasepool { 
+    @autoreleasepool
+    {
         
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
         CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer ??Why
@@ -198,7 +197,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //Put the HOG picture on screen
         if (hogOnScreen) 
         { 
-            UIImage *image = [self.hogFeature hogImage:[ImageProcessingHelper resizeImage:imageRef withRect:230]];
+            CGImageRef imgResized = [ImageProcessingHelper resizeImage:imageRef withRect:230];
+            UIImage *image = [[UIImage imageWithCGImage:imgResized scale:1.0 orientation:3] convertToHogImage];
             [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES];
         }
         

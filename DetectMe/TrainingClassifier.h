@@ -34,7 +34,7 @@
     double *listOfHogFeatures; //array of pointers to the hog features of each image
     int numOfFeatures;
     float *svmWeights;
-    @public int blocks[3]; //HOG features size
+    @public int *blocks; //HOG features size
 }
 
 @property (strong,nonatomic) NSArray *listOfTrainingImages; //UIImages

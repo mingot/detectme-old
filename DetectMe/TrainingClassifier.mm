@@ -12,7 +12,7 @@
 #import "TrainingClassifier.h"
 #import "HOGFeature.h"
 #import "UIImage+Resize.h"
-
+#import "UIImage+HOG.h"
 
 @implementation TrainingSet
 
@@ -97,14 +97,16 @@ using namespace cv;
 - (double *) obtainHOGFeatures
 {
     int numOfTrainingSamples = [self.listOfTrainingImages count];
-    HOGFeature *hogFeature = [[HOGFeature alloc] initWithNumberCells:8];
     double *feat;
     double *result;
+    blocks = (int *) calloc(3, sizeof(int));
     
     for(int i=0; i<numOfTrainingSamples; i++)
     {
+        
         UIImage *uImage = [self.listOfTrainingImages objectAtIndex:i];
-        feat = [hogFeature HOGOrientationWithDimension:blocks forImage:[uImage CGImage] withPhoneOrientation:uImage.imageOrientation];
+        feat = [uImage obtainHogFeatures];
+        blocks = [uImage obtainDimensionsOfHogFeatures];
         
         if(i==0)
         {
