@@ -106,14 +106,14 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     }
     
     int blocks[2]; //HOG features size
-    blocks[0] = (int)round((double)dims[0]/(double)sbin); //define block size for computing HOG. HOG Cell of (sbin)x(sbin)
+    blocks[0] = (int)round((double)dims[0]/(double)sbin); //HOG Cell of (sbin)x(sbin) pixels
     blocks[1] = (int)round((double)dims[1]/(double)sbin);
     
     double *hist = (double *) calloc(blocks[0]*blocks[1]*18,sizeof(double)); //histogram for each block of the HOG with its 18 histograms channel per each.
     double *norm = (double *) calloc(blocks[0]*blocks[1],sizeof(double)); //pointer to end value of histogram
     
     //define hog dimensions
-    hogSize[0] = max(blocks[0]-2, 0); // Take out a strip of pixels of the boundaries of the image
+    hogSize[0] = max(blocks[0]-2, 0); // do not take into account the strip of blocks surrounding the image
     hogSize[1] = max(blocks[1]-2, 0);
     hogSize[2] = 18 + 9 + 4 + 1; // 18 oriented features + 9 unoriented features + 4 texture features + 1 truncation feature
     

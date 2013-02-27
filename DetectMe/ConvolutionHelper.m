@@ -37,8 +37,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     convolutionSize[0] = sizeA[0] - sizeB[0] + 1; 
     convolutionSize[1] = sizeA[1] - sizeB[1] + 1;
     
-    for (int y = 0; y < convolutionSize[0]; y++) {
-        for (int x = 0; x < convolutionSize[1]; x++)
+    for (int x = 0; x < convolutionSize[1]; x++) {
+        for (int y = 0; y < convolutionSize[0]; y++)
         {
             double val = 0;
             
@@ -195,6 +195,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     templateSize[1] = (int)(*(templateValues+1));
     templateSize[2] = (int)(*(templateValues+2));
     
+//    NSLog(@"template size: %d, %d, %d", templateSize[0],templateSize[1],templateSize[2]);
+    
+    
     double *w = templateValues + 3; //template weights
     double b = *(templateValues + 3 + templateSize[0]*templateSize[1]*templateSize[2]); //template b parameter
     
@@ -214,53 +217,31 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     double *c = calloc(convolutionSize[0]*convolutionSize[1],sizeof(double)); //initialize the convolution result
     
-    
-    for (int f = 0; f < templateSize[2]; f++) //For each of the 32 (or 31) features, make the convolution with the corresponding feature in the template
+    // Make the convolution for each feature.
+    for (int f = 0; f < templateSize[2]; f++)
     {
-
         double *dst = c;
         double *A_src = feat + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
         double *B_src = w + f*templateSize[0]*templateSize[1];
         
-//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+        // convolute and add the results to dst
         [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+        
+//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 //        [ConvolutionHelper convolutionWithFFT:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 
-        
-//        for(int i=0;i<convolutionSize[1];i++)
-//            for(int j=0;j<convolutionSize[0];j++)
-//            {
-//                NSLog(@"dst1: %f", *(dst1 + j + i*convolutionSize[0]));
-//                NSLog(@"dst2: %f", *(dst2 + j + i*convolutionSize[0]));
-//            }
-        
-        
-        //Different convolution methods tried
-        // Just working undet few conditions which include odd size for the filter!
-//        double *dst1 = calloc(6*7,sizeof(float));
-//        double *dst2 = calloc(6*7,sizeof(float));
-//        double A[6*7]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42};
-//        double B[5*5]={2,7,2,2,1,2,3,2,2,2,2,2,2,2,2,1,2,2,2,2,3,2,2,2,1};
-//        int sizeA[2]={6,7};
-//        int sizeB[2]={5,5};
-//        [ConvolutionHelper convolution:dst1 matrixA:A :sizeA matrixB:B :sizeB];
-//        [ConvolutionHelper convolutionWithVDSP:dst2 matrixA:A :sizeA matrixB:B :sizeB];
-//        [ConvolutionHelper convolutionWithFFT:dst1 matrixA:A :sizeA matrixB:B :sizeB];
-
-        
-        
     }
     
     //Once done the convolution, detect if something is the object!
     for (int x = 0; x < convolutionSize[1]; x++) {
         for (int y = 0; y < convolutionSize[0]; y++) {
             
-            ConvolutionPoint *p = [[ConvolutionPoint alloc]init];
+            ConvolutionPoint *p = [[ConvolutionPoint alloc] init];
             p.score = [NSNumber numberWithDouble:(*(c + x*convolutionSize[0] + y) - b)];
             if( ((p.score.doubleValue) > -1))
             {
-                p.xmin = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2)];
-                p.xmax = [NSNumber numberWithDouble:(double)(x + 2)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
+                p.xmin = [NSNumber numberWithDouble:(double)(x + 1)/((double)blocks[1] + 2)];
+                p.xmax = [NSNumber numberWithDouble:(double)(x + 1)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
                 p.ymin = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2)];
                 p.ymax = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2))];
 
@@ -271,6 +252,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     free(feat);
     free(c);
+    
     return result;
 }
 

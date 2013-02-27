@@ -36,11 +36,12 @@
         CGContextRef context = UIGraphicsGetCurrentContext();
         ConvolutionPoint *p;
         CGFloat x,y,w,h;
-    
+        
+        
         for (int i=0; i<self.corners.count; i++) 
         {
             p = [self.corners objectAtIndex:i];
-
+            
             x = (p.xmin.doubleValue )*self.frame.size.width;
             y = (p.ymin.doubleValue )*self.frame.size.height;
             w = (p.xmax.doubleValue - p.xmin.doubleValue)*self.frame.size.width;
