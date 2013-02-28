@@ -192,7 +192,7 @@
     [content appendFormat:@"%d\n",size[1]];
     for (int x = 0; x<conv.count; x++) {
         ConvolutionPoint * p = [conv objectAtIndex:x];
-        [content appendFormat:@"%f\n",p.score.doubleValue];
+        [content appendFormat:@"%f\n",p.score];
     }
     [content writeToFile:filename atomically:NO encoding:NSUTF8StringEncoding error:NULL];
 }

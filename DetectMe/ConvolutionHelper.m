@@ -20,6 +20,42 @@
 @synthesize xmin = _xmin;
 @synthesize xmax = _xmax;
 
+@synthesize label = _label;
+@synthesize imageIndex = _imageIndex;
+@synthesize rectangle = _rectangle;
+
+-(id) initWithRect:(CGRect)initialRect label:(int)label imageIndex:(int)imageIndex;
+{
+    if(self = [self init])
+    {
+        self.label = label;
+        self.imageIndex = imageIndex;
+        self.xmin = initialRect.origin.x;
+        self.xmax = initialRect.origin.x + initialRect.size.width;
+        self.ymin = initialRect.origin.y;
+        self.ymax = initialRect.origin.y + initialRect.size.height;
+    }
+    return self;
+}
+
+
+- (CGRect) rectangle
+{
+    return CGRectMake(self.xmin, self.ymin, self.xmax - self.xmin, self.ymax - self.ymin);
+}
+
+- (CGRect) rectangleForImage:(UIImage *)image
+{
+    return CGRectMake(self.xmin*image.size.width, self.ymin*image.size.height, (self.xmax - self.xmin)*image.size.width, (self.ymax - self.ymin)*image.size.height);
+}
+
+
+- (void) setRectangle:(CGRect)rectangle
+{
+    _rectangle = rectangle;
+}
+
+
 @end
 
 
@@ -195,9 +231,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     templateSize[1] = (int)(*(templateValues+1));
     templateSize[2] = (int)(*(templateValues+2));
     
-//    NSLog(@"template size: %d, %d, %d", templateSize[0],templateSize[1],templateSize[2]);
-    
-    
     double *w = templateValues + 3; //template weights
     double b = *(templateValues + 3 + templateSize[0]*templateSize[1]*templateSize[2]); //template b parameter
     
@@ -237,13 +270,13 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         for (int y = 0; y < convolutionSize[0]; y++) {
             
             ConvolutionPoint *p = [[ConvolutionPoint alloc] init];
-            p.score = [NSNumber numberWithDouble:(*(c + x*convolutionSize[0] + y) - b)];
-            if( ((p.score.doubleValue) > -1))
+            p.score = (*(c + x*convolutionSize[0] + y) - b);
+            if( p.score > -1 )
             {
-                p.xmin = [NSNumber numberWithDouble:(double)(x + 1)/((double)blocks[1] + 2)];
-                p.xmax = [NSNumber numberWithDouble:(double)(x + 1)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2))];
-                p.ymin = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2)];
-                p.ymax = [NSNumber numberWithDouble:(double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2))];
+                p.xmin = (double)(x + 1)/((double)blocks[1] + 2);
+                p.xmax = (double)(x + 1)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2));
+                p.ymin = (double)(y + 2)/((double)blocks[0] + 2);
+                p.ymax = (double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2));
 
                 [result addObject:p];
             }
@@ -318,15 +351,15 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         ConvolutionPoint *point2 = [sortedArray objectAtIndex:i];
     
         
-        if ([point2.score doubleValue] < scoreThreshold)
+        if (point2.score < scoreThreshold)
             break;
         
         for (int j = 0; j<result.count; j++)
         {
             ConvolutionPoint *point1 = [result objectAtIndex:j];
-            area1 = ([point1.xmax doubleValue] - [point1.xmin doubleValue]) * ([point1.ymax doubleValue] - [point1.ymin doubleValue]);
-            area2 = ([point2.xmax doubleValue] - [point2.xmin doubleValue]) * ([point2.ymax doubleValue] - [point2.ymin doubleValue]);
-            intersectionArea = ( min([point1.xmax doubleValue], [point2.xmax doubleValue]) - max([point1.xmin doubleValue], [point2.xmin doubleValue])) * (min([point1.ymax doubleValue], [point2.ymax doubleValue]) - max([point1.ymin doubleValue], [point2.ymin doubleValue]));
+            area1 = (point1.xmax - point1.xmin)*(point1.ymax - point1.ymin);
+            area2 = (point2.xmax - point2.xmin)*(point2.ymax - point2.ymin);
+            intersectionArea = ( min(point1.xmax, point2.xmax) - max(point1.xmin, point2.xmin))*(min(point1.ymax, point2.ymax) - max(point1.ymin, point2.ymin));
             unionArea = area1 + area2 - intersectionArea;
             
             if (intersectionArea/unionArea > overlap) {

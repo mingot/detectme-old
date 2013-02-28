@@ -42,10 +42,10 @@
         {
             p = [self.corners objectAtIndex:i];
             
-            x = (p.xmin.doubleValue )*self.frame.size.width;
-            y = (p.ymin.doubleValue )*self.frame.size.height;
-            w = (p.xmax.doubleValue - p.xmin.doubleValue)*self.frame.size.width;
-            h = (p.ymax.doubleValue - p.ymin.doubleValue)*self.frame.size.height;
+            x = p.xmin * self.frame.size.width;
+            y = p.ymin * self.frame.size.height;
+            w = (p.xmax - p.xmin)*self.frame.size.width;
+            h = (p.ymax - p.ymin)*self.frame.size.height;
             
             CGRect box = CGRectMake(x, y, w, h);
             if(i==0)

@@ -40,6 +40,13 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 @implementation HogFeature
 
+@synthesize numBlocksX = _numBlocksX;
+@synthesize numBlocksY = _numBlocksY;
+@synthesize numFeatures = _numFeatures;
+@synthesize totalNumberOfFeatures = _totalNumberOfFeatures;
+@synthesize features = _features;
+@synthesize dimensionOfHogFeatures = _dimensionOfHogFeatures;
+
 @end
 
 
@@ -64,12 +71,13 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     HogFeature *hog = [[HogFeature alloc] init];
     int * blocks = (int *) malloc(3*sizeof(int));
     blocks = [self obtainDimensionsOfHogFeatures];
-    hog->features = [self obtainHogFeatures];
-    hog->numBlocksX = blocks[0];
-    hog->numBlocksY = blocks[1];
-    hog->numFeatures = blocks[2];
+    hog.features = [self obtainHogFeatures];
+    hog.numBlocksX = blocks[0];
+    hog.numBlocksY = blocks[1];
+    hog.numFeatures = blocks[2];
+    hog.totalNumberOfFeatures = blocks[0]*blocks[1]*blocks[2];
+    hog.dimensionOfHogFeatures = blocks;
     
-
     return hog;
 }
 
@@ -282,7 +290,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     // Normalization of each block of cells
     for (int x = 0; x < hogSize[1]; x++) {
-        for (int y = 0; y < hogSize[0]; y++) {
+        for (int y = 0; y < hogSize[0]; y++)
+        {
             double *dst = feat + x*hogSize[0] + y;
             double *src, *p, n1, n2, n3, n4;
             
@@ -302,7 +311,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             
             // contrast-sensitive features
             src = hist + (x+1)*blocks[0] + (y+1);
-            for (int o = 0; o < 18; o++) { //looping over the different channels of
+            for (int o = 0; o < 18; o++) //looping over the different channels of
+            { 
                 double h1 = min(*src * n1, 0.2); //?? why impose a max of 0.2
                 double h2 = min(*src * n2, 0.2);
                 double h3 = min(*src * n3, 0.2);
@@ -318,7 +328,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             
             // contrast-insensitive features
             src = hist + (x+1)*blocks[0] + (y+1);
-            for (int o = 0; o < 9; o++) {
+            for (int o = 0; o < 9; o++)
+            {
                 double sum = *src + *(src + 9*blocks[0]*blocks[1]); //take also the opposite direction in consideration
                 double h1 = min(sum * n1, 0.2);
                 double h2 = min(sum * n2, 0.2);

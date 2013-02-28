@@ -36,11 +36,17 @@
 
 @interface ConvolutionPoint : NSObject
 
-@property (strong,nonatomic) NSNumber *score;
-@property (strong,nonatomic) NSNumber *xmin;
-@property (strong,nonatomic) NSNumber *xmax;
-@property (strong,nonatomic) NSNumber *ymin;
-@property (strong,nonatomic) NSNumber *ymax;
+@property double score;
+@property double xmin;
+@property double xmax;
+@property double ymin;
+@property double ymax;
 
+@property int label;
+@property int imageIndex;
+@property CGRect rectangle;
+
+-(id) initWithRect:(CGRect)initialRect label:(int)label imageIndex:(int)imageIndex;
+- (CGRect) rectangleForImage:(UIImage *)image;
 
 @end

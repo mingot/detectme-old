@@ -32,6 +32,7 @@
 		FC602AFB16DBB265005FDAC8 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC602AFA16DBB265005FDAC8 /* opencv2.framework */; };
 		FC602AFD16DBFE1D005FDAC8 /* aux.png in Resources */ = {isa = PBXBuildFile; fileRef = FC602AFC16DBFE1D005FDAC8 /* aux.png */; };
 		FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */ = {isa = PBXBuildFile; fileRef = FC602AFF16DD6FF8005FDAC8 /* UIImage+HOG.m */; };
+		FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */ = {isa = PBXBuildFile; fileRef = FC602B0216DFC9B0005FDAC8 /* Classifier.mm */; };
 		FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */; };
 		FCB7664D16D7DB0200A5EAE8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB7664C16D7DB0200A5EAE8 /* libz.dylib */; };
 		FCB7665016D7DC7100A5EAE8 /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = FCB7664F16D7DC7100A5EAE8 /* UIImage+OpenCV.mm */; };
@@ -90,6 +91,8 @@
 		FC602AFC16DBFE1D005FDAC8 /* aux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = aux.png; sourceTree = "<group>"; };
 		FC602AFE16DD6FF7005FDAC8 /* UIImage+HOG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HOG.h"; sourceTree = "<group>"; };
 		FC602AFF16DD6FF8005FDAC8 /* UIImage+HOG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HOG.m"; sourceTree = "<group>"; };
+		FC602B0116DFC9B0005FDAC8 /* Classifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classifier.h; sourceTree = "<group>"; };
+		FC602B0216DFC9B0005FDAC8 /* Classifier.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Classifier.mm; sourceTree = "<group>"; };
 		FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileStorageHelper.h; sourceTree = "<group>"; };
 		FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileStorageHelper.m; sourceTree = "<group>"; };
 		FCB7664C16D7DB0200A5EAE8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -201,6 +204,8 @@
 				FC18515916D4338500630140 /* FourierTransform.m */,
 				FCFB1BF616D6F363004F0B54 /* TrainingClassifier.h */,
 				FCFB1BF716D6F364004F0B54 /* TrainingClassifier.mm */,
+				FC602B0116DFC9B0005FDAC8 /* Classifier.h */,
+				FC602B0216DFC9B0005FDAC8 /* Classifier.mm */,
 				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
 				FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */,
 				FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */,
@@ -396,6 +401,7 @@
 				FCFB1BF816D6F364004F0B54 /* TrainingClassifier.mm in Sources */,
 				FCB7665016D7DC7100A5EAE8 /* UIImage+OpenCV.mm in Sources */,
 				FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */,
+				FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

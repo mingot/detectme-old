@@ -10,12 +10,13 @@
 
 
 @interface HogFeature : NSObject
-{
-    @public int numBlocksX;
-    @public int numBlocksY;
-    @public int numFeatures;
-    @public double *features;
-}
+
+@property int numBlocksX;
+@property int numBlocksY;
+@property int numFeatures;
+@property int totalNumberOfFeatures;
+@property double *features;
+@property int *dimensionOfHogFeatures;
 
 @end
 

@@ -187,7 +187,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if (nmsArray.count > 0)
         {
             ConvolutionPoint *score = [nmsArray objectAtIndex:0];
-            [self performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%3f",score.score.doubleValue] waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%3f",score.score] waitUntilDone:YES];
         } else{
             [self performSelectorOnMainThread:@selector(setTitle:) withObject:@"No detection." waitUntilDone:YES];
         }
