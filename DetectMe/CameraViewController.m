@@ -177,6 +177,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                                    pyramids:numPyramids
                                              scoreThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value]; //make the slider sweep in the range [-1,-0.8];
         
+        
         // set boundaries of the detection
         [self.detectView setCorners:nmsArray];
         

@@ -12,6 +12,13 @@
 #import "ImageProcessingHelper.h"
 #import "UIImage+HOG.h"
 
+
+static inline double min(double x, double y) { return (x <= y ? x : y); }
+static inline double max(double x, double y) { return (x <= y ? y : x); }
+static inline int min_int(int x, int y) { return (x <= y ? x : y); }
+static inline int max_int(int x, int y) { return (x <= y ? y : x); }
+
+
 @implementation ConvolutionPoint
 
 @synthesize score = _score;
@@ -55,6 +62,19 @@
     _rectangle = rectangle;
 }
 
+- (double) fractionOfAreaOverlappingWith:(ConvolutionPoint *) cp
+{
+    double area1, area2, unionArea, intersectionArea;
+    
+    area1 = (self.xmax - self.xmin)*(self.ymax - self.ymin);
+    area2 = (cp.xmax - cp.xmin)*(cp.ymax - cp.ymin);
+    
+    intersectionArea = (min(self.xmax, cp.xmax) - max(self.xmin, cp.xmin))*(min(self.ymax, cp.ymax) - max(self.ymin, cp.ymin));
+    unionArea = area1 + area2 - intersectionArea;
+    
+    return intersectionArea/unionArea;
+}
+
 
 @end
 
@@ -62,10 +82,6 @@
 
 @implementation ConvolutionHelper
 
-static inline double min(double x, double y) { return (x <= y ? x : y); }
-static inline double max(double x, double y) { return (x <= y ? y : x); }
-static inline int min_int(int x, int y) { return (x <= y ? x : y); }
-static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 + (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
 {
@@ -220,7 +236,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 }
 
 
-
 + (NSArray *)convTempFeat:(CGImageRef)image
              withTemplate:(double *)templateValues
               orientation:(int)orientation
@@ -329,12 +344,10 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 }
 
 
-+ (NSArray *)nms:(NSArray *)convolutionPointsCandidates maxOverlapArea:(double)overlap minScoreThreshold:(double)scoreThreshold
++ (NSArray *) nms:(NSArray *)convolutionPointsCandidates
+   maxOverlapArea:(double)overlap
+minScoreThreshold:(double)scoreThreshold
 {
-    double area1;
-    double area2;
-    double unionArea;
-    double intersectionArea;
     
     // Sort the convolution points by its score descending
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"score" ascending:NO];
@@ -345,29 +358,23 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
     NSMutableArray *result = [[NSMutableArray alloc] init];
     
+    // select only those bounding boxes with score above the threshold and non overlapping areas
     for (int i = 0; i<sortedArray.count; i++)
     {
         BOOL selected = YES;
-        ConvolutionPoint *point2 = [sortedArray objectAtIndex:i];
+        ConvolutionPoint *point = [sortedArray objectAtIndex:i];
     
-        
-        if (point2.score < scoreThreshold)
+        if (point.score < scoreThreshold)
             break;
         
         for (int j = 0; j<result.count; j++)
-        {
-            ConvolutionPoint *point1 = [result objectAtIndex:j];
-            area1 = (point1.xmax - point1.xmin)*(point1.ymax - point1.ymin);
-            area2 = (point2.xmax - point2.xmin)*(point2.ymax - point2.ymin);
-            intersectionArea = ( min(point1.xmax, point2.xmax) - max(point1.xmin, point2.xmin))*(min(point1.ymax, point2.ymax) - max(point1.ymin, point2.ymin));
-            unionArea = area1 + area2 - intersectionArea;
-            
-            if (intersectionArea/unionArea > overlap) {
+            if ([[result objectAtIndex:j] fractionOfAreaOverlappingWith:point] > overlap)
+            {
                 selected = NO;
                 break;
             }
-        }
-        if (selected) [result addObject:point2];
+        
+        if (selected) [result addObject:point];
     }
     
     return result;

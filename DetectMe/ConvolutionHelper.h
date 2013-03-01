@@ -48,5 +48,6 @@
 
 -(id) initWithRect:(CGRect)initialRect label:(int)label imageIndex:(int)imageIndex;
 - (CGRect) rectangleForImage:(UIImage *)image;
+- (double) fractionOfAreaOverlappingWith:(ConvolutionPoint *) cp;
 
 @end

@@ -33,13 +33,6 @@
 
 
 @interface Classifier : NSObject
-//{
-//    @public double *classifierWeights;
-//    int templateBlocksX;
-//    int templateBlocksY;
-//    int templateFeatures;
-//    @public int blocks;
-//}
 
 @property double *svmWeights;
 @property int *weightsDimensions;

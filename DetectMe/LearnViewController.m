@@ -139,8 +139,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             // Make the UIImage and change the orientation
             UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
             
-            // Dimensions
-            CGRect screenBound = [[UIScreen mainScreen] bounds];
+//            // Dimensions
+//            CGRect screenBound = [[UIScreen mainScreen] bounds];
 //            NSLog(@"Dimension of the total screen (w x h): %f x %f", screenBound.size.width, screenBound.size.height);
 //            NSLog(@"Dimension of image captured: %f x %f", image.size.width, image.size.height);
 //            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
