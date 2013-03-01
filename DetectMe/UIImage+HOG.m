@@ -123,7 +123,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     //define hog dimensions
     hogSize[0] = max(blocks[0]-2, 0); // do not take into account the strip of blocks surrounding the image
     hogSize[1] = max(blocks[1]-2, 0);
-    hogSize[2] = 18 + 9 + 4 + 1; // 18 oriented features + 9 unoriented features + 4 texture features + 1 truncation feature
+    hogSize[2] = 18 + 9 + 4; // 18 oriented features + 9 unoriented features + 4 texture features
     
     double *mfeat = malloc(hogSize[0]*hogSize[1]*hogSize[2]*sizeof(double)); // pointer to the HOG features (this is the return value!)
     double *feat = mfeat;
@@ -348,10 +348,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             *dst = 0.2357 * t3;
             dst += hogSize[0]*hogSize[1];
             *dst = 0.2357 * t4;
-            
-            // truncation feature //?? what do they do?
-            dst += hogSize[0]*hogSize[1];
-            *dst = 0;
+
         }
     }
     
@@ -387,7 +384,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     //define hog dimensions
     hogSize[0] = max(blocks[0]-2, 0); // Take out a strip of pixels of the boundaries of the image
     hogSize[1] = max(blocks[1]-2, 0);
-    hogSize[2] = 18 + 9 + 4 + 1; // 18 oriented features + 9 unoriented features + 4 texture features + 1 truncation feature
+    hogSize[2] = 18 + 9 + 4; // 18 oriented features + 9 unoriented features + 4 texture features + 1 truncation feature
     
     return hogSize;
 }

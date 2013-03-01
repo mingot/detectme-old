@@ -52,7 +52,7 @@ using namespace cv;
         }
     }
     
-    self.boundingBoxes = listOfConvolutionPoints;
+    self.boundingBoxes = [[NSArray alloc] initWithArray:listOfConvolutionPoints];
 }
 
 
@@ -61,7 +61,6 @@ using namespace cv;
     // Convert the bounding boxes to hog features
     
     //Allocate memory for the features and the labels
-    self.imageFeatures = (double *) malloc([self.boundingBoxes count]*sizeof(double));
     self.labels = (float *) malloc([self.boundingBoxes count]*sizeof(float));
     
     // transform each bounding box into hog feature space
@@ -74,9 +73,15 @@ using namespace cv;
         //get the image contained in the bounding box
         UIImage *wholeImage = [self.images objectAtIndex:boundingBox.imageIndex];
         UIImage *img = [wholeImage croppedImage:[boundingBox rectangleForImage:wholeImage]];
+        CGSize newSize;
+        newSize.height = img.size.height/3;
+        newSize.width = img.size.width/3;
         
-        hogFeature = [img obtainHogFeaturesReturningHog];
+        UIImage *resizedImage = [img resizedImage:newSize interpolationQuality:kCGInterpolationDefault];
+        
+        hogFeature = [resizedImage obtainHogFeaturesReturningHog];
         self.dimensionsOfHogFeatures = hogFeature.dimensionOfHogFeatures;
+        if(i==0) self.imageFeatures = (double *) malloc([self.boundingBoxes count]*hogFeature.totalNumberOfFeatures*sizeof(double));
         
         //add the label
         *(self.labels + i) = (float) boundingBox.label;
@@ -84,6 +89,7 @@ using namespace cv;
         //add the hog features
         for(int j=0; j<hogFeature.totalNumberOfFeatures; j++)
             *(self.imageFeatures + i*hogFeature.totalNumberOfFeatures + j) = *(hogFeature.features + j);
+        NSLog(@"Total number of features:%d", hogFeature.totalNumberOfFeatures);
     }
 }
 
@@ -115,11 +121,9 @@ using namespace cv;
 {
     if(self = [super init])
     {
-        templateBlocksX = numberWeigths[0];
-        templateBlocksY = numberWeigths[1];
-        templateFeatures = numberWeigths[2];
+        self.weightsDimensions = numberWeigths;
         for(int i=0; i <numberWeigths[0]*numberWeigths[1]*numberWeigths[2]; i++)
-            *(classifierWeights +i) = *(weights +i);
+            *(self.svmWeights +i) = *(weights +i);
     }
     
     return self;
@@ -130,7 +134,7 @@ using namespace cv;
     
     //begin loop
     int numIterations = 1;
-    for (int i =0; i<numIterations; i++)
+    for (int i=0; i<numIterations; i++)
     {
         
         //Initialization of weights: initial train with initial positives and random negatives
@@ -142,13 +146,13 @@ using namespace cv;
         int *dimensionOfHogFeatures = trainingSet.dimensionsOfHogFeatures;
         int numOfFeatures = dimensionOfHogFeatures[0]*dimensionOfHogFeatures[1]*dimensionOfHogFeatures[2];
         int numOfTrainingSamples = [trainingSet.boundingBoxes count];
-        float *listOfHogFeaturesFloat = (float *) malloc(numOfFeatures*sizeof(float));
+        float *listOfHogFeaturesFloat = (float *) malloc(numOfFeatures*numOfTrainingSamples*sizeof(float));
         
-        for(int i=0; i<numOfFeatures*numOfTrainingSamples;i++)
+        for(int i=0; i<numOfFeatures*numOfTrainingSamples; i++)
             *(listOfHogFeaturesFloat+i) = (float) *(trainingSet.imageFeatures + i);
         
         Mat labelsMat(numOfTrainingSamples,1,CV_32FC1, labels); //labels
-        Mat trainingDataMat(numOfTrainingSamples,numOfFeatures , CV_32FC1, listOfHogFeaturesFloat); //training data
+        Mat trainingDataMat(numOfTrainingSamples, numOfFeatures, CV_32FC1, listOfHogFeaturesFloat); //training data
         
         // Set up SVM's parameters
         CvSVMParams params;
@@ -159,34 +163,56 @@ using namespace cv;
         // Train the SVM
         CvSVM SVM;
         SVM.train(trainingDataMat, labelsMat, Mat(), Mat(), params);
-        //    std::cout << trainingDataMat << std::endl; //output learning matrix
+//        std::cout << trainingDataMat << std::endl; //output learning matrix
         
         //update weights
-        [self updateSvmWeights:SVM];
+//        [self updateSvmWeights:SVM];
+        
+        int numSupportVectors = SVM.get_support_vector_count();
+        numOfFeatures = SVM.get_var_count();
+        
+        const CvSVMDecisionFunc *dec = SVM.decision_func;
+        self.svmWeights = (double *) calloc((numOfFeatures+1),sizeof(double));
+        
+        for (int i = 0; i < numSupportVectors; ++i)
+        {
+            float alpha = *(dec[0].alpha + i);
+            const float *supportVector = SVM.get_support_vector(i);
+            for(int j=0;j<numOfFeatures;j++)
+                *(self.svmWeights + j) += (double) alpha * *(supportVector+j);
+        }
+        *(self.svmWeights + numOfFeatures) = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
+        self.weightsDimensions = (int *) malloc(3*sizeof(int));
+        self.weightsDimensions[0] = dimensionOfHogFeatures[0];
+        self.weightsDimensions[1] = dimensionOfHogFeatures[1];
+        self.weightsDimensions[2] = dimensionOfHogFeatures[2];
+        
+        
         
         //Update the cache and store just the support vectors or threshold score
         
         
         //retrain with the updated weights
+        free(listOfHogFeaturesFloat);
     }
 }
 
 - (NSArray *) detect:(UIImage *)image minimumThreshold:(double) detectionThreshold pyramids:(int) numberPyramids
 {
-    
-    int totalFeatures = templateBlocksX*templateBlocksY*templateFeatures;
+    int totalFeatures = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2];
     double *templateWeights = (double *) malloc((totalFeatures + 3)*sizeof(double));
-    *(templateWeights) = templateBlocksX;
-    *(templateWeights + 1) = templateBlocksY;
-    *(templateWeights +2) = templateFeatures;
+    *(templateWeights) = self.weightsDimensions[0];
+    *(templateWeights + 1) = self.weightsDimensions[1];
+    *(templateWeights +2) = self.weightsDimensions[2];
     
     for(int i=0; i< totalFeatures; i++)
-        *(templateWeights + 3 +i) = *(classifierWeights + i);
+        *(templateWeights + 3 +i) = *(self.svmWeights + i);
     
     NSArray *nmsArray = [ConvolutionHelper convPyraFeat:image
                                            withTemplate:templateWeights
                                                pyramids:numberPyramids
                                          scoreThreshold:detectionThreshold]; //make the slider sweep in the range
+    free(templateWeights);
     return nmsArray;
     
 }
@@ -197,21 +223,26 @@ using namespace cv;
 {    
     int numSupportVectors = svmModel.get_support_vector_count();
     int numOfFeatures = svmModel.get_var_count();
+    
     const CvSVMDecisionFunc *dec = svmModel.decision_func;
-    classifierWeights = (double *) calloc((numOfFeatures+1),sizeof(double));
+    self.svmWeights = (double *) calloc((numOfFeatures+1),sizeof(double));
     
     for (int i = 0; i < numSupportVectors; ++i)
     {
         float alpha = *(dec[0].alpha + i);
         const float *supportVector = svmModel.get_support_vector(i);
         for(int j=0;j<numOfFeatures;j++)
-            *(classifierWeights + j) += (double) alpha * *(supportVector+j);
+            *(self.svmWeights + j) += (double) alpha * *(supportVector+j);
     }
-    *(classifierWeights + numOfFeatures) = - dec[0].rho; // The sign of the bias and rho have opposed signs.
+    *(self.svmWeights + numOfFeatures) = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
 
 }
 
 
+- (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName
+{
+    
+}
 
 
 

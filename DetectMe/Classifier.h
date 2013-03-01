@@ -33,12 +33,16 @@
 
 
 @interface Classifier : NSObject
-{
-    double *classifierWeights;
-    int templateBlocksX;
-    int templateBlocksY;
-    int templateFeatures;
-}
+//{
+//    @public double *classifierWeights;
+//    int templateBlocksX;
+//    int templateBlocksY;
+//    int templateFeatures;
+//    @public int blocks;
+//}
+
+@property double *svmWeights;
+@property int *weightsDimensions;
 
 
 // Initialization of the classifier given the weight vectors of it
@@ -54,5 +58,7 @@
     minimumThreshold:(double) detectionThreshold
             pyramids:(int) numberPyramids; //return array of convolution points
 
+
+- (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName;
 
 @end

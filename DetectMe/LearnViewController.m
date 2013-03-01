@@ -48,8 +48,11 @@
     self.listOfTrainingImages = [[NSMutableArray alloc] initWithCapacity:10];
     self.trainingSet = [[TrainingSet alloc] init];
     self.svmClassifier = [[Classifier alloc] init];
-    self.trainingSet.images = [[NSMutableArray alloc] init];
     
+    //TODO: initialize where they should go!!
+    self.trainingSet.images = [[NSMutableArray alloc] init];
+    self.trainingSet.groundTruthBoundingBoxes = [[NSMutableArray alloc] init];
+    self.trainingSet.boundingBoxes = [[NSMutableArray alloc] init];
     
     
     // NavigatinoBar buttons and labels
@@ -138,9 +141,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             
             // Dimensions
             CGRect screenBound = [[UIScreen mainScreen] bounds];
-            NSLog(@"Dimension of the total screen (w x h): %f x %f", screenBound.size.width, screenBound.size.height);
-            NSLog(@"Dimension of image captured: %f x %f", image.size.width, image.size.height);
-            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
+//            NSLog(@"Dimension of the total screen (w x h): %f x %f", screenBound.size.width, screenBound.size.height);
+//            NSLog(@"Dimension of image captured: %f x %f", image.size.width, image.size.height);
+//            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
 
             
             //Crop it to the desired size (taking into account the orientation)
@@ -152,35 +155,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.trainingSet.images addObject:croppedImageToFitScreen];
             
             // add ground truth bounding box
-            ConvolutionPoint *boundingBox = [[ConvolutionPoint alloc] initWithRect:CGRectMake(1/4, 1/4, 1/2, 1/2) label:1 imageIndex:[self.trainingSet.images count]-1];
+            ConvolutionPoint *boundingBox = [[ConvolutionPoint alloc] initWithRect:CGRectMake(1.0/4, 1.0/4, 1.0/2, 1.0/2) label:1 imageIndex:[self.trainingSet.images count]-1];
             
             [self.trainingSet.groundTruthBoundingBoxes addObject:boundingBox];
-//            
-//            UIImage *croppedImage = [croppedImageToFitScreen croppedImage:CGRectMake(croppedImageToFitScreen.size.width/4, croppedImageToFitScreen.size.height/4, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
-//            
-//            CGSize resizingSize;
-//            resizingSize.height = croppedImage.size.height/3;
-//            resizingSize.width = croppedImage.size.width/3;
-//            [self.listOfTrainingImages addObject:croppedImageToFitScreen];//[croppedImage resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
-////            [FileStorageHelper writeImageToDisk:[rotatedImage CGImage]  withTitle:@"petita_prova2"];
-//            
-//            //For each positive training image, take 5 random crops of the same image
-//            int maxX = (int)(croppedImageToFitScreen.size.height - croppedImageToFitScreen.size.width/2);
-//            int maxY = (int)(croppedImageToFitScreen.size.width - croppedImageToFitScreen.size.height/2);
-//            for(int i=0;i<4;i++)
-//            {
-//                int randomX = arc4random() % maxX;
-//                int randomY = arc4random() % maxY;
-//                
-//                if(i%4==0) randomX=0; //selecting the negative examples around the selected surface
-//                else if(i%4==1) randomX=maxX;
-//                else if(i%4==2) randomY=0;
-//                else if(i%4==3) randomY = maxY;
-//                
-//                UIImage *croppedImageNegative = [image croppedImage:CGRectMake(randomX, randomY, croppedImageToFitScreen.size.width/2, croppedImageToFitScreen.size.height/2)];
-//                [self.listOfTrainingImages addObject:[croppedImageNegative resizedImage:resizingSize interpolationQuality:kCGInterpolationDefault]];
-//               
-//            }
             
             // update the number of training images
             [self.numberOfTrainingButton performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",[self.trainingSet.images count]] waitUntilDone:YES];
@@ -202,7 +179,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if ([segue.identifier isEqualToString:@"show Training Set of Images"]) {
         TrainingImagesTableViewController *trainingImagesTVC = (TrainingImagesTableViewController *) segue.destinationViewController;
         trainingImagesTVC.delegate = self;
-        trainingImagesTVC.listOfImages = self.trainingSet.images;
+        [self.trainingSet initialFill];
+        NSMutableArray *listOfImages = [[NSMutableArray alloc] initWithCapacity:[self.trainingSet.boundingBoxes count]];
+        
+        for(int i=0; i<[self.trainingSet.boundingBoxes count]; i++)
+        {
+            ConvolutionPoint *cp = [self.trainingSet.boundingBoxes objectAtIndex:i];
+            UIImage *wholeImage = [self.trainingSet.images objectAtIndex:cp.imageIndex];
+            [listOfImages addObject:[wholeImage croppedImage:[cp rectangleForImage:wholeImage]]];
+        }
+            
+        trainingImagesTVC.listOfImages = listOfImages;
     }
 }
 
@@ -211,12 +198,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (IBAction)learnAction:(id)sender
 {
     // Modal for choosing a name
-    self.trainingClassifier = [[TrainingClassifier alloc] init];
-    self.trainingClassifier.listOfTrainingImages = self.listOfTrainingImages;
-    float *svmWeights = [self.trainingClassifier trainTheClassifier];
+    [self.svmClassifier train:self.trainingSet];
     
+    NSLog(@"learn went great");
     // write the template to a file
-    [FileStorageHelper writeTemplate:svmWeights withSize:self.trainingClassifier->blocks withTitle:@"prova.txt"];
+    [FileStorageHelper writeTemplate:self.svmClassifier.svmWeights withSize:self.svmClassifier.weightsDimensions withTitle:@"prova2.txt"];
 
     //Learn creating a new queue
 
