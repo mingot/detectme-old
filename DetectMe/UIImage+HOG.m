@@ -11,6 +11,7 @@
 #define PI 3.14159265
 #define eps 0.00001
 #define sbin 8 //pixels per block
+#define HOG_CONTRAST 1 //contrast representing hog features. Default 1
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
     0.9397,
@@ -410,8 +411,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     for (int x=0; x<blocks[1]; x++){
         for (int y=0; y<blocks[0]; y++){
-            for (int i=0; i<9; i++)  //?? just take unoriented features
-                *(f + i) = *(hogFeatures + y + x*blocks[0] + blocks[1]*blocks[0]*i); // for each block, we store in *f the features sequentially
+            for (int i=0; i<9; i++)  //Just plot of the unoriented features
+                *(f + i) = *(hogFeatures + y + x*blocks[0] + blocks[1]*blocks[0]*(i+18)); // for each block, we store in *f the features sequentially
             
             [UIImage blockPicture:f :imageBuffer :pix :x :y :blocks[1] :blocks[0]];
         }
@@ -443,23 +444,23 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         for (int j=0; j<bs; j++) {
             
             if (i==(round((double)bs/2))) { // if we are in the y dimension center of the HOG image block
-                if(*features < 0.0){ //?? pointer to the first feature, negative values allowed?
-                    continue;
+                if(*features > 0.0)
+                {
+                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features)))*HOG_CONTRAST ;
+                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features)))*HOG_CONTRAST ;
+                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) +=  round(255*(*(features)))*HOG_CONTRAST ;
                 }
-                *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features)));
-                *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features)));
-                *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) +=  round(255*(*(features)));
             }
             
             for (int o=1; o<9; o++) {
-                if(*(features+o) < 0.0){
-                    continue; //skip the feature if its negative
-                }
-                if (j==round((-tan(-o*PI*20/180+PI/2)*(i-round((double)bs/2))+round((double)bs/2)))) { //if it matches the angle of the corresponding feature, draw there with its intensity
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features + o)));
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features + o)));
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) += round(255*(*(features + o)));
-                }
+                if(*(features+o) > 0.0)
+                    //if it matches the angle of the corresponding feature, draw there with its intensity
+                    if (j==round((-tan(-o*PI*20/180+PI/2)*(i-round((double)bs/2))+round((double)bs/2))))
+                    { 
+                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features + o)))*HOG_CONTRAST ;
+                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features + o)))*HOG_CONTRAST ;
+                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) += round(255*(*(features + o)))*HOG_CONTRAST ;
+                    }
             }
             *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 3) = 255;
         }

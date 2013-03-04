@@ -14,6 +14,7 @@
 
 #import "DetectView.h"
 #import "SettingsViewController.h"
+#import "Classifier.h"
 
 
 @interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate>
@@ -45,5 +46,7 @@
 @property (nonatomic, strong) NSString *templateName;
 
 @property (weak, nonatomic) IBOutlet UISlider *detectionThresholdSliderButton;
+
+@property (nonatomic,strong) Classifier *svmClassifier;
 
 @end

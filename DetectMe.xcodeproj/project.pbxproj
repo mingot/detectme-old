@@ -24,6 +24,7 @@
 		FC18515A16D4338500630140 /* FourierTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515916D4338500630140 /* FourierTransform.m */; };
 		FC18515D16D5195C00630140 /* LearnViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515C16D5195C00630140 /* LearnViewController.m */; };
 		FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515F16D533DA00630140 /* RectFrameLearnView.m */; };
+		FC21495D16E4F4CB00986B7D /* UIImage+Brightness.m in Sources */ = {isa = PBXBuildFile; fileRef = FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */; };
 		FC43B6B416CADB0400BF4048 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B316CADB0400BF4048 /* CoreMotion.framework */; };
 		FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */; };
 		FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B716CADE9300BF4048 /* CoreMedia.framework */; };
@@ -81,6 +82,8 @@
 		FC18515C16D5195C00630140 /* LearnViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LearnViewController.m; sourceTree = "<group>"; };
 		FC18515E16D533D900630140 /* RectFrameLearnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectFrameLearnView.h; sourceTree = "<group>"; };
 		FC18515F16D533DA00630140 /* RectFrameLearnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RectFrameLearnView.m; sourceTree = "<group>"; };
+		FC21495B16E4F4CB00986B7D /* UIImage+Brightness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Brightness.h"; sourceTree = "<group>"; };
+		FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Brightness.m"; sourceTree = "<group>"; };
 		FC43B6B316CADB0400BF4048 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		FC43B6B716CADE9300BF4048 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -307,6 +310,8 @@
 				FCB7664F16D7DC7100A5EAE8 /* UIImage+OpenCV.mm */,
 				FC602AFE16DD6FF7005FDAC8 /* UIImage+HOG.h */,
 				FC602AFF16DD6FF8005FDAC8 /* UIImage+HOG.m */,
+				FC21495B16E4F4CB00986B7D /* UIImage+Brightness.h */,
+				FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */,
 			);
 			name = "UIImage Categories";
 			sourceTree = "<group>";
@@ -402,6 +407,7 @@
 				FCB7665016D7DC7100A5EAE8 /* UIImage+OpenCV.mm in Sources */,
 				FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */,
 				FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */,
+				FC21495D16E4F4CB00986B7D /* UIImage+Brightness.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

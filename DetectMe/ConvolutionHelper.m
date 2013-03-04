@@ -72,7 +72,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     intersectionArea = (min(self.xmax, cp.xmax) - max(self.xmin, cp.xmin))*(min(self.ymax, cp.ymax) - max(self.ymin, cp.ymin));
     unionArea = area1 + area2 - intersectionArea;
     
-    return intersectionArea/unionArea;
+    return intersectionArea/unionArea>0 ? intersectionArea/unionArea : 0;
 }
 
 
@@ -249,10 +249,15 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *w = templateValues + 3; //template weights
     double b = *(templateValues + 3 + templateSize[0]*templateSize[1]*templateSize[2]); //template b parameter
     
-    int *blocks = calloc(3, sizeof(int)); //number of cells of the hog descriptor of the image (image hog size)
-    double *feat = NULL; //initialization of the pointer to the features
-    feat = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeatures];
-    blocks = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainDimensionsOfHogFeatures];
+//    int *blocks = calloc(3, sizeof(int)); //number of cells of the hog descriptor of the image (image hog size)
+//    double *feat = NULL; //initialization of the pointer to the features
+//    feat = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeatures];
+//    blocks = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainDimensionsOfHogFeatures];
+    
+    HogFeature *hogFeature = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeaturesReturningHog];
+    int blocks[2] = {hogFeature.numBlocksX, hogFeature.numBlocksY};
+    NSLog(@"%d, %d", blocks[0], blocks[1]);
+    
     
     int convolutionSize[2];
     convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size
@@ -269,7 +274,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     for (int f = 0; f < templateSize[2]; f++)
     {
         double *dst = c;
-        double *A_src = feat + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
+        double *A_src = hogFeature.features + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
         double *B_src = w + f*templateSize[0]*templateSize[1];
         
         // convolute and add the results to dst
@@ -298,7 +303,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         }
     }
     
-    free(feat);
     free(c);
     
     return result;

@@ -27,6 +27,8 @@
 @synthesize templateName = _templateName;
 @synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
 
+@synthesize svmClassifier = _svmClassifier;
+
 
 - (void)viewDidLoad
 {
@@ -50,6 +52,7 @@
     
     //Select template
     templateWeights = [FileStorageHelper readTemplate:self.templateName];
+    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:templateWeights];
     
     
     // ********  CAMERA CAPUTRE  ********
@@ -169,13 +172,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
          */
         
         //TODO: make this a parameter that can be set via features.
-        int numPyramids = 10;
+        int numPyramids = 15;
         if (! pyramid)  numPyramids = 1;
                 
-        NSArray *nmsArray = [ConvolutionHelper convPyraFeat:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
-                                               withTemplate:templateWeights
-                                                   pyramids:numPyramids
-                                             scoreThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value]; //make the slider sweep in the range [-1,-0.8];
+        
+        NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
+                                      minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
+                                              pyramids:numPyramids
+                                              usingNms:YES];
         
         
         // set boundaries of the detection

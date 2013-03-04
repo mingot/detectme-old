@@ -155,11 +155,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.trainingSet.images addObject:croppedImageToFitScreen];
             
             // add ground truth bounding box
-            ConvolutionPoint *boundingBox = [[ConvolutionPoint alloc] initWithRect:CGRectMake(1.0/4, 1.0/4, 1.0/2, 1.0/2) label:1 imageIndex:[self.trainingSet.images count]-1];
-            
+            ConvolutionPoint *boundingBox = [[ConvolutionPoint alloc] initWithRect:CGRectMake(3.0/8, 3.0/8, 1.0/4, 1.0/4) label:1 imageIndex:[self.trainingSet.images count]-1];
             [self.trainingSet.groundTruthBoundingBoxes addObject:boundingBox];
             
-            // update the number of training images
+            // update the number of training images on the button title
             [self.numberOfTrainingButton performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%d",[self.trainingSet.images count]] waitUntilDone:YES];
 
             takePhoto = NO;
@@ -193,16 +192,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
-//TODO: hog view of the detect frame
-
 - (IBAction)learnAction:(id)sender
 {
     // Modal for choosing a name
     [self.svmClassifier train:self.trainingSet];
     
     NSLog(@"learn went great");
+    
     // write the template to a file
-    [FileStorageHelper writeTemplate:self.svmClassifier.svmWeights withSize:self.svmClassifier.weightsDimensions withTitle:@"prova2.txt"];
+    [self.svmClassifier storeSvmWeightsAsTemplateWithName:@"prova3.txt"];
 
     //Learn creating a new queue
 

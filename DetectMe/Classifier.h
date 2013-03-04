@@ -14,18 +14,18 @@
 @property (strong, nonatomic) NSMutableArray *images; //UIImage
 @property (strong, nonatomic) NSMutableArray *groundTruthBoundingBoxes; //ConvolutionPoint
 
-@property (strong, nonatomic) NSArray *boundingBoxes;
+@property (strong, nonatomic) NSMutableArray *boundingBoxes; //ConvolutionPoints
+
 @property double *imageFeatures; //the features for the wole trainingset
 @property float *labels; //the corresponding labels
-@property int *dimensionsOfHogFeatures;
+@property int numberOfTrainingExamples; // bounding boxes + support vectors added
 
 // Given a training set of images and ground truth bounding boxes it generates
 // a set of positive and negative bounding boxes for training
 - (void) initialFill;
 
 // Generates the hog features given the bounding boxes
-- (void) generateFeaturesForBoundingBoxes;
-
+- (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize) templateSize;
 
 
 @end
@@ -39,7 +39,7 @@
 
 
 // Initialization of the classifier given the weight vectors of it
-- (id) initWithWeights:(double *)weights number:(int *)numberWeigths;
+- (id) initWithTemplateWeights:(double *)templateWeights;
 
 // Train the classifier given an initial set formed by Images and ground
 // truth bounding boxes containing positive examples
@@ -49,9 +49,11 @@
 // points for the indicated number of pyramids and detection threshold
 - (NSArray *) detect:(UIImage *) image
     minimumThreshold:(double) detectionThreshold
-            pyramids:(int) numberPyramids; //return array of convolution points
+            pyramids:(int) numberPyramids
+            usingNms:(BOOL)useNms;
 
 
 - (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName;
+- (void) storeTemplateMatching:(TrainingSet *)trainingSet;
 
 @end

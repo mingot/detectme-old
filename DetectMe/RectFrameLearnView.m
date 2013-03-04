@@ -28,7 +28,7 @@
     heigth = self.superview.frame.size.height;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGRect box = CGRectMake(width/4, heigth/4, width/2, heigth/2);
+    CGRect box = CGRectMake(width*3/8, heigth*3/8, width/4, heigth/4);
     CGContextSetLineWidth(context, 4);
     CGContextSetStrokeColorWithColor(context, [UIColor redColor].CGColor);
     CGContextStrokeRect(context, box);
