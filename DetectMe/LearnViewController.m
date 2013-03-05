@@ -34,10 +34,15 @@
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
 @synthesize detectFrameView = _detectFrameView;
+@synthesize trainingSet = _trainingSet;
+@synthesize targetFrameImageView = _targetFrameImageView;
 
 @synthesize listOfTrainingImages =_listOfTrainingImages;
 @synthesize numberOfTrainingButton = _numberOfTrainingButton;
-@synthesize trainingClassifier = _trainingClassifier;
+
+
+
+
 
 - (void)viewDidLoad
 {
@@ -88,7 +93,12 @@
     
     // Subviews initialization
     self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.bounds]; //TO change to self.prevLayer.frame
-   
+
+    self.targetFrameImageView = [[UIImageView alloc] init]
+    ;
+
+
+    
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
 	self.prevLayer.frame = self.view.bounds;
@@ -96,6 +106,7 @@
 	[self.view.layer addSublayer: self.prevLayer];
 
     [self.view addSubview:self.detectFrameView];
+    [self.view addSubview:self.targetFrameImageView];
 
 }
 
@@ -104,6 +115,10 @@
 {
     //Start the capture
     [self.captureSession startRunning];
+        UIImage *image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3092/2915896504_a88b69c9de.jpg"]]];
+    self.targetFrameImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.targetFrameImageView.clipsToBounds = YES;
+    self.targetFrameImageView.image = image;
 }
 
 
@@ -132,12 +147,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //We release some components
         CGContextRelease(newContext);
         CGColorSpaceRelease(colorSpace);
-        
+    
         
         if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
             // Make the UIImage and change the orientation
-            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
+
             
 //            // Dimensions
 //            CGRect screenBound = [[UIScreen mainScreen] bounds];
@@ -146,11 +161,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 //            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
 
             
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
+            
+            float scale = image.size.height / self.view.frame.size.height;
+            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
+            
+            self.targetFrameImageView.image = croppedImageToFitScreen;
+            
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
             // Image obtained by the camera is 360x480. This image is also displayed in prevLayer resized mantaining aspect ratio to fit in 320x504.
-            float scale = image.size.height / self.view.frame.size.height;
-            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
+
         
             [self.trainingSet.images addObject:croppedImageToFitScreen];
             
@@ -226,4 +247,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
 }
 
+- (void)viewDidUnload {
+    [super viewDidUnload];
+}
 @end

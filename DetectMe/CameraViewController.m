@@ -175,17 +175,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         int numPyramids = 15;
         if (! pyramid)  numPyramids = 1;
                 
-        
-        NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:3]
+        UIImage *img = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
+        NSArray *nmsArray = [self.svmClassifier detect: img
                                       minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
                                               pyramids:numPyramids
                                               usingNms:YES];
         
         
-        // set boundaries of the detection
+        // set boundaries of the detection and redraw
         [self.detectView setCorners:nmsArray];
-        
-        // redraw the view with the updated buondaries
         [self.detectView performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
             
         // Update the navigation controller title with some information about the detection

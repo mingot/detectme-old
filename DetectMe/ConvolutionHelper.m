@@ -247,28 +247,22 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     templateSize[2] = (int)(*(templateValues+2));
     
     double *w = templateValues + 3; //template weights
-    double b = *(templateValues + 3 + templateSize[0]*templateSize[1]*templateSize[2]); //template b parameter
-    
-//    int *blocks = calloc(3, sizeof(int)); //number of cells of the hog descriptor of the image (image hog size)
-//    double *feat = NULL; //initialization of the pointer to the features
-//    feat = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeatures];
-//    blocks = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainDimensionsOfHogFeatures];
+    double b = templateValues[3 + templateSize[0]*templateSize[1]*templateSize[2]]; //template bias parameter
     
     HogFeature *hogFeature = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeaturesReturningHog];
     int blocks[2] = {hogFeature.numBlocksX, hogFeature.numBlocksY};
-    NSLog(@"%d, %d", blocks[0], blocks[1]);
-    
     
     int convolutionSize[2];
     convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size
     convolutionSize[1] = blocks[1] - templateSize[1] + 1;
-    if ((convolutionSize[0]<=0) || (convolutionSize[1]<=0)) { //discard if convolution size not positive
+    if ((convolutionSize[0]<=0) || (convolutionSize[1]<=0))
         return NULL;
-    }
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:convolutionSize[0]*convolutionSize[1]];
-    
     double *c = calloc(convolutionSize[0]*convolutionSize[1],sizeof(double)); //initialize the convolution result
+    
+    NSLog(@"blocsk: %d, %d", blocks[0], blocks[1]);
+    
     
     // Make the convolution for each feature.
     for (int f = 0; f < templateSize[2]; f++)

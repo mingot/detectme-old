@@ -47,6 +47,8 @@
             w = (p.xmax - p.xmin)*self.frame.size.width;
             h = (p.ymax - p.ymin)*self.frame.size.height;
             
+            NSLog(@"w:%f, h:%f", w,h);
+            
             CGRect box = CGRectMake(x, y, w, h);
             if(i==0)
             {

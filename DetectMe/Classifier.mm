@@ -302,13 +302,13 @@ using namespace cv;
             usingNms:(BOOL)useNms
 {
     int totalFeatures = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2];
-    double *templateWeights = (double *) malloc((3 + totalFeatures + 1)*sizeof(double));
-    *(templateWeights) = self.weightsDimensions[0];
-    *(templateWeights + 1) = self.weightsDimensions[1];
-    *(templateWeights + 2) = self.weightsDimensions[2];
+    double *templateWeights = (double *) calloc((3 + totalFeatures + 1),sizeof(double));
+    templateWeights[0] = self.weightsDimensions[0];
+    templateWeights[1] = self.weightsDimensions[1];
+    templateWeights[2] = self.weightsDimensions[2];
     
     for(int i=0; i<totalFeatures + 1; i++) //+1 for the bias term
-        *(templateWeights + 3 + i) = *(self.svmWeights + i);
+        templateWeights[3+i] = self.svmWeights[i];
     
     
     NSMutableArray *candidateBoundingBoxes = [[NSMutableArray alloc] init];
@@ -321,29 +321,32 @@ using namespace cv;
     CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image.CGImage withRect:maxsize];
     double sc = pow(2, 1.0/numberPyramids);
     
-    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage withTemplate:templateWeights orientation:image.imageOrientation]];
+    UIImage *imgaux = [UIImage imageWithCGImage:resizedImage];
+    
+    NSLog(@"h:%f, w:%f", imgaux.size.height, imgaux.size.width);
+    
+    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage
+                                                                   withTemplate:templateWeights
+                                                                    orientation:image.imageOrientation]];
     
     //Pyramid calculation
     for (int i = 1; i<numberPyramids; i++)
     {
         
-        CGImageRef scaledImage = [ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)];
-        NSArray *result = [ConvolutionHelper convTempFeat:scaledImage
+        NSArray *result = [ConvolutionHelper convTempFeat:[ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)]
                                              withTemplate:templateWeights
                                               orientation:image.imageOrientation];
+        
         [candidateBoundingBoxes addObjectsFromArray: result];
 //        NSLog(@"Level %d detected %d boxes",i, [candidateBoundingBoxes count]);
         
         
-        CGImageRelease(scaledImage);
     }
     
     NSArray *nmsArray = candidateBoundingBoxes;
-    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:100];
-//    ConvolutionPoint *bestDetection = [nmsArray objectAtIndex:0];
-//    CGRect rect = [bestDetection rectangle];
-//    NSLog(@"width:%f, height:%f", rect.size.width, rect.size.height);
+    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:19]; //19
     
+    CGImageRelease(resizedImage);
     free(templateWeights);
     return nmsArray;
     
@@ -379,6 +382,9 @@ using namespace cv;
 
     for(int i=0; i<hogFeature.totalNumberOfFeatures;i++)
         self.svmWeights[i] = hogFeature.features[i];
+    
+    //bias term as 0
+    self.svmWeights[hogFeature.totalNumberOfFeatures] = 0;
 
 }
 
@@ -395,8 +401,8 @@ using namespace cv;
     UIImage *img = [wholeImage croppedImage:[sampleBoundingBox rectangleForImage:wholeImage]];
     
     
-    templateSize.height = img.size.height*1.0;
-    templateSize.width = img.size.width*1.0;
+    templateSize.height = img.size.height*0.6;
+    templateSize.width = img.size.width*0.6;
     
     // And store dimension of hog features for it
     self.weightsDimensions = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainDimensionsOfHogFeatures];
@@ -418,9 +424,9 @@ using namespace cv;
         float alpha = *(dec[0].alpha + i);
         const float *supportVector = svmModel.get_support_vector(i);
         for(int j=0;j<numOfFeatures;j++)
-            *(self.svmWeights + j) += (double) alpha * *(supportVector+j);
+            self.svmWeights[j] += (double) alpha * supportVector[j];
     }
-    *(self.svmWeights + numOfFeatures) = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
+    self.svmWeights[numOfFeatures] = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
 
 }
 
