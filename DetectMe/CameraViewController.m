@@ -175,8 +175,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         int numPyramids = 15;
         if (! pyramid)  numPyramids = 1;
                 
-        UIImage *img = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
-        NSArray *nmsArray = [self.svmClassifier detect: img
+        NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight]
                                       minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
                                               pyramids:numPyramids
                                               usingNms:YES];

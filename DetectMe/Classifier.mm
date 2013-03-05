@@ -323,8 +323,6 @@ using namespace cv;
     
     UIImage *imgaux = [UIImage imageWithCGImage:resizedImage];
     
-    NSLog(@"h:%f, w:%f", imgaux.size.height, imgaux.size.width);
-    
     [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage
                                                                    withTemplate:templateWeights
                                                                     orientation:image.imageOrientation]];
@@ -344,7 +342,7 @@ using namespace cv;
     }
     
     NSArray *nmsArray = candidateBoundingBoxes;
-    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:19]; //19
+    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:detectionThreshold]; //19
     
     CGImageRelease(resizedImage);
     free(templateWeights);

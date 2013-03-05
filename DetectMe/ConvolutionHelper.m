@@ -261,8 +261,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:convolutionSize[0]*convolutionSize[1]];
     double *c = calloc(convolutionSize[0]*convolutionSize[1],sizeof(double)); //initialize the convolution result
     
-    NSLog(@"blocsk: %d, %d", blocks[0], blocks[1]);
-    
     
     // Make the convolution for each feature.
     for (int f = 0; f < templateSize[2]; f++)
