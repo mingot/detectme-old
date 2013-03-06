@@ -88,11 +88,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
    NSLog(@"Orientation: %d",self.picture.image.imageOrientation);
 
-    
-    NSArray *nmsArray = [ConvolutionHelper convPyraFeat:self.originalImage
-                                           withTemplate:templateWeights
-                                               pyramids:10
-                                         scoreThreshold:-1]; //score -1 is like not having score
+    //FIXME: use the class Classifier to detect
+    NSArray *nmsArray = nil;//[ConvolutionHelper convPyraFeat:self.originalImage withTemplate:templateWeights pyramids:10 scoreThreshold:-1]; //score -1 is like not having score
     
     [self.detectView setCorners:nmsArray];
     self.detectView.frame = self.picture.frame;

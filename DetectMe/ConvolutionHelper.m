@@ -236,9 +236,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 }
 
 
-+ (NSArray *)convTempFeat:(CGImageRef)image
++ (NSArray *)convTempFeat:(UIImage *)image
              withTemplate:(double *)templateValues
-              orientation:(int)orientation
 
 {
     int templateSize[3]; //template sizes
@@ -249,8 +248,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *w = templateValues + 3; //template weights
     double b = templateValues[3 + templateSize[0]*templateSize[1]*templateSize[2]]; //template bias parameter
     
-    HogFeature *hogFeature = [[UIImage imageWithCGImage:image scale:1.0 orientation:orientation] obtainHogFeaturesReturningHog];
-    int blocks[2] = {hogFeature.numBlocksX, hogFeature.numBlocksY};
+    HogFeature *hogFeature = [image obtainHogFeaturesReturningHog];
+    int blocks[2] = {hogFeature.numBlocksY, hogFeature.numBlocksX};
     
     int convolutionSize[2];
     convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size
@@ -298,45 +297,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     free(c);
     
     return result;
-}
-
-
-+ (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
-              withTemplate:(double *)templateValues
-                  pyramids:(int ) numberPyramids
-            scoreThreshold:(double)scoreThreshold
-{
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-
-    // TODO: choose max size for the image
-    // int maxsize = (int) (max(image.size.width,image.size.height));
-    // Pongo de tamaño maximo 300 por poner algo --> poderlo escoger.
-    int maxsize = 300;
-    
-    CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image.CGImage withRect:maxsize];
-    double sc = pow(2, 1.0/numberPyramids);
-    
-    //int *max = malloc(2*nm*interval*sizeof(int));
-    //double *scores = malloc(sizeof(double)*nm*interval);
-    
-//    clock_t start = clock(); //Trace execution time
-    
-    [result addObjectsFromArray:[self convTempFeat:resizedImage withTemplate:templateValues orientation:image.imageOrientation]];
-    
-    for (int i = 1; i<numberPyramids; i++) { //Pyramid calculation
-        
-        CGImageRef scaledImage = [ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)];
-        [result addObjectsFromArray:
-            [self convTempFeat:scaledImage                              
-                  withTemplate:templateValues
-                   orientation:image.imageOrientation]];
-
-        CGImageRelease(scaledImage);
-    }
-    
-    NSArray *nmsArray = [self nms:result maxOverlapArea:0.25 minScoreThreshold:scoreThreshold];
-    
-    return nmsArray;
 }
 
 

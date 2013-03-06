@@ -323,16 +323,14 @@ using namespace cv;
     
     //aquesta imatge girada, quin tamany te? 360x480 -> 225x300 (pero en UIImage apareix portarait!)
     
-    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage
-                                                                   withTemplate:templateWeights
-                                                                    orientation:image.imageOrientation]];
+    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[UIImage imageWithCGImage:resizedImage scale:1.0 orientation:image.imageOrientation]
+                                                                   withTemplate:templateWeights]];
     //Pyramid calculation
     for (int i = 1; i<numberPyramids; i++)
     {
         
-        NSArray *result = [ConvolutionHelper convTempFeat:[ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)]
-                                             withTemplate:templateWeights
-                                              orientation:image.imageOrientation];
+        NSArray *result = [ConvolutionHelper convTempFeat:[UIImage imageWithCGImage:[ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)] scale:1.0 orientation:image.imageOrientation]
+                                             withTemplate:templateWeights];
         
         [candidateBoundingBoxes addObjectsFromArray: result];
 //        NSLog(@"Level %d detected %d boxes",i, [candidateBoundingBoxes count]);
@@ -370,26 +368,13 @@ using namespace cv;
 - (void) storeTemplateMatching:(TrainingSet *) trainingSet;
 {
     HogFeature *hogFeature;
-    HogFeature *hogFeature_orig;
     
     UIImage *wholeImage = [trainingSet.images objectAtIndex:0];
     // BE CAREFUL!!! Intrinsic change of UIImage Orientation!! (from right to up)
     UIImage *img = [wholeImage croppedImage:[[trainingSet.boundingBoxes objectAtIndex:0] rectangleForImage:wholeImage]];
     UIImage *resizedImage = [img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault];
-    size_t width = CGImageGetWidth(resizedImage.CGImage);
-	size_t height = CGImageGetHeight(resizedImage.CGImage);
-    NSLog(@"h:%zu, w:%zu", height, width);
-    
-    
-    UIImage *rotatedImage = [UIImage imageWithCGImage:resizedImage.CGImage scale:1.0 orientation:UIImageOrientationLeft];
-    UIImage *fixed = [rotatedImage fixOrientation];
-    width = CGImageGetWidth(fixed.CGImage);
-	height = CGImageGetHeight(fixed.CGImage);
-    NSLog(@"h:%zu, w:%zu", height, width);
-    
 
-    hogFeature_orig = [[UIImage imageWithCGImage:resizedImage.CGImage scale:1.0 orientation:UIImageOrientationRight] obtainHogFeaturesReturningHog];
-    hogFeature = [[UIImage imageWithCGImage:fixed.CGImage scale:1.0 orientation:UIImageOrientationRight] obtainHogFeaturesReturningHog];
+    hogFeature = [resizedImage obtainHogFeaturesReturningHog];
 
     for(int i=0; i<hogFeature.totalNumberOfFeatures;i++)
         self.svmWeights[i] = hogFeature.features[i];

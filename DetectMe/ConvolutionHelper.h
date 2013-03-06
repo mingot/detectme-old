@@ -16,15 +16,9 @@
 
 @interface ConvolutionHelper : NSObject
 
-+ (NSArray *)convTempFeat:(CGImageRef)image //Return the points with a score greater than -1
-             withTemplate:(double *) templateValues
-              orientation:(int)orientation;
++ (NSArray *)convTempFeat:(UIImage *)image //Return the points with a score greater than -1
+             withTemplate:(double *)templateValues;
 
-+ (NSArray *) convPyraFeat:(UIImage *)image //Convolution using pyramid
-              withTemplate:(double *) templateValues
-                  pyramids:(int )numberPyramids
-            scoreThreshold:(double)scoreThreshold;
-              
 + (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB;
 
 + (NSArray *)nms:(NSArray *)convolutionPointsCandidates maxOverlapArea:(double)overlap minScoreThreshold:(double)scoreThreshold;
