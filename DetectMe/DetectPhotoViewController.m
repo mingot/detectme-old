@@ -27,6 +27,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @synthesize originalImage = _originalImage;
 @synthesize templateName = _templateName;
 @synthesize detectView = _detectView;
+@synthesize svmClassifier = _svmClassifier;
 
 
 - (void)viewDidLoad
@@ -51,8 +52,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     self.detectView.hidden = NO;
 
     templateWeights = [FileStorageHelper readTemplate:self.templateName];
-    NSLog(@"detectPhotoVC end viewDidLoad");
-    
+    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:templateWeights];
 }
 
 
@@ -87,9 +87,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     }
 
    NSLog(@"Orientation: %d",self.picture.image.imageOrientation);
-
-    //FIXME: use the class Classifier to detect
-    NSArray *nmsArray = nil;//[ConvolutionHelper convPyraFeat:self.originalImage withTemplate:templateWeights pyramids:10 scoreThreshold:-1]; //score -1 is like not having score
+    
+    NSArray *nmsArray = [self.svmClassifier detect:self.originalImage minimumThreshold:-1 pyramids:10 usingNms:YES];
     
     [self.detectView setCorners:nmsArray];
     self.detectView.frame = self.picture.frame;

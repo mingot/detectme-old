@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DetectView.h"
+#import "Classifier.h"
 
 
 
@@ -22,6 +23,7 @@
 @property (strong,nonatomic) UIImage *originalImage;
 @property (strong,nonatomic) DetectView *detectView;
 @property (strong, nonatomic) NSString *templateName;
+@property (strong, nonatomic) Classifier *svmClassifier;
 
 
 

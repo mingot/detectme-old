@@ -35,7 +35,6 @@
 @synthesize prevLayer = _prevLayer;
 @synthesize detectFrameView = _detectFrameView;
 @synthesize trainingSet = _trainingSet;
-@synthesize targetFrameImageView = _targetFrameImageView;
 
 @synthesize listOfTrainingImages =_listOfTrainingImages;
 @synthesize numberOfTrainingButton = _numberOfTrainingButton;
@@ -94,8 +93,6 @@
     // Subviews initialization
     self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.bounds]; //TO change to self.prevLayer.frame
 
-    self.targetFrameImageView = [[UIImageView alloc] init]
-    ;
 
 
     
@@ -106,7 +103,7 @@
 	[self.view.layer addSublayer: self.prevLayer];
 
     [self.view addSubview:self.detectFrameView];
-    [self.view addSubview:self.targetFrameImageView];
+
 
 }
 
@@ -115,10 +112,6 @@
 {
     //Start the capture
     [self.captureSession startRunning];
-        UIImage *image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3092/2915896504_a88b69c9de.jpg"]]];
-    self.targetFrameImageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.targetFrameImageView.clipsToBounds = YES;
-    self.targetFrameImageView.image = image;
 }
 
 
@@ -166,7 +159,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 //            float scale = image.size.height / self.view.frame.size.height;
 //            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
 //            
-//            self.targetFrameImageView.image = croppedImageToFitScreen;
             
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
@@ -209,7 +201,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [listOfImages addObject:[wholeImage croppedImage:[cp rectangleForImage:wholeImage]]];
         }
             
-        trainingImagesTVC.listOfImages = listOfImages;
+        if(self.trainingSet.imagesUsed == nil) trainingImagesTVC.listOfImages = listOfImages;
+        else trainingImagesTVC.listOfImages = self.trainingSet.imagesUsed;
 //        trainingImagesTVC.listOfImages = self.trainingSet.images;
     }
 }

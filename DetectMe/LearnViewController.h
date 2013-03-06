@@ -14,7 +14,6 @@
 
 #import "RectFrameLearnView.h"
 #import "TrainingImagesTableViewController.h"
-#import "TrainingClassifier.h"
 #import "Classifier.h"
 
 
@@ -24,7 +23,6 @@
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
 @property (nonatomic, strong) RectFrameLearnView *detectFrameView;
-@property (strong, nonatomic) IBOutlet UIImageView *targetFrameImageView;
 
 
 @property (nonatomic, strong) Classifier *svmClassifier;

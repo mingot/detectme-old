@@ -18,13 +18,15 @@
 @property double *features;
 @property int *dimensionOfHogFeatures;
 
+- (void) printFeaturesOnScreen;
+
 @end
 
 @interface UIImage (HOG)
 
 
-- (HogFeature *) obtainHogFeaturesReturningHog;
-- (double *) obtainHogFeatures;
+
+- (HogFeature *) obtainHogFeatures;
 - (int *) obtainDimensionsOfHogFeatures;
 - (UIImage *) convertToHogImage;
 

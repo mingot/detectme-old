@@ -12,7 +12,7 @@
 #define PI 3.14159265
 #define eps 0.00001
 #define sbin 8 //pixels per block
-#define HOG_CONTRAST 1 //contrast representing hog features. Default 1
+#define HOG_CONTRAST 10 //contrast representing hog features. Default 1
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
     0.9397,
@@ -49,6 +49,26 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @synthesize features = _features;
 @synthesize dimensionOfHogFeatures = _dimensionOfHogFeatures;
 
+
+- (void) printFeaturesOnScreen
+{
+    
+    for(int y=0; y<self.numBlocksY; y++)
+    {
+        for(int x=0; x<self.numBlocksX; x++)
+        {
+            for(int f = 0; f<self.numFeatures; f++)
+            {
+                printf("%f ", self.features[y + x*self.numBlocksY + f*self.numBlocksX*self.numBlocksY]);
+                if(f==17 || f==26) printf("  |  ");
+            }
+            printf("\n");
+        }
+        printf("\n*************************************************************************\n");
+    }
+    
+}
+
 @end
 
 
@@ -68,25 +88,14 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @implementation UIImage (HOG)
 
 
-- (HogFeature *) obtainHogFeaturesReturningHog
+
+
+
+- (HogFeature *) obtainHogFeatures
 {
     HogFeature *hog = [[HogFeature alloc] init];
-    int * blocks = (int *) malloc(3*sizeof(int));
-    blocks = [self obtainDimensionsOfHogFeatures];
-    hog.features = [self obtainHogFeatures];
-    hog.numBlocksX = blocks[1];
-    hog.numBlocksY = blocks[0];
-    hog.numFeatures = blocks[2];
-    hog.totalNumberOfFeatures = blocks[0]*blocks[1]*blocks[2];
-    hog.dimensionOfHogFeatures = blocks;
-    
-    return hog;
-}
 
-
-- (double *) obtainHogFeatures
-{
-    //fix orientation problems
+    //correct the orientation diference between UIImage and the underlying CGImage 
     UIImage *correctedImage = [self fixOrientation];
     
     // Inizialization
@@ -125,6 +134,16 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     hogSize[1] = max(blocks[1]-2, 0);
     hogSize[2] = 18 + 9 + 4; // 18 oriented features + 9 unoriented features + 4 texture features
     
+    //and store the values
+    hog.numBlocksX = hogSize[1];
+    hog.numBlocksY = hogSize[0];
+    hog.numFeatures = hogSize[2];
+    hog.totalNumberOfFeatures = hogSize[0]*hogSize[1]*hogSize[2];
+    hog.dimensionOfHogFeatures = (int *) malloc(3*sizeof(int));
+    hog.dimensionOfHogFeatures[0] = hogSize[0];
+    hog.dimensionOfHogFeatures[1] = hogSize[1];
+    hog.dimensionOfHogFeatures[2] = hogSize[2];
+    
     double *mfeat = malloc(hogSize[0]*hogSize[1]*hogSize[2]*sizeof(double)); // pointer to the HOG features (this is the return value!)
     double *feat = mfeat;
     int visible[2]; // Each visible pixel (ie taking into account the round made in defining blocks size and neglecting the edge pixels)
@@ -157,8 +176,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             dy3 = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
             v3 = dx3*dx3 + dy3*dy3;
             
-
-                                        
             v = dx*dx + dy*dy; //norm
             v2 = dx2*dx2 + dy2*dy2;
             v3 = dx3*dx3 + dy3*dy3;
@@ -302,16 +319,14 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         }
     }
     
+    hog.features = mfeat;
     
     free(hist);
     free(norm);
     free(pixels);
     
-    return mfeat;
+    return hog;
 }
-
-
-
 
 
 
@@ -344,10 +359,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 - (UIImage *) convertToHogImage
 {
-    int *blocks;
-    blocks = [self obtainDimensionsOfHogFeatures];
-    double *feat = [self obtainHogFeatures];
-    UIImage *image = [UIImage hogImageFromFeatures:feat withSize:blocks];
+    HogFeature *hog = [self obtainHogFeatures];
+    UIImage *image = [UIImage hogImageFromFeatures:hog.features withSize:hog.dimensionOfHogFeatures];
     return(image);
 }
 
@@ -362,9 +375,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     for (int x=0; x<blocks[1]; x++){
         for (int y=0; y<blocks[0]; y++){
-            for (int i=0; i<9; i++)  //Just plot of the unoriented features
-                *(f + i) = *(hogFeatures + y + x*blocks[0] + blocks[1]*blocks[0]*(i+18)); // for each block, we store in *f the features sequentially
-            
+            for (int i=0; i<9; i++){  //Just plot of the unoriented features
+                f[i] = hogFeatures[y + x*blocks[0] + blocks[1]*blocks[0]*(i+18)]; // for each block, we store in *f the features sequentially
+            }
             [UIImage blockPicture:f :imageBuffer :pix :x :y :blocks[1] :blocks[0]];
         }
     }
@@ -397,23 +410,23 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             if (i==(round((double)bs/2))) { // if we are in the y dimension center of the HOG image block
                 if(*features > 0.0)
                 {
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features)))*HOG_CONTRAST ;
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features)))*HOG_CONTRAST ;
-                    *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) +=  round(255*(*(features)))*HOG_CONTRAST ;
+                    im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw] += round(255*(*(features)))*HOG_CONTRAST ;
+                    im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1 ] += round(255*(*(features)))*HOG_CONTRAST ;
+                    im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2 ] +=  round(255*(*(features)))*HOG_CONTRAST ;
                 }
             }
             
             for (int o=1; o<9; o++) {
                 if(*(features+o) > 0.0)
                     //if it matches the angle of the corresponding feature, draw there with its intensity
-                    if (j==round((-tan(-o*PI*20/180+PI/2)*(i-round((double)bs/2))+round((double)bs/2))))
+                    if (j == round( (-tan(-o*PI*20/180+PI/2) * (i-round((double)bs/2)) + round((double)bs/2) )))
                     { 
-                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw) += round(255*(*(features + o)))*HOG_CONTRAST ;
-                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1) += round(255*(*(features + o)))*HOG_CONTRAST ;
-                        *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2) += round(255*(*(features + o)))*HOG_CONTRAST ;
+                        im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw] += round(255*(*(features + o)))*HOG_CONTRAST ;
+                        im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1] += round(255*(*(features + o)))*HOG_CONTRAST ;
+                        im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2] += round(255*(*(features + o)))*HOG_CONTRAST ;
                     }
             }
-            *(im + x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 3) = 255;
+            im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 3] = 255;
         }
     }
 }

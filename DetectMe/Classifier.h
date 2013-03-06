@@ -20,6 +20,9 @@
 @property float *labels; //the corresponding labels
 @property int numberOfTrainingExamples; // bounding boxes + support vectors added
 
+@property (strong, nonatomic) NSMutableArray *imagesUsed;
+
+
 // Given a training set of images and ground truth bounding boxes it generates
 // a set of positive and negative bounding boxes for training
 - (void) initialFill;
@@ -53,7 +56,11 @@
             usingNms:(BOOL)useNms;
 
 
+// Store the weights of the template to the disk
 - (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName;
+
+// Safe the hog features of the first positive template as the classifier
+// weights
 - (void) storeTemplateMatching:(TrainingSet *)trainingSet;
 
 @end

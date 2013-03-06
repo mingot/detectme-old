@@ -166,74 +166,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         }
 }
 
-+ (void) convolutionWithVImage:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
-{
-    // Convolution using the implemented features of vImage
-    vImage_Buffer src;
-    src.data = matrixA;
-    src.height = sizeA[0];
-    src.width = sizeA[1];
-    src.rowBytes = sizeA[1]*sizeof(float);
-    
-    vImage_Buffer dst;
-    dst.data = result;
-    dst.height = sizeA[0];
-    dst.width = sizeA[1];
-    dst.rowBytes = sizeA[1]*sizeof(float);
-    
-    //TODO: Fix the fact that can not deal with doubles
-//    vImageConvolve_PlanarF(&src, &dst, NULL, 0, 0, matrixB, sizeB[0], sizeB[1],(Pixel_F)0, kvImageCopyInPlace);
-    
-//    result = dst.data;
-//    for(int i=0;i<sizeA[0]*sizeA[1];i++)
-//        NSLog(@"result: %f", *(result + i));
-}
-
-+ (void) convolutionWithFFT:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB
-{
-    
-    //TODO: finish the implementation of the convolution with the FFT
-    //FFT of the two signals
-    DSPSplitComplex signalImageIn;
-    signalImageIn.realp = calloc(sizeA[0]*sizeA[1],sizeof(float));
-    
-    for(int i=0;i<sizeA[0];i++)
-        for(int j=0;j<sizeA[1];j++)
-            *(signalImageIn.realp + i*sizeA[1] + j) = (float) *(matrixA + i*sizeA[1] + j);
-    
-    signalImageIn.imagp = calloc(sizeA[0]*sizeA[1],sizeof(float)); // initialize to 0
-    
-    
-    DSPSplitComplex signalFourierOut;
-    signalFourierOut.realp = calloc(sizeA[0]*sizeA[1],sizeof(float) );
-    signalFourierOut.imagp = calloc(sizeA[0]*sizeA[1],sizeof(float) );
-    
-    vDSP_fft2d_zrop(vDSP_create_fftsetup(8, kFFTRadix2), &signalImageIn, 1, 1, &signalFourierOut, 1, 1, 8, 8, kFFTDirection_Forward);
-    
-    
-    DSPSplitComplex templateImageIn;
-    templateImageIn.realp = (float *) matrixB;
-    templateImageIn.imagp = calloc(sizeB[0]*sizeB[1], sizeof(float));
-    
-    DSPSplitComplex templateFourierOut;
-    templateFourierOut.realp = calloc(sizeB[0]*sizeB[1],sizeof(float) );
-    templateFourierOut.imagp = calloc(sizeB[0]*sizeB[1],sizeof(float) );
-    
-    
-//    vDSP_fft2d_zrop(vDSP_create_fftsetup(8, kFFTRadix2), &templateImageIn, 1, 1, &templateFourierOut, 1, 1, 8, 8, kFFTDirection_Forward);
-    
-    NSLog(@"Real");
-    float *c = signalFourierOut.realp;
-    for(int i = 0;i<sizeA[0];i++)
-        for(int j = 0; j < sizeA[1]; j++)
-            NSLog(@"%f", *(c+i*sizeA[1]+j));
-    
-    
-    //Multiplication of the signals (what kind of multiplication? point to point)
-    
-    //FFT-1 of the signals
-    
-}
 
 
 + (NSArray *)convTempFeat:(UIImage *)image
@@ -248,7 +180,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *w = templateValues + 3; //template weights
     double b = templateValues[3 + templateSize[0]*templateSize[1]*templateSize[2]]; //template bias parameter
     
-    HogFeature *hogFeature = [image obtainHogFeaturesReturningHog];
+    HogFeature *hogFeature = [image obtainHogFeatures];
     int blocks[2] = {hogFeature.numBlocksY, hogFeature.numBlocksX};
     
     int convolutionSize[2];
@@ -272,7 +204,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
         
 //        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
-//        [ConvolutionHelper convolutionWithFFT:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 
     }
     

@@ -50,7 +50,6 @@
 		FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */; };
 		FCFB1BF216D6BF8F004F0B54 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */; };
 		FCFB1BF516D6BF9A004F0B54 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */; };
-		FCFB1BF816D6F364004F0B54 /* TrainingClassifier.mm in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF716D6F364004F0B54 /* TrainingClassifier.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,8 +126,6 @@
 		FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		FCFB1BF316D6BF9A004F0B54 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
 		FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
-		FCFB1BF616D6F363004F0B54 /* TrainingClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingClassifier.h; sourceTree = "<group>"; };
-		FCFB1BF716D6F364004F0B54 /* TrainingClassifier.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TrainingClassifier.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,8 +202,6 @@
 				FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */,
 				FC18515816D4338500630140 /* FourierTransform.h */,
 				FC18515916D4338500630140 /* FourierTransform.m */,
-				FCFB1BF616D6F363004F0B54 /* TrainingClassifier.h */,
-				FCFB1BF716D6F364004F0B54 /* TrainingClassifier.mm */,
 				FC602B0116DFC9B0005FDAC8 /* Classifier.h */,
 				FC602B0216DFC9B0005FDAC8 /* Classifier.mm */,
 				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
@@ -403,7 +398,6 @@
 				FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */,
 				FCFB1BF216D6BF8F004F0B54 /* UIImage+Alpha.m in Sources */,
 				FCFB1BF516D6BF9A004F0B54 /* UIImage+RoundedCorner.m in Sources */,
-				FCFB1BF816D6F364004F0B54 /* TrainingClassifier.mm in Sources */,
 				FCB7665016D7DC7100A5EAE8 /* UIImage+OpenCV.mm in Sources */,
 				FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */,
 				FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */,
