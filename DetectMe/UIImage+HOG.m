@@ -7,6 +7,7 @@
 //
 
 #import "UIImage+HOG.h"
+#import "UIImage+Resize.h"
 
 #define PI 3.14159265
 #define eps 0.00001
@@ -83,14 +84,15 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 }
 
 
-
 - (double *) obtainHogFeatures
 {
+    //fix orientation problems
+    UIImage *correctedImage = [self fixOrientation];
+    
     // Inizialization
-    CGImageRef imageRef = self.CGImage;
-    int orientation = self.imageOrientation;
+    CGImageRef imageRef = correctedImage.CGImage;
     int hogSize[3];
-        
+    
     // Get the image in bits: Create a context and draw the image there to get the image in bits
     NSUInteger width = CGImageGetWidth(imageRef); //#pixels width
     NSUInteger height = CGImageGetHeight(imageRef); //#pixels height
@@ -108,11 +110,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     CGContextRelease(contextImage);
     
     UInt8 *im = pixels;
-    int dims[2] = {width, height};
-    if(orientation==0 || orientation==1){
-        dims[0] = height;
-        dims[1] = width;
-    }
+    int dims[2] = {height, width};
+
     
     int blocks[2]; //HOG features size
     blocks[0] = (int)round((double)dims[0]/(double)sbin); //HOG Cell of (sbin)x(sbin) pixels
@@ -131,85 +130,35 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     int visible[2]; // Each visible pixel (ie taking into account the round made in defining blocks size and neglecting the edge pixels)
     visible[0] = blocks[0]*sbin;
     visible[1] = blocks[1]*sbin;
-
     
-    for (int x = 1; x < visible[1]-1; x++) { //Take care to begin with the first one and end before the last one: not calculating the gradient at the edge
-        for (int y = 1; y < visible[0]-1; y++) {
+    
+    for (int y = 1; y < visible[0]-1; y++) { //Take care to begin with the first one and end before the last one: not calculating the gradient at the edge
+        for (int x = 1; x < visible[1]-1; x++) {
             
             UInt8 *s = 0; //pointer to the image pixel
             double dx, dy, v, dx2, dy2, v2, dx3, dy3, v3;
-            switch (orientation) {
-                case 0:
-                    s = im + min_int(x, dims[1]-2)*4 + min_int(y, dims[0]-2)*dims[1]*4; //pointer to the image pixel, column-major matrix structure
-                    
-                    // first color channel
-                    dx = (double)*(s+4) - *(s-4);
-                    dy = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
-                    v = dx*dx + dy*dy;
-                    
-                    // second color channel
-                    s++;
-                    dx2 = (double)*(s+4) - *(s-4);
-                    dy2 = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
-                    v2 = dx2*dx2 + dy2*dy2;
-                    
-                    // third color channel
-                    s++;
-                    dx3 = (double)*(s+4) - *(s-4);
-                    dy3 = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
-                    v3 = dx3*dx3 + dy3*dy3;
-                    
-                    break;
-                    
-                case 1:
-                    s = im + min_int(visible[1]-1- x, dims[1]-2)*4 + min_int(visible[0]-1- y, dims[0]-2)*dims[1]*4;
-                    
-                    dx = (double)*(s-4) - *(s+4);
-                    dy = (double)*(s-dims[1]*4) - *(s+dims[1]*4);
-                    
-                    s++;
-                    dx2 = (double)*(s-4) - *(s+4);
-                    dy2 = (double)*(s-dims[1]*4) - *(s+dims[1]*4);
-                    
-                    s++;
-                    dx3 = (double)*(s-4) - *(s+4);
-                    dy3 = (double)*(s-dims[1]*4) - *(s+dims[1]*4);
-                    
-                    break;
-                    
-                case 2:
-                    s = im + min_int( x, dims[1]-2)*dims[0]*4 + min_int( visible[0]-1-y, dims[0]-2)*4;
-                    
-                    dy = (double)*(s-4) - *(s+4);
-                    dx = (double)*(s+dims[0]*4) - *(s-dims[0]*4);
-                    
-                    s++;
-                    dy2 =  (double)*(s-4) - *(s+4);
-                    dx2 = (double)*(s+dims[0]*4) - *(s-dims[0]*4);
-                    
-                    s++;
-                    dy3 =  (double)*(s-4) - *(s+4);
-                    dx3 = (double)*(s+dims[0]*4) - *(s-dims[0]*4);
-                    
-                    break;
-                    
-                case 3:
-                    s = im + min_int(visible[1]-x-1, dims[1]-2)*dims[0]*4 + min_int(y, dims[0]-2)*4;
-                    
-                    dy = (double)*(s+4) - *(s-4);
-                    dx = (double)*(s-dims[0]*4) - *(s+dims[0]*4);
-                    
-                    s++;
-                    dy2 = (double)*(s+4) - *(s-4);
-                    dx2 = (double)*(s-dims[0]*4) - *(s+dims[0]*4);
-                    
-                    s++;
-                    dy3 = (double)*(s+4) - *(s-4);
-                    dx3 = (double)*(s-dims[0]*4) - *(s+dims[0]*4);
-                    
-                    break;
-            }
+
+            s = im + min_int(x, dims[1]-2)*4 + min_int(y, dims[0]-2)*dims[1]*4; //pointer to the image pixel, column-major matrix structure
             
+            // first color channel
+            dx = (double)*(s+4) - *(s-4);
+            dy = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
+            v = dx*dx + dy*dy;
+            
+            // second color channel
+            s++;
+            dx2 = (double)*(s+4) - *(s-4);
+            dy2 = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
+            v2 = dx2*dx2 + dy2*dy2;
+            
+            // third color channel
+            s++;
+            dx3 = (double)*(s+4) - *(s-4);
+            dy3 = (double)*(s+dims[1]*4) - *(s-dims[1]*4);
+            v3 = dx3*dx3 + dy3*dy3;
+            
+
+                                        
             v = dx*dx + dy*dy; //norm
             v2 = dx2*dx2 + dy2*dy2;
             v3 = dx3*dx3 + dy3*dy3;
@@ -313,7 +262,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             // contrast-sensitive features
             src = hist + (x+1)*blocks[0] + (y+1);
             for (int o = 0; o < 18; o++) //looping over the different channels of
-            { 
+            {
                 double h1 = min(*src * n1, 0.2); //?? why impose a max of 0.2
                 double h2 = min(*src * n2, 0.2);
                 double h3 = min(*src * n3, 0.2);
@@ -349,7 +298,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             *dst = 0.2357 * t3;
             dst += hogSize[0]*hogSize[1];
             *dst = 0.2357 * t4;
-
+            
         }
     }
     
@@ -363,22 +312,21 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 
 
+
+
+
 - (int *) obtainDimensionsOfHogFeatures
 {
     
-    CGImageRef imageRef = self.CGImage;
-    int orientation = self.imageOrientation;
+    UIImage *correctedImage = [self fixOrientation];
+    CGImageRef imageRef = correctedImage.CGImage;
     int *hogSize = malloc(3*sizeof(int));
     
     // Get the image in bits: Create a context and draw the image there to get the image in bits
     NSUInteger width = CGImageGetWidth(imageRef); //#pixels width
     NSUInteger height = CGImageGetHeight(imageRef); //#pixels height
     
-    int dims[2] = {width, height};
-    if(orientation==0 || orientation==1){
-        dims[0] = height;
-        dims[1] = width;
-    }
+    int dims[2] = {height, width};
     
     int blocks[2]; //HOG features size
     blocks[0] = (int)round((double)dims[0]/(double)sbin); //define block size for computing HOG. HOG Cell of (sbin)x(sbin)
@@ -391,6 +339,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     return hogSize;
 }
+
 
 
 - (UIImage *) convertToHogImage
