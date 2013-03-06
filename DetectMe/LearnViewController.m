@@ -161,19 +161,19 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 //            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
 
             
-            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:3];
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation: UIImageOrientationRight];
             
-            float scale = image.size.height / self.view.frame.size.height;
-            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
-            
-            self.targetFrameImageView.image = croppedImageToFitScreen;
+//            float scale = image.size.height / self.view.frame.size.height;
+//            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
+//            
+//            self.targetFrameImageView.image = croppedImageToFitScreen;
             
             //Crop it to the desired size (taking into account the orientation)
             // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
             // Image obtained by the camera is 360x480. This image is also displayed in prevLayer resized mantaining aspect ratio to fit in 320x504.
 
         
-            [self.trainingSet.images addObject:croppedImageToFitScreen];
+            [self.trainingSet.images addObject:image];
             
             // add ground truth bounding box
             ConvolutionPoint *boundingBox = [[ConvolutionPoint alloc] initWithRect:CGRectMake(3.0/8, 3.0/8, 1.0/4, 1.0/4) label:1 imageIndex:[self.trainingSet.images count]-1];
@@ -210,6 +210,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
             
         trainingImagesTVC.listOfImages = listOfImages;
+//        trainingImagesTVC.listOfImages = self.trainingSet.images;
     }
 }
 
@@ -221,7 +222,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSLog(@"learn went great");
     
     // write the template to a file
-    [self.svmClassifier storeSvmWeightsAsTemplateWithName:@"prova3.txt"];
+    [self.svmClassifier storeSvmWeightsAsTemplateWithName:@"prova4.txt"];
 
     //Learn creating a new queue
 

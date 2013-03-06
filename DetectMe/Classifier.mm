@@ -257,38 +257,38 @@ using namespace cv;
         }
         
         
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //Update bounding boxes
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        // Get new bounding boxes by running the detector
-        NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:0] minimumThreshold:-1 pyramids:10 usingNms:NO];
-        if(debugging) NSLog(@"number of bb obtained: %d", [newBoundingBoxes count]);
-        
-        //remove all current bounding boxes
-        [trainingSet.boundingBoxes removeAllObjects];
-        
-        //the rest that are less than an overlap threshold are considered negatives
-        ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
-        for(int j=0; j<[newBoundingBoxes count]; j++)
-        {
-            ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
-            double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
-            boundingBox.label = -1;
-            boundingBox.imageIndex = 0;
-            [trainingSet.boundingBoxes addObject:boundingBox];
-            
-            if (overlapArea > 0)
-            {
-                //TODO: New positive example to gain robustness!!
-            }
-        }
-        
-        //generate the hog features for the new bounding boxes
-        [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize:templateSize];
-        
-        //Add the current support vectors to the new hog features generated
-        [self addSupportVectorsToTrainingSet:trainingSet];
+//        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        //Update bounding boxes
+//        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+//        
+//        // Get new bounding boxes by running the detector
+//        NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:0] minimumThreshold:-1 pyramids:10 usingNms:NO];
+//        if(debugging) NSLog(@"number of bb obtained: %d", [newBoundingBoxes count]);
+//        
+//        //remove all current bounding boxes
+//        [trainingSet.boundingBoxes removeAllObjects];
+//        
+//        //the rest that are less than an overlap threshold are considered negatives
+//        ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
+//        for(int j=0; j<[newBoundingBoxes count]; j++)
+//        {
+//            ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
+//            double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
+//            boundingBox.label = -1;
+//            boundingBox.imageIndex = 0;
+//            [trainingSet.boundingBoxes addObject:boundingBox];
+//            
+//            if (overlapArea > 0)
+//            {
+//                //TODO: New positive example to gain robustness!!
+//            }
+//        }
+//        
+//        //generate the hog features for the new bounding boxes
+//        [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize:templateSize];
+//        
+//        //Add the current support vectors to the new hog features generated
+//        [self addSupportVectorsToTrainingSet:trainingSet];
         
         free(listOfHogFeaturesFloat);
     }
@@ -321,12 +321,11 @@ using namespace cv;
     CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image.CGImage withRect:maxsize];
     double sc = pow(2, 1.0/numberPyramids);
     
-    UIImage *imgaux = [UIImage imageWithCGImage:resizedImage];
+    //aquesta imatge girada, quin tamany te? 360x480 -> 225x300 (pero en UIImage apareix portarait!)
     
     [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:resizedImage
                                                                    withTemplate:templateWeights
                                                                     orientation:image.imageOrientation]];
-    
     //Pyramid calculation
     for (int i = 1; i<numberPyramids; i++)
     {
@@ -371,12 +370,26 @@ using namespace cv;
 - (void) storeTemplateMatching:(TrainingSet *) trainingSet;
 {
     HogFeature *hogFeature;
+    HogFeature *hogFeature_orig;
     
     UIImage *wholeImage = [trainingSet.images objectAtIndex:0];
+    // BE CAREFUL!!! Intrinsic change of UIImage Orientation!! (from right to up)
     UIImage *img = [wholeImage croppedImage:[[trainingSet.boundingBoxes objectAtIndex:0] rectangleForImage:wholeImage]];
     UIImage *resizedImage = [img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault];
+    size_t width = CGImageGetWidth(resizedImage.CGImage);
+	size_t height = CGImageGetHeight(resizedImage.CGImage);
+    NSLog(@"h:%zu, w:%zu", height, width);
     
-    hogFeature = [resizedImage obtainHogFeaturesReturningHog];
+    
+    UIImage *rotatedImage = [UIImage imageWithCGImage:resizedImage.CGImage scale:1.0 orientation:UIImageOrientationLeft];
+    UIImage *fixed = [rotatedImage fixOrientation];
+    width = CGImageGetWidth(fixed.CGImage);
+	height = CGImageGetHeight(fixed.CGImage);
+    NSLog(@"h:%zu, w:%zu", height, width);
+    
+
+    hogFeature_orig = [[UIImage imageWithCGImage:resizedImage.CGImage scale:1.0 orientation:UIImageOrientationRight] obtainHogFeaturesReturningHog];
+    hogFeature = [[UIImage imageWithCGImage:fixed.CGImage scale:1.0 orientation:UIImageOrientationRight] obtainHogFeaturesReturningHog];
 
     for(int i=0; i<hogFeature.totalNumberOfFeatures;i++)
         self.svmWeights[i] = hogFeature.features[i];
@@ -397,7 +410,8 @@ using namespace cv;
     
     UIImage *wholeImage = [trainingSet.images objectAtIndex:sampleBoundingBox.imageIndex];
     UIImage *img = [wholeImage croppedImage:[sampleBoundingBox rectangleForImage:wholeImage]];
-    
+    NSLog(@"w:%f, h:%f",wholeImage.size.width, wholeImage.size.height);
+    NSLog(@"w:%f, h:%f",img.size.width, img.size.height);
     
     templateSize.height = img.size.height*0.6;
     templateSize.width = img.size.width*0.6;

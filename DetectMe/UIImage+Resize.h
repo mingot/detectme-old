@@ -8,6 +8,7 @@
 
 @interface UIImage (Resize)
 
+
 - (UIImage *)croppedImage:(CGRect)bounds;
 
 - (UIImage *)thumbnailImage:(NSInteger)thumbnailSize
@@ -21,4 +22,9 @@
 - (UIImage *)resizedImageWithContentMode:(UIViewContentMode)contentMode
                                   bounds:(CGSize)bounds
                     interpolationQuality:(CGInterpolationQuality)quality;
+
+-(UIImage*)rotateWithOrientation:(UIImageOrientation)orientation;
+
+- (UIImage *)fixOrientation ;
+
 @end

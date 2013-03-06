@@ -11,7 +11,7 @@
 #define PI 3.14159265
 #define eps 0.00001
 #define sbin 8 //pixels per block
-#define HOG_CONTRAST 10 //contrast representing hog features. Default 1
+#define HOG_CONTRAST 1 //contrast representing hog features. Default 1
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
     0.9397,
@@ -361,6 +361,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     return mfeat;
 }
 
+
+
 - (int *) obtainDimensionsOfHogFeatures
 {
     
@@ -418,7 +420,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         }
     }
     
-    
     CGContextRef context = CGBitmapContextCreate(imageBuffer, //data
                                                  blocks[1]*pix, //width
                                                  blocks[0]*pix, //height
@@ -426,6 +427,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                                                  blocks[1]*pix*4, //bytes per row
                                                  CGColorSpaceCreateDeviceRGB(),
                                                  kCGImageAlphaPremultipliedLast ); //bitmap info
+    
     CGImageRef ima = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
     UIImage *image = [UIImage imageWithCGImage:ima scale:1.0 orientation:UIImageOrientationUp];

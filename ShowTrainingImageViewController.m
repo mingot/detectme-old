@@ -32,11 +32,11 @@
 {
     [super viewDidLoad];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.imageView.image = [self.image brightImage:1];
+//    self.image = [UIImage imageWithCGImage:self.image.CGImage scale:1.0 orientation:UIImageOrientationUp];
+    self.imageView.image = self.image;
     
     
     UIBarButtonItem *hogButton = [[UIBarButtonItem alloc] initWithTitle:@"HOG" style:UIBarButtonItemStyleBordered target:self action:@selector(hogAction:)];
-    
     self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: hogButton, nil];
 }
 
