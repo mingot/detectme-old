@@ -12,7 +12,7 @@
 #define PI 3.14159265
 #define eps 0.00001
 #define sbin 8 //pixels per block
-#define HOG_CONTRAST 10 //contrast representing hog features. Default 1
+#define HOG_CONTRAST 5 //contrast representing hog features. Default 1
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
     0.9397,

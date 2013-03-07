@@ -116,7 +116,7 @@ using namespace cv;
         if(i==0) self.imageFeatures = (double *) malloc([self.boundingBoxes count]*hogFeature.totalNumberOfFeatures*sizeof(double));
         
         //add the label
-        self.labels[i] = (float) - boundingBox.label;
+        self.labels[i] = (float) boundingBox.label;
         
         //add the hog features
         for(int j=0; j<hogFeature.totalNumberOfFeatures; j++)
@@ -141,14 +141,11 @@ using namespace cv;
 @property double *supportVectors;
 @property int numSupportVectors;
 
-// Update the weight vector of the classifier given a trained CvSVM
-- (void) updateSvmWeights:(CvSVM) svmModel;
-
 //Sets the size of the template and obtain the dimension of the features from it.
 - (void) obtainTemplateSize:(TrainingSet *) trainingSet;
 
 // Add hog features from support vectors to the current hog features from bounding boxes
-- (void) addSupportVectorsToTrainingSet:(TrainingSet *) trainingSet;
+- (void) addSupportVectorsToTrainingSet:(TrainingSet *)trainingSet newLabels:(float *) labels;
 
 
 @end
@@ -191,14 +188,15 @@ using namespace cv;
 
 - (void) printListHogFeatures:(float *) listOfHogFeaturesFloat
 {
+    //Print unoriented hog features for debugging purposes
     for(int y=0; y<7; y++)
     {
         for(int x=0; x<5; x++)
         {
-            for(int f = 0; f<31; f++)
+            for(int f = 18; f<27; f++)
             {
                 printf("%f ", listOfHogFeaturesFloat[y + x*7 + f*7*5]);
-                if(f==17 || f==26) printf("  |  ");
+//                if(f==17 || f==26) printf("  |  ");
             }
             printf("\n");
         }
@@ -223,8 +221,15 @@ using namespace cv;
     [trainingSet initialFill];
     [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize: templateSize];
     
+    // Set up SVM's parameters
+    CvSVMParams params;
+    params.svm_type    = CvSVM::C_SVC;
+    params.kernel_type = CvSVM::LINEAR;
+    params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 1000, 1e-6);
+    
+    
     //convergence loop
-    int numIterations = 1;
+    int numIterations = 2;
     for (int i=0; i<numIterations; i++)
     {
         // Set up training data
@@ -235,97 +240,105 @@ using namespace cv;
         for(int i=0; i<numOfFeatures*trainingSet.numberOfTrainingExamples; i++)
             listOfHogFeaturesFloat[i] = (float) trainingSet.imageFeatures[i];
         
+
+        //print the first positive
+        for(int i=0; i<trainingSet.numberOfTrainingExamples;i++)
+            if(trainingSet.labels[i]==1)
+            {
+                printf("\n\n POSITIVE EXAMPLE at position: %d \n\n", i);
+                [self printListHogFeatures:&listOfHogFeaturesFloat[i*7*5*31]];
+            }
+        
         Mat labelsMat(trainingSet.numberOfTrainingExamples,1,CV_32FC1, trainingSet.labels);
         Mat trainingDataMat(trainingSet.numberOfTrainingExamples, numOfFeatures, CV_32FC1, listOfHogFeaturesFloat); 
         //std::cout << trainingDataMat << std::endl; //output learning matrix
         
-        // Set up SVM's parameters
-        CvSVMParams params;
-        params.svm_type    = CvSVM::C_SVC;
-        params.kernel_type = CvSVM::LINEAR;
-        params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 1000, 1e-6);
-        
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Train the SVM, update weights and store support vectors and labels
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+    
         CvSVM SVM;
         SVM.train(trainingDataMat, labelsMat, Mat(), Mat(), params);
         
         //update weights and store the support vectors
+        self.numSupportVectors = SVM.get_support_vector_count();
+        float *supportVectorLabels = (float *) malloc(self.numSupportVectors*sizeof(float));
         
-        int numSupportVectors = SVM.get_support_vector_count();
         const CvSVMDecisionFunc *dec = SVM.decision_func;
         self.svmWeights = (double *) calloc((numOfFeatures+1),sizeof(double));
-        self.supportVectors = (double *) malloc(numOfFeatures*numSupportVectors*sizeof(double));
+        self.supportVectors = (double *) malloc(numOfFeatures*self.numSupportVectors*sizeof(double));
         
-        printf("Num of support vectors: %d\n", numSupportVectors);
-        
-        for (int i = 0; i < numSupportVectors; ++i)
+        printf("Num of support vectors: %d\n", self.numSupportVectors);
+        for (int i = 0; i < self.numSupportVectors; ++i)
         {
             float alpha = dec[0].alpha[i];
             const float *supportVector = SVM.get_support_vector(i);
             float *sv_aux = (float *) malloc(numOfFeatures*sizeof(float));
-            
-            // Get the current label of the supportvector
-            for(int j=0;j<numOfFeatures;j++)
+            for(int j=0;j<numOfFeatures;j++) //const float* to float*
                 sv_aux[j] = supportVector[j];
             
+            // Get the current label of the supportvector
             Mat supportVectorMat(numOfFeatures,1,CV_32FC1, sv_aux);
-            float label = SVM.predict(supportVectorMat);
-            printf("label: %f\n", label);
-            printf("alpha: %f\n", alpha);
+            supportVectorLabels[i] = SVM.predict(supportVectorMat);
+            printf("label: %f   alpha: %f \n", supportVectorLabels[i], alpha);
             
             for(int j=0;j<numOfFeatures;j++)
             {
                 // add to get the weights
-                self.svmWeights[j] += (double) alpha * supportVector[j];
+                self.svmWeights[j] -= (double) alpha * supportVector[j];
                 
                 //store the support vector
-                self.supportVectors[i*numSupportVectors +j] = (double) supportVector[j];
+                self.supportVectors[i*numOfFeatures +j] = (double) supportVector[j];
             }
         }
         self.svmWeights[numOfFeatures] = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
         
         if(debugging)
         {
-            NSLog(@"bias: %f", - dec[0].rho);
-            NSLog(@"self.weightDimensions: %d, %d, %d", self.weightsDimensions[0], self.weightsDimensions[1], self.weightsDimensions[2]);
+            NSLog(@"bias: %f", self.svmWeights[numOfFeatures]);
         }
         
         
-//        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-//        //Update bounding boxes
-//        //////////////////////////////////////////////////////////////////////////////////////////////////////////
-//        
-//        // Get new bounding boxes by running the detector
-//        NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:0] minimumThreshold:-1 pyramids:10 usingNms:NO];
-//        if(debugging) NSLog(@"number of bb obtained: %d", [newBoundingBoxes count]);
-//        
-//        //remove all current bounding boxes
-//        [trainingSet.boundingBoxes removeAllObjects];
-//        
-//        //the rest that are less than an overlap threshold are considered negatives
-//        ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
-//        for(int j=0; j<[newBoundingBoxes count]; j++)
-//        {
-//            ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
-//            double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
-//            boundingBox.label = -1;
-//            boundingBox.imageIndex = 0;
-//            [trainingSet.boundingBoxes addObject:boundingBox];
-//            
-//            if (overlapArea > 0)
-//            {
-//                //TODO: New positive example to gain robustness!!
-//            }
-//        }
-//        
-//        //generate the hog features for the new bounding boxes
-//        [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize:templateSize];
-//        
-//        //Add the current support vectors to the new hog features generated
-//        [self addSupportVectorsToTrainingSet:trainingSet];
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Update bounding boxes
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        // Get new bounding boxes by running the detector
+        NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:0] minimumThreshold:-1 pyramids:10 usingNms:NO];
+        if(debugging) NSLog(@"number of new bb obtained: %d", [newBoundingBoxes count]);
+        
+        //remove all current bounding boxes
+        [trainingSet.boundingBoxes removeAllObjects];
+        
+        //the rest that are less than an overlap threshold are considered negatives
+        ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
+        int positives = 0;
+        for(int j=0; j<[newBoundingBoxes count]; j++)
+        {
+            ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
+            boundingBox.imageIndex = 0;
+            double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
+            
+            if (overlapArea < 0.25)
+            {
+                boundingBox.label = -1;
+                [trainingSet.boundingBoxes addObject:boundingBox];
+                
+            }else if (overlapArea > 0.8){
+                boundingBox.label = 1;
+                positives ++;
+                [trainingSet.boundingBoxes addObject:boundingBox];
+            }
+            
+        }
+        printf("added:%d positives\n", positives);
+        printf("total of new bounding boxes: %d\n", [trainingSet.boundingBoxes count]);
+        
+        //generate the hog features for the new bounding boxes
+        [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize:templateSize];
+        
+        //Add the current support vectors to the new hog features generated
+        [self addSupportVectorsToTrainingSet:trainingSet newLabels:supportVectorLabels];
         
         free(listOfHogFeaturesFloat);
     }
@@ -351,7 +364,7 @@ using namespace cv;
     NSMutableArray *candidateBoundingBoxes = [[NSMutableArray alloc] init];
     
     // Maxsize for going faster
-    // TODO: choose it reasonably
+    // TODO: choose it reasonably and related it with the number of pyramids
     int maxsize = 300;
     
     CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image.CGImage withRect:maxsize];
@@ -447,31 +460,15 @@ using namespace cv;
 }
 
 
-- (void) updateSvmWeights:(CvSVM) svmModel
-{    
-    int numSupportVectors = svmModel.get_support_vector_count();
-    int numOfFeatures = svmModel.get_var_count();
-    
-    const CvSVMDecisionFunc *dec = svmModel.decision_func;
-    self.svmWeights = (double *) calloc((numOfFeatures+1),sizeof(double));
-    
-    for (int i = 0; i < numSupportVectors; ++i)
-    {
-        float alpha = *(dec[0].alpha + i);
-        const float *supportVector = svmModel.get_support_vector(i);
-        for(int j=0;j<numOfFeatures;j++)
-            self.svmWeights[j] += (double) alpha * supportVector[j];
-    }
-    self.svmWeights[numOfFeatures] = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
-
-}
-
-- (void) addSupportVectorsToTrainingSet:(TrainingSet *) trainingSet
+- (void) addSupportVectorsToTrainingSet:(TrainingSet *) trainingSet newLabels:(float *)supportVectorLabels
 {
     int numFeatures = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2];
-    double *totalFeatures = (double *) malloc((self.numSupportVectors + [trainingSet.boundingBoxes count])*numFeatures*sizeof(double));
+    int numTrainExamples = (self.numSupportVectors + [trainingSet.boundingBoxes count]); // add support vectors to the new bounding boxes
     
-    //copy support vectors
+    double *totalFeatures = (double *) malloc(numTrainExamples*numFeatures*sizeof(double));
+    float *totalLabels = (float *) malloc(numTrainExamples*sizeof(float));
+    
+    //copy support vectors features
     for(int i=0; i<self.numSupportVectors*numFeatures;i++)
         totalFeatures[i] = self.supportVectors[i];
     
@@ -479,13 +476,26 @@ using namespace cv;
     for(int i=0; i<[trainingSet.boundingBoxes count]*numFeatures; i++)
         totalFeatures[self.numSupportVectors*numFeatures + i] = trainingSet.imageFeatures[i];
     
-    //return this vector to the TrainingSet object
-    trainingSet.imageFeatures = (double *) malloc((self.numSupportVectors + [trainingSet.boundingBoxes count])*numFeatures*sizeof(double));
-
-    for(int i=0; i<(self.numSupportVectors + [trainingSet.boundingBoxes count])*numFeatures; i++)
+    //return vector of features to the TrainingSet object
+    trainingSet.imageFeatures = (double *) malloc(numTrainExamples*numFeatures*sizeof(double));
+    for(int i=0; i<numTrainExamples*numFeatures; i++)
         trainingSet.imageFeatures[i] = totalFeatures[i];
     
-    //FIXME: UPDATE THE LABELS!!
+    //coppy support vector labels
+    for(int i=0; i<self.numSupportVectors; i++)
+        totalLabels[i] = supportVectorLabels[i];
+    
+    //copy bounding boxes labels
+    for(int i=0;i<[trainingSet.boundingBoxes count]; i++)
+        totalLabels[self.numSupportVectors + i] = trainingSet.labels[i];
+    
+    //return vector of labels to the TrainingSet object
+    trainingSet.labels = (float *) malloc(numTrainExamples*sizeof(float));
+    for(int i=0; i<numTrainExamples; i++)
+        trainingSet.labels[i] = totalLabels[i];
+    
+    
+    trainingSet.numberOfTrainingExamples = numTrainExamples;
 }
 
 
