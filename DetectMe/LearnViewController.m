@@ -33,7 +33,8 @@
 
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
-@synthesize detectFrameView = _detectFrameView;
+@synthesize detectView = _detectView;
+
 @synthesize trainingSet = _trainingSet;
 
 @synthesize listOfTrainingImages =_listOfTrainingImages;
@@ -90,21 +91,16 @@
 	[self.captureSession addOutput:captureOutput];
     [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
     
-    // Subviews initialization
-    self.detectFrameView = [[RectFrameLearnView alloc] initWithFrame:self.view.bounds]; //TO change to self.prevLayer.frame
-
-
-
-    
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = self.view.bounds;
-	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;//
+    self.prevLayer.frame = CGRectMake(0, 0, 320, 504);//self.view.bounds;
+	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
 
-    [self.view addSubview:self.detectFrameView];
-
-
+    // detect view frame
+    ConvolutionPoint *detectFrame = [[ConvolutionPoint alloc] initWithRect:CGRectMake(3.0/8, 3.0/8, 1.0/4, 1.0/4) label:0 imageIndex:0];
+    [self.detectView setCorners:[[NSArray alloc] initWithObjects:detectFrame, nil]];
+    [self.view addSubview:self.detectView];
 }
 
 
@@ -114,6 +110,11 @@
     [self.captureSession startRunning];
 }
 
+
+- (void) printRectangle: (CGRect) rect
+{
+    NSLog(@"H:%f W:%f origin.x:%f origin.y:%f", rect.size.height, rect.size.width, rect.origin.x, rect.origin.y);
+}
 
 #pragma mark -
 #pragma mark AVCaptureSession delegate
@@ -132,6 +133,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         size_t width = CVPixelBufferGetWidth(imageBuffer);
         size_t height = CVPixelBufferGetHeight(imageBuffer);
         
+        
         //Create a CGImageRef from the CVImageBufferRef
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
@@ -140,30 +142,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //We release some components
         CGContextRelease(newContext);
         CGColorSpaceRelease(colorSpace);
-    
+        
         
         if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
             // Make the UIImage and change the orientation
-
-            
-//            // Dimensions
-//            CGRect screenBound = [[UIScreen mainScreen] bounds];
-//            NSLog(@"Dimension of the total screen (w x h): %f x %f", screenBound.size.width, screenBound.size.height);
-//            NSLog(@"Dimension of image captured: %f x %f", image.size.width, image.size.height);
-//            NSLog(@"Dimension of the prevLayer frame: %f x %f", self.view.frame.size.width, self.view.frame.size.height);
-
-            
             UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation: UIImageOrientationRight];
-            
-//            float scale = image.size.height / self.view.frame.size.height;
-//            UIImage *croppedImageToFitScreen = [image croppedImage:CGRectMake((image.size.width - self.view.frame.size.width*scale)/2, 0, self.view.frame.size.width*scale, image.size.height)];
-//            
-            
-            //Crop it to the desired size (taking into account the orientation)
-            // TODO: relate the actual image with the image displayed on the prevLayer (and make concide the crop area). Why does it resize the image to 360x480??
-            // Image obtained by the camera is 360x480. This image is also displayed in prevLayer resized mantaining aspect ratio to fit in 320x504.
-
         
             [self.trainingSet.images addObject:image];
             
@@ -183,8 +167,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
     }
 }
-
-
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -242,6 +224,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 - (void)viewDidUnload {
+    [self setDetectView:nil];
     [super viewDidUnload];
 }
 @end

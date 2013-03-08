@@ -295,11 +295,18 @@
                     <view key="view" contentMode="scaleToFill" id="wq8-PO-KHh">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" id="ycu-B4-cYr" customClass="DetectView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="Uvp-R3-T3t"/>
                     <connections>
+                        <outlet property="detectView" destination="ycu-B4-cYr" id="3aZ-Mq-Cib"/>
                         <segue destination="asF-uV-v8k" kind="push" identifier="show Training Set of Images" id="H9G-QN-epd"/>
                     </connections>
                 </viewController>

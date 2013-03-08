@@ -12,9 +12,9 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreMedia/CoreMedia.h>
 
-#import "RectFrameLearnView.h"
 #import "TrainingImagesTableViewController.h"
 #import "Classifier.h"
+#import "DetectView.h"
 
 
 @interface LearnViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, TrainingImagesTableViewControlleDelegate>
@@ -22,12 +22,12 @@
 
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
-@property (nonatomic, strong) RectFrameLearnView *detectFrameView;
 
 
 @property (nonatomic, strong) Classifier *svmClassifier;
 @property (nonatomic, strong) TrainingSet *trainingSet;
 
+@property (weak, nonatomic) IBOutlet DetectView *detectView;
 
 
 

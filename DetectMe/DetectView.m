@@ -30,6 +30,12 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
+    
+    // correction of the aspect fill of prevLayer
+    CGFloat offset, scale;
+    offset = self.frame.size.width*0.08/2.0;
+    scale = 1.3;
+    
     // Drawing code
     if (self.corners.count!=0)
     {
@@ -37,14 +43,13 @@
         ConvolutionPoint *p;
         CGFloat x,y,w,h;
         
-        
         for (int i=0; i<self.corners.count; i++) 
         {
             p = [self.corners objectAtIndex:i];
             
-            x = p.xmin * self.frame.size.width;
+            x = p.xmin * self.frame.size.width - offset;
             y = p.ymin * self.frame.size.height;
-            w = (p.xmax - p.xmin)*self.frame.size.width;
+            w = (p.xmax - p.xmin)*self.frame.size.width*scale;
             h = (p.ymax - p.ymin)*self.frame.size.height;
             
             
@@ -64,22 +69,8 @@
     }
 }
 
-/*
--(void)setCorner:(NSArray *)c {
-    numRect = c.count;
-    for (int i=0; i<n.count; i++) {
-        *(corner +4*i) = *(c+5*i+1);
-        *(corner +4*i+1) = *(c+5*i+2);
-        *(corner +4*i+2) = *(c+5*i+3);
-        *(corner +4*i+3) = *(c+5*i+4);
-        //NSLog(@"%d.\tCorner, %d x %d",i, *(corner +2*i), *(corner +2*i+1));
-
-    }
-     // NSLog(@"Corner, %d x %d",corner[0],corner[1]);
-}
-*/
-
--(void)reset{
+- (void)reset
+{
     self.corners = nil;
 }
 

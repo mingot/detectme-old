@@ -202,8 +202,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         
         // convolute and add the results to dst
         [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
-        
-//        [ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+        //[ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
 
     }
     
@@ -217,8 +216,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             {
                 p.xmin = (double)(x + 1)/((double)blocks[1] + 2);
                 p.xmax = (double)(x + 1)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2));
-                p.ymin = (double)(y + 2)/((double)blocks[0] + 2);
-                p.ymax = (double)(y + 2)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2));
+                p.ymin = (double)(y + 1)/((double)blocks[0] + 2);
+                p.ymax = (double)(y + 1)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2));
 
                 [result addObject:p];
             }

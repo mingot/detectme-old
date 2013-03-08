@@ -85,13 +85,14 @@
 
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = self.view.bounds;  
+	self.prevLayer.frame = CGRectMake(0, 0, 320, 504);//self.view.bounds;  
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
     
     // Add subviews in front of  the prevLayer
     [self.view addSubview:self.HOGimageView];
     [self.view addSubview:self.detectView];
+    
 }
 
 
@@ -113,7 +114,6 @@
         settingsVC.numMaximums = (numMax==10 ? YES : NO);
     }
 }
-
 
 
 
@@ -174,7 +174,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //TODO: make this a parameter that can be set via features.
         int numPyramids = 15;
         if (! pyramid)  numPyramids = 1;
-                
+        
         NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight]
                                       minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
                                               pyramids:numPyramids

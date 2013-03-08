@@ -23,7 +23,6 @@
 		FC00ACD916C56F2A00BE112E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC00ACD716C56F2A00BE112E /* CoreVideo.framework */; };
 		FC18515A16D4338500630140 /* FourierTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515916D4338500630140 /* FourierTransform.m */; };
 		FC18515D16D5195C00630140 /* LearnViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515C16D5195C00630140 /* LearnViewController.m */; };
-		FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18515F16D533DA00630140 /* RectFrameLearnView.m */; };
 		FC21495D16E4F4CB00986B7D /* UIImage+Brightness.m in Sources */ = {isa = PBXBuildFile; fileRef = FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */; };
 		FC43B6B416CADB0400BF4048 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B316CADB0400BF4048 /* CoreMotion.framework */; };
 		FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B516CADB0C00BF4048 /* AudioToolbox.framework */; };
@@ -79,8 +78,6 @@
 		FC18515916D4338500630140 /* FourierTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FourierTransform.m; sourceTree = "<group>"; };
 		FC18515B16D5195C00630140 /* LearnViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LearnViewController.h; sourceTree = "<group>"; };
 		FC18515C16D5195C00630140 /* LearnViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LearnViewController.m; sourceTree = "<group>"; };
-		FC18515E16D533D900630140 /* RectFrameLearnView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectFrameLearnView.h; sourceTree = "<group>"; };
-		FC18515F16D533DA00630140 /* RectFrameLearnView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RectFrameLearnView.m; sourceTree = "<group>"; };
 		FC21495B16E4F4CB00986B7D /* UIImage+Brightness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Brightness.h"; sourceTree = "<group>"; };
 		FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Brightness.m"; sourceTree = "<group>"; };
 		FC43B6B316CADB0400BF4048 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
@@ -266,8 +263,6 @@
 				FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */,
 				FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */,
 				FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */,
-				FC18515E16D533D900630140 /* RectFrameLearnView.h */,
-				FC18515F16D533DA00630140 /* RectFrameLearnView.m */,
 			);
 			name = Train;
 			sourceTree = "<group>";
@@ -392,7 +387,6 @@
 				FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */,
 				FC18515A16D4338500630140 /* FourierTransform.m in Sources */,
 				FC18515D16D5195C00630140 /* LearnViewController.m in Sources */,
-				FC18516016D533DA00630140 /* RectFrameLearnView.m in Sources */,
 				FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */,
 				FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */,
 				FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */,

@@ -229,7 +229,7 @@ using namespace cv;
     
     
     //convergence loop
-    int numIterations = 2;
+    int numIterations = 3;
     for (int i=0; i<numIterations; i++)
     {
         // Set up training data
