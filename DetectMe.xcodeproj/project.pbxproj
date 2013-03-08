@@ -42,7 +42,6 @@
 		FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1B16CACEB60024CAE4 /* CameraViewController.m */; };
 		FCBE9A2D16CACEB60024CAE4 /* DetectPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */; };
 		FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */; };
-		FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */; };
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
 		FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */; };
 		FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */; };
@@ -109,8 +108,6 @@
 		FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectPhotoViewController.m; sourceTree = "<group>"; };
 		FCBE9A2016CACEB60024CAE4 /* ConvolutionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvolutionHelper.h; sourceTree = "<group>"; };
 		FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvolutionHelper.m; sourceTree = "<group>"; };
-		FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageProcessingHelper.h; sourceTree = "<group>"; };
-		FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageProcessingHelper.m; sourceTree = "<group>"; };
 		FCBE9A2616CACEB60024CAE4 /* DetectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectView.h; sourceTree = "<group>"; };
 		FCBE9A2716CACEB60024CAE4 /* DetectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectView.m; sourceTree = "<group>"; };
 		FCFB1BE216D675FF004F0B54 /* TrainingImagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingImagesTableViewController.h; sourceTree = "<group>"; };
@@ -201,8 +198,6 @@
 				FC18515916D4338500630140 /* FourierTransform.m */,
 				FC602B0116DFC9B0005FDAC8 /* Classifier.h */,
 				FC602B0216DFC9B0005FDAC8 /* Classifier.mm */,
-				FCBE9A2216CACEB60024CAE4 /* ImageProcessingHelper.h */,
-				FCBE9A2316CACEB60024CAE4 /* ImageProcessingHelper.m */,
 				FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */,
 				FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */,
 				FC00ACC916C56CEC00BE112E /* MainStoryboard.storyboard */,
@@ -381,7 +376,6 @@
 				FCBE9A2C16CACEB60024CAE4 /* CameraViewController.m in Sources */,
 				FCBE9A2D16CACEB60024CAE4 /* DetectPhotoViewController.m in Sources */,
 				FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */,
-				FCBE9A3016CACEB60024CAE4 /* ImageProcessingHelper.m in Sources */,
 				FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */,
 				FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */,
 				FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */,

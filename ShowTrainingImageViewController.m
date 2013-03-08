@@ -9,7 +9,6 @@
 #import "ShowTrainingImageViewController.h"
 #import "UIImage+Brightness.h"
 #import "UIImage+HOG.h"
-#import "ImageProcessingHelper.h"
 
 
 

@@ -69,6 +69,13 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
 }
 
+
+- (void) dealloc
+{
+    free(self.features);
+    free(self.dimensionOfHogFeatures);
+}
+
 @end
 
 

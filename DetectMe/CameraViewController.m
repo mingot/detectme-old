@@ -14,9 +14,14 @@
 #import "ImageProcessingHelper.h"
 #import "ConvolutionHelper.h"
 #import "UIImage+HOG.h"
+#import "UIImage+Resize.h"
 
 
 @implementation CameraViewController
+
+@synthesize svmClassifier = _svmClassifier;
+@synthesize templateName = _templateName;
+@synthesize numPyramids = _numPyramids;
 
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
@@ -24,10 +29,9 @@
 @synthesize HOGimageView = _HOGimageView;
 @synthesize detectView = _detectView;
 
-@synthesize templateName = _templateName;
 @synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
 
-@synthesize svmClassifier = _svmClassifier;
+
 
 
 - (void)viewDidLoad
@@ -38,7 +42,6 @@
     self.prevLayer = nil;
     
     hogOnScreen = NO;
-    pyramid = YES;
     numMax = 1;
     
     cameraRoll = NO;
@@ -50,10 +53,10 @@
     sizeImage = 10; //??
     
     
-    //Select template
+    //Initialization of model properties
     templateWeights = [FileStorageHelper readTemplate:self.templateName];
     self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:templateWeights];
-    
+    self.numPyramids = 10;
     
     // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
@@ -110,8 +113,8 @@
         SettingsViewController *settingsVC = (SettingsViewController *) segue.destinationViewController;
         settingsVC.delegate = self;
         settingsVC.hog = hogOnScreen;
-        settingsVC.pyramid = pyramid;
         settingsVC.numMaximums = (numMax==10 ? YES : NO);
+        settingsVC.numPyramids = self.numPyramids;
     }
 }
 
@@ -171,13 +174,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
          */
         
-        //TODO: make this a parameter that can be set via features.
-        int numPyramids = 15;
-        if (! pyramid)  numPyramids = 1;
-        
         NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight]
                                       minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
-                                              pyramids:numPyramids
+                                              pyramids:self.numPyramids
                                               usingNms:YES];
         
         
@@ -197,8 +196,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //Put the HOG picture on screen
         if (hogOnScreen) 
         { 
-            CGImageRef imgResized = [ImageProcessingHelper resizeImage:imageRef withRect:230];
-            UIImage *image = [[UIImage imageWithCGImage:imgResized scale:1.0 orientation:3] convertToHogImage];
+            UIImage *image = [ [[UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight] scaleImageTo:230/480.0] convertToHogImage];
             [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES];
         }
         
@@ -216,14 +214,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if(!value) [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:nil waitUntilDone:YES];
 }
 
--(void) setPyramidValue:(BOOL) value{
-    pyramid = value;
-}
-
 -(void) setNumMaximums:(BOOL) value{
     numMax = value ? 10 : 1;
 }
 
+- (void) setNumPyramidsFromDelegate: (double) value
+{
+    self.numPyramids = (int) value;
+}
 
 
 #pragma mark -

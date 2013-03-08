@@ -9,7 +9,6 @@
 
 #import "DetectPhotoViewController.h"
 #import "ConvolutionHelper.h"
-#import "ImageProcessingHelper.h"
 #import "FileStorageHelper.h"
 #import "UIImage+HOG.h"
 
@@ -104,8 +103,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         isHog = NO;
         
     }else {
-        CGImageRef img = [ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230];
-        UIImage *image = [[UIImage imageWithCGImage:img] convertToHogImage];
+//        CGImageRef img = [ImageProcessingHelper resizeImage:self.picture.image.CGImage withRect:230];
+        UIImage *image = [self.picture.image convertToHogImage];
         //self.originalImage = self.picture.image;
         self.picture.image = image;
         isHog = YES;

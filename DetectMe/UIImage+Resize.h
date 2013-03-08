@@ -16,6 +16,9 @@
                cornerRadius:(NSUInteger)cornerRadius
        interpolationQuality:(CGInterpolationQuality)quality;
 
+
+- (UIImage *)scaleImageTo:(double) scale;
+
 - (UIImage *)resizedImage:(CGSize)newSize
      interpolationQuality:(CGInterpolationQuality)quality;
 
@@ -23,7 +26,7 @@
                                   bounds:(CGSize)bounds
                     interpolationQuality:(CGInterpolationQuality)quality;
 
--(UIImage*)rotateWithOrientation:(UIImageOrientation)orientation;
+- (UIImage*)rotateWithOrientation:(UIImageOrientation)orientation;
 
 - (UIImage *)fixOrientation ;
 

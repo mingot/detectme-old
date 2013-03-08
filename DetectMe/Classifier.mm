@@ -14,7 +14,6 @@
 #import "UIImage+HOG.h"
 #import "UIImage+Resize.h"
 #import "ConvolutionHelper.h"
-#import "ImageProcessingHelper.h"
 
 using namespace cv;
 
@@ -87,12 +86,11 @@ using namespace cv;
 
 - (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize)templateSize
 {    
-    //Allocate memory for the features and the labels
+    // Allocate memory for the features and the labels
     self.labels = (float *) malloc([self.boundingBoxes count]*sizeof(float));
     
-    
+    // Store latest images bounding boxes used
     self.imagesUsed = [[NSMutableArray alloc] initWithCapacity:[self.boundingBoxes count]];
-    
     
     // transform each bounding box into hog feature space
     HogFeature *hogFeature;
@@ -106,10 +104,7 @@ using namespace cv;
         UIImage *img = [wholeImage croppedImage:[boundingBox rectangleForImage:wholeImage]];
         UIImage *resizedImage = [img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault];
         
-        
         [self.imagesUsed addObject:resizedImage];
-        
-        
         
         //calculate the hogfeatures of the image
         hogFeature = [resizedImage obtainHogFeatures];
@@ -229,25 +224,29 @@ using namespace cv;
     
     
     //convergence loop
-    int numIterations = 3;
+    int numIterations = 5;
     for (int i=0; i<numIterations; i++)
     {
         // Set up training data
-        if(debugging) NSLog(@"Number of Training Examples: %d", trainingSet.numberOfTrainingExamples);
+        if(debugging)
+        {
+            NSLog(@"\n\n ************************ Iteration 1 ********************************");
+            NSLog(@"Number of Training Examples: %d", trainingSet.numberOfTrainingExamples);
+            
+        }
         
         // cast the hog features to float
         float *listOfHogFeaturesFloat = (float *) malloc(numOfFeatures*trainingSet.numberOfTrainingExamples*sizeof(float));
         for(int i=0; i<numOfFeatures*trainingSet.numberOfTrainingExamples; i++)
             listOfHogFeaturesFloat[i] = (float) trainingSet.imageFeatures[i];
         
-
-        //print the first positive
-        for(int i=0; i<trainingSet.numberOfTrainingExamples;i++)
-            if(trainingSet.labels[i]==1)
-            {
-                printf("\n\n POSITIVE EXAMPLE at position: %d \n\n", i);
-                [self printListHogFeatures:&listOfHogFeaturesFloat[i*7*5*31]];
-            }
+//        //print the positives
+//        for(int i=0; i<trainingSet.numberOfTrainingExamples;i++)
+//            if(trainingSet.labels[i]==1)
+//            {
+//                printf("\n\n POSITIVE EXAMPLE at position: %d \n\n", i);
+//                [self printListHogFeatures:&listOfHogFeaturesFloat[i*7*5*31]];
+//            }
         
         Mat labelsMat(trainingSet.numberOfTrainingExamples,1,CV_32FC1, trainingSet.labels);
         Mat trainingDataMat(trainingSet.numberOfTrainingExamples, numOfFeatures, CV_32FC1, listOfHogFeaturesFloat); 
@@ -303,33 +302,36 @@ using namespace cv;
         //Update bounding boxes
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        // Get new bounding boxes by running the detector
-        NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:0] minimumThreshold:-1 pyramids:10 usingNms:NO];
-        if(debugging) NSLog(@"number of new bb obtained: %d", [newBoundingBoxes count]);
-        
         //remove all current bounding boxes
         [trainingSet.boundingBoxes removeAllObjects];
-        
-        //the rest that are less than an overlap threshold are considered negatives
-        ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
         int positives = 0;
-        for(int j=0; j<[newBoundingBoxes count]; j++)
+        
+        for(int imageIndex=0; imageIndex <[trainingSet.images count]; imageIndex++)
         {
-            ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
-            boundingBox.imageIndex = 0;
-            double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
+            // Get new bounding boxes by running the detector
+            NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:imageIndex] minimumThreshold:-1 pyramids:10 usingNms:NO];
+            if(debugging) NSLog(@"Number of new bb obtained: %d", [newBoundingBoxes count]);
             
-            if (overlapArea < 0.25)
+            //the rest that are less than an overlap threshold are considered negatives
+            ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
+            for(int j=0; j<[newBoundingBoxes count]; j++)
             {
-                boundingBox.label = -1;
-                [trainingSet.boundingBoxes addObject:boundingBox];
+                ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
+                boundingBox.imageIndex = imageIndex;
+                double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
                 
-            }else if (overlapArea > 0.8){
-                boundingBox.label = 1;
-                positives ++;
-                [trainingSet.boundingBoxes addObject:boundingBox];
+                if (overlapArea < 0.25)
+                {
+                    boundingBox.label = -1;
+                    [trainingSet.boundingBoxes addObject:boundingBox];
+                    
+                }else if (overlapArea > 0.8){
+                    boundingBox.label = 1;
+                    positives ++;
+                    [trainingSet.boundingBoxes addObject:boundingBox];
+                }
+                
             }
-            
         }
         printf("added:%d positives\n", positives);
         printf("total of new bounding boxes: %d\n", [trainingSet.boundingBoxes count]);
@@ -363,36 +365,26 @@ using namespace cv;
     
     NSMutableArray *candidateBoundingBoxes = [[NSMutableArray alloc] init];
     
-    // Maxsize for going faster
-    // TODO: choose it reasonably and related it with the number of pyramids
-    int maxsize = 300;
-    
-    CGImageRef resizedImage = [ImageProcessingHelper resizeImage:image.CGImage withRect:maxsize];
     double sc = pow(2, 1.0/numberPyramids);
     
-    
-    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[UIImage imageWithCGImage:resizedImage scale:1.0 orientation:image.imageOrientation]
+    // Maxsize for going faster
+    // TODO: choose a reasonable max size for improve performance
+    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[image scaleImageTo:300.0/480]
                                                                    withTemplate:templateWeights]];
     //Pyramid calculation
     for (int i = 1; i<numberPyramids; i++)
     {
         
-        UIImage *scaledImage = [UIImage imageWithCGImage:[ImageProcessingHelper scaleImage:resizedImage scale:1/pow(sc, i)] scale:1.0 orientation:image.imageOrientation];
-        NSArray *result = [ConvolutionHelper convTempFeat:scaledImage
+        NSArray *result = [ConvolutionHelper convTempFeat:[image scaleImageTo:(300.0/480)*1/pow(sc, i)]
                                              withTemplate:templateWeights];
         
-//        NSLog(@"h:%zu, w:%zu", CGImageGetHeight(scaledImage.CGImage), CGImageGetHeight(scaledImage.CGImage));
-        
         [candidateBoundingBoxes addObjectsFromArray:result];
-//        NSLog(@"Level %d detected %d boxes",i, [candidateBoundingBoxes count]);
-        
         
     }
     
     NSArray *nmsArray = candidateBoundingBoxes;
     if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:detectionThreshold]; //19
     
-    CGImageRelease(resizedImage);
     free(templateWeights);
     return nmsArray;
     

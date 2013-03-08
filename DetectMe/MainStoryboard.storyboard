@@ -239,15 +239,8 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10 - Pyramid" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O4t-4y-dX8">
-                                <rect key="frame" x="44" y="121" width="97" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10 Maximums" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zbx-nG-CdF">
-                                <rect key="frame" x="44" y="175" width="106" height="21"/>
+                                <rect key="frame" x="44" y="175" width="138" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -260,20 +253,42 @@
                                     <action selector="hogChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="NpZ-Td-44F"/>
                                 </connections>
                             </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="wYL-pE-gOp">
-                                <rect key="frame" x="223" y="118" width="79" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="pyramidChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="NR4-fN-es8"/>
-                                </connections>
-                            </switch>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="TMN-Do-xwo">
-                                <rect key="frame" x="223" y="172" width="79" height="27"/>
+                                <rect key="frame" x="223" y="169" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="numMaximumsChangeAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="hnC-bE-kxi"/>
                                 </connections>
                             </switch>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="7fj-Qy-9P0">
+                                <rect key="frame" x="206" y="120" width="94" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <action selector="pyramidStepperAction:" destination="4aM-6Q-aZ3" eventType="valueChanged" id="fFL-N8-FCE"/>
+                                </connections>
+                            </stepper>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Pyramids" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O9D-rC-Gvi">
+                                <rect key="frame" x="77" y="123" width="121" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" id="J5M-6Q-PLF">
+                                <rect key="frame" x="44" y="123" width="19" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="1">
+                                        <attributes>
+                                            <color key="NSColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" size="17" name="Helvetica"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" red="0.50196081400000003" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -281,7 +296,8 @@
                     <connections>
                         <outlet property="hogSwitch" destination="iZW-t0-PZh" id="WvJ-yQ-ztB"/>
                         <outlet property="numMaximumsSwitch" destination="TMN-Do-xwo" id="S4z-in-zyB"/>
-                        <outlet property="pyramidSwitch" destination="wYL-pE-gOp" id="a6i-vk-X6H"/>
+                        <outlet property="pyramidLabel" destination="J5M-6Q-PLF" id="dED-t1-J3D"/>
+                        <outlet property="pyramidStepper" destination="7fj-Qy-9P0" id="uNK-sA-cjX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CBT-r4-VCf" userLabel="First Responder" sceneMemberID="firstResponder"/>

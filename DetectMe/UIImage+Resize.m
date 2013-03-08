@@ -114,6 +114,15 @@
     return [transparentBorderImage roundedCornerImage:cornerRadius borderSize:borderSize];
 }
 
+- (UIImage *)scaleImageTo: (double) scale
+{
+    CGSize newSize = self.size;
+    newSize.height = scale * self.size.height;
+    newSize.width = scale * self.size.width;
+    return [self resizedImage:newSize interpolationQuality:kCGInterpolationDefault];
+}
+
+
 // Returns a rescaled copy of the image, taking into account its orientation
 // The image will be scaled disproportionately if necessary to fit the bounds specified by the parameter
 - (UIImage *)resizedImage:(CGSize)newSize

@@ -25,7 +25,6 @@
     
     //settings
     BOOL hogOnScreen;
-    BOOL pyramid;
     int numMax;
     
     BOOL cameraRoll;
@@ -37,16 +36,22 @@
 }
 
 
+// model properties
+@property (nonatomic, strong) NSString *templateName;
+@property (nonatomic,strong) Classifier *svmClassifier;
+@property int numPyramids;
+
+
+//AVCapture
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *prevLayer;
 
+//self views
 @property (nonatomic, weak) IBOutlet UIImageView *HOGimageView;
 @property (nonatomic, weak) IBOutlet DetectView *detectView;
 
-@property (nonatomic, strong) NSString *templateName;
-
 @property (weak, nonatomic) IBOutlet UISlider *detectionThresholdSliderButton;
 
-@property (nonatomic,strong) Classifier *svmClassifier;
+
 
 @end

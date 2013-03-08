@@ -11,7 +11,6 @@
 
 #import "LearnViewController.h"
 #import "FileStorageHelper.h"  
-#import "ImageProcessingHelper.h"
 #import "UIImage+Resize.h"
 #import "ConvolutionHelper.h"
 
@@ -34,14 +33,10 @@
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
 @synthesize detectView = _detectView;
-
 @synthesize trainingSet = _trainingSet;
 
 @synthesize listOfTrainingImages =_listOfTrainingImages;
 @synthesize numberOfTrainingButton = _numberOfTrainingButton;
-
-
-
 
 
 - (void)viewDidLoad
