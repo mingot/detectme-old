@@ -32,9 +32,12 @@
 {
     
     // correction of the aspect fill of prevLayer
+    // FIXME: hardcoded numbers
     CGFloat offset, scale;
     offset = self.frame.size.width*0.08/2.0;
     scale = 1.3;
+    
+    NSLog(@"w:%f, h:%f", self.frame.size.width, self.frame.size.height);
     
     // Drawing code
     if (self.corners.count!=0)

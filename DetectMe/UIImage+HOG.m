@@ -12,7 +12,7 @@
 #define PI 3.14159265
 #define eps 0.00001
 #define sbin 8 //pixels per block
-#define HOG_CONTRAST 5 //contrast representing hog features. Default 1
+
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
     0.9397,
@@ -74,6 +74,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 {
     free(self.features);
     free(self.dimensionOfHogFeatures);
+//    NSLog(@"HOG Deallocation!");
 }
 
 @end
@@ -116,19 +117,17 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     int bytesPerPixel = 4;
     int bytesPerRow = bytesPerPixel * width;
     int bitsPerComponent = 8;
-    UInt8 *pixels = (UInt8 *)malloc(height * width * 4);
+    UInt8 *im = (UInt8 *)malloc(height * width * 4);
     
-    CGContextRef contextImage = CGBitmapContextCreate(pixels, width, height,
+    CGContextRef contextImage = CGBitmapContextCreate(im, width, height,
                                                       bitsPerComponent, bytesPerRow, colorSpace,
                                                       kCGImageAlphaPremultipliedLast| kCGBitmapByteOrder32Big );
     CGColorSpaceRelease(colorSpace);
     CGContextDrawImage(contextImage, CGRectMake(0, 0, width, height), imageRef);
     CGContextRelease(contextImage);
     
-    UInt8 *im = pixels;
     int dims[2] = {height, width};
 
-    
     int blocks[2]; //HOG features size
     blocks[0] = (int)round((double)dims[0]/(double)sbin); //HOG Cell of (sbin)x(sbin) pixels
     blocks[1] = (int)round((double)dims[1]/(double)sbin);
@@ -151,8 +150,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     hog.dimensionOfHogFeatures[1] = hogSize[1];
     hog.dimensionOfHogFeatures[2] = hogSize[2];
     
-    double *mfeat = malloc(hogSize[0]*hogSize[1]*hogSize[2]*sizeof(double)); // pointer to the HOG features (this is the return value!)
-    double *feat = mfeat;
+    hog.features = malloc(hogSize[0]*hogSize[1]*hogSize[2]*sizeof(double)); // pointer to the HOG features (this is the return value!)
+    double *feat = hog.features;
     int visible[2]; // Each visible pixel (ie taking into account the round made in defining blocks size and neglecting the edge pixels)
     visible[0] = blocks[0]*sbin;
     visible[1] = blocks[1]*sbin;
@@ -326,12 +325,11 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
         }
     }
     
-    hog.features = mfeat;
     
     free(hist);
     free(norm);
-    free(pixels);
-    
+    free(im);
+
     return hog;
 }
 
@@ -411,11 +409,13 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                     :(int)blockw // block sizes width and height
                     :(int)blockh
 {
+    int HOG_CONTRAST = 1;
+    
     for (int i=0; i<bs; i++) {
         for (int j=0; j<bs; j++) {
             
             if (i==(round((double)bs/2))) { // if we are in the y dimension center of the HOG image block
-                if(*features > 0.0)
+                if(features[0] > 0.0)
                 {
                     im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw] += round(255*(*(features)))*HOG_CONTRAST ;
                     im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1 ] += round(255*(*(features)))*HOG_CONTRAST ;
@@ -424,7 +424,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             }
             
             for (int o=1; o<9; o++) {
-                if(*(features+o) > 0.0)
+                if(features[o] > 0.0)
+                {
                     //if it matches the angle of the corresponding feature, draw there with its intensity
                     if (j == round( (-tan(-o*PI*20/180+PI/2) * (i-round((double)bs/2)) + round((double)bs/2) )))
                     { 
@@ -432,6 +433,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                         im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 1] += round(255*(*(features + o)))*HOG_CONTRAST ;
                         im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 2] += round(255*(*(features + o)))*HOG_CONTRAST ;
                     }
+                }else HOG_CONTRAST = 10; //a negative feature means we are visualizing a template model
             }
             im[x*bs*4 + y*blockw*bs*bs*4 + i*4 + j*4*bs*blockw + 3] = 255;
         }

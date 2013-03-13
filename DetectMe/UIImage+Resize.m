@@ -83,6 +83,7 @@
                                 transform:[self transformForOrientation:bounds.size]
                            drawTransposed:drawTransposed
                      interpolationQuality:kCGInterpolationHigh];
+    //clean
     CGImageRelease(imageRef);
     return croppedImage;
 }

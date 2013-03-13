@@ -87,7 +87,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
    NSLog(@"Orientation: %d",self.picture.image.imageOrientation);
     
-    NSArray *nmsArray = [self.svmClassifier detect:self.originalImage minimumThreshold:-1 pyramids:10 usingNms:YES];
+    NSArray *nmsArray = [self.svmClassifier detect:self.originalImage minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
     
     [self.detectView setCorners:nmsArray];
     self.detectView.frame = self.picture.frame;

@@ -88,7 +88,7 @@
     
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-    self.prevLayer.frame = CGRectMake(0, 0, 320, 504);//self.view.bounds;
+    self.prevLayer.frame = self.detectView.frame;
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
 
@@ -142,7 +142,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
             // Make the UIImage and change the orientation
-            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation: UIImageOrientationRight];
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation: UIImageOrientationUp];//UIImageOrientationRight];
         
             [self.trainingSet.images addObject:image];
             
@@ -178,9 +178,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [listOfImages addObject:[wholeImage croppedImage:[cp rectangleForImage:wholeImage]]];
         }
             
-        if(self.trainingSet.imagesUsed == nil) trainingImagesTVC.listOfImages = listOfImages;
-        else trainingImagesTVC.listOfImages = self.trainingSet.imagesUsed;
-//        trainingImagesTVC.listOfImages = self.trainingSet.images;
+//        trainingImagesTVC.listOfImages = listOfImages; 
+        trainingImagesTVC.listOfImages = self.trainingSet.images;
     }
 }
 

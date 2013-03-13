@@ -11,7 +11,6 @@
 
 #import "CameraViewController.h"
 #import "FileStorageHelper.h"
-#import "ImageProcessingHelper.h"
 #import "ConvolutionHelper.h"
 #import "UIImage+HOG.h"
 #import "UIImage+Resize.h"
@@ -19,20 +18,23 @@
 
 @implementation CameraViewController
 
+
 @synthesize svmClassifier = _svmClassifier;
 @synthesize templateName = _templateName;
 @synthesize numPyramids = _numPyramids;
-
+@synthesize maxDetectionScore = _maxDetectionScore;
+@synthesize locMgr = _locMgr;
 @synthesize captureSession = _captureSession;
 @synthesize prevLayer = _prevLayer;
-
 @synthesize HOGimageView = _HOGimageView;
 @synthesize detectView = _detectView;
-
 @synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
 
 
-
+- (BOOL) shouldAutorotate
+{
+    return NO;
+}
 
 - (void)viewDidLoad
 {
@@ -57,6 +59,13 @@
     templateWeights = [FileStorageHelper readTemplate:self.templateName];
     self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:templateWeights];
     self.numPyramids = 10;
+    self.maxDetectionScore = -0.9;
+    self.locMgr = [[CLLocationManager alloc] init];
+    self.locMgr.delegate = self;
+    self.locMgr.desiredAccuracy = kCLLocationAccuracyBest;
+    [self.locMgr startUpdatingLocation];
+    
+    printf("sieze of double: %lu\n", sizeof(double));
     
     // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
@@ -80,6 +89,12 @@
                                    nil];
 	[captureOutput setVideoSettings:videoSettings]; 
     
+//    AVCaptureConnection *videoConnection = [self connectionWithMediaType:AVMediaTypeVideo fromConnections:[AVCaptureOutput connections]];
+//    if ([videoConnection isVideoOrientationSupported])
+//    {
+//        [videoConnection setVideoOrientation:[UIDevice currentDevice].orientation];
+//    }
+    
     //Capture session definition
 	self.captureSession = [[AVCaptureSession alloc] init];
 	[self.captureSession addInput:captureInput];
@@ -88,7 +103,7 @@
 
     // Previous layer to show the video image
 	self.prevLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
-	self.prevLayer.frame = CGRectMake(0, 0, 320, 504);//self.view.bounds;  
+	self.prevLayer.frame = self.detectView.frame; 
 	self.prevLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 	[self.view.layer addSublayer: self.prevLayer];
     
@@ -174,10 +189,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
          */
         
-        NSArray *nmsArray = [self.svmClassifier detect:[UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight]
-                                      minimumThreshold:-1 + 0.2*self.detectionThresholdSliderButton.value //make the slider sweep in the range [-1,-0.8]
+        
+        int orientation = [[UIDevice currentDevice] orientation];
+        
+        double detectionThreshold = -1 + (self.maxDetectionScore + 1)*self.detectionThresholdSliderButton.value;
+        NSArray *nmsArray = [self.svmClassifier detect:
+                             [UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight]
+                                      minimumThreshold:detectionThreshold
                                               pyramids:self.numPyramids
-                                              usingNms:YES];
+                                              usingNms:YES
+                                     deviceOrientation:orientation];
         
         
         // set boundaries of the detection and redraw
@@ -189,6 +210,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         {
             ConvolutionPoint *score = [nmsArray objectAtIndex:0];
             [self performSelectorOnMainThread:@selector(setTitle:) withObject:[NSString stringWithFormat:@"%3f",score.score] waitUntilDone:YES];
+            if(score.score > self.maxDetectionScore) self.maxDetectionScore = score.score;
+
         } else{
             [self performSelectorOnMainThread:@selector(setTitle:) withObject:@"No detection." waitUntilDone:YES];
         }
@@ -221,6 +244,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void) setNumPyramidsFromDelegate: (double) value
 {
     self.numPyramids = (int) value;
+}
+
+#pragma mark -
+#pragma mark Core Location Delegate
+
+- (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *currentLocation = [locations objectAtIndex:0];
+//    NSLog(@"latitude: %f, longitude: %f", currentLocation.coordinate.latitude, currentLocation.coordinate.longitude);
 }
 
 

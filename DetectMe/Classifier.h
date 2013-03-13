@@ -16,11 +16,10 @@
 
 @property (strong, nonatomic) NSMutableArray *boundingBoxes; //ConvolutionPoints
 
-@property double *imageFeatures; //the features for the wole trainingset
+@property float *imageFeatures; //the features for the wole trainingset
 @property float *labels; //the corresponding labels
 @property int numberOfTrainingExamples; // bounding boxes + support vectors added
 
-@property (strong, nonatomic) NSMutableArray *imagesUsed;
 
 
 // Given a training set of images and ground truth bounding boxes it generates
@@ -28,7 +27,10 @@
 - (void) initialFill;
 
 // Generates the hog features given the bounding boxes
-- (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize) templateSize;
+- (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize) templateSize withNumSV:(int) numSV;
+
+//// Initialize imageFeatures with the desired size
+//- (void) initializeFeatures:(int) numberFeatures forImages:(int) numberExamples;
 
 
 @end
@@ -53,7 +55,9 @@
 - (NSArray *) detect:(UIImage *) image
     minimumThreshold:(double) detectionThreshold
             pyramids:(int) numberPyramids
-            usingNms:(BOOL)useNms;
+            usingNms:(BOOL)useNms
+   deviceOrientation:(int) orientation;
+
 
 
 // Store the weights of the template to the disk

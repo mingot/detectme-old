@@ -11,13 +11,15 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreMedia/CoreMedia.h>
+#import <CoreLocation/CoreLocation.h>
+
 
 #import "DetectView.h"
 #import "SettingsViewController.h"
 #import "Classifier.h"
 
 
-@interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate>
+@interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate, CLLocationManagerDelegate>
 {
 
     int sizeImage;
@@ -36,11 +38,14 @@
 }
 
 
-// model properties
+//model properties
 @property (nonatomic, strong) NSString *templateName;
 @property (nonatomic,strong) Classifier *svmClassifier;
 @property int numPyramids;
+@property double maxDetectionScore;
 
+//Core Location
+@property (nonatomic, strong) CLLocationManager *locMgr;
 
 //AVCapture
 @property (nonatomic, strong) AVCaptureSession *captureSession;
