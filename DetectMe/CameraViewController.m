@@ -164,33 +164,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         CGContextRelease(newContext); 
         CGColorSpaceRelease(colorSpace);
         
-        /*
-        //CGRect newRect = CGRectIntegral( CGRectMake(0, 0, 230, 160 ));
-        
-        // Build a context that's the same dimensions as the new size
-        CGContextRef bitmap = CGBitmapContextCreate(NULL,
-                                                    newRect.size.width,
-                                                    newRect.size.height,
-                                                    CGImageGetBitsPerComponent(imageRef),
-                                                    0,
-                                                    CGImageGetColorSpace(imageRef),
-                                                    CGImageGetBitmapInfo(imageRef));
-        
-        // Rotate and/or flip the image if required by its orientation
-        // CGContextConcatCTM(bitmap, );
-        
-        // Set the quality level to use when rescaling
-        CGContextSetInterpolationQuality(bitmap, kCGInterpolationDefault);
-        
-        // Draw into the context; this scales the image
-        CGContextDrawImage(bitmap, newRect, imageRef);
-         
-        // Get the resized image from the context and a UIImage
-        CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
-         */
-        
-        
-        int orientation = [[UIDevice currentDevice] orientation];
         
         double detectionThreshold = -1 + (self.maxDetectionScore + 1)*self.detectionThresholdSliderButton.value;
         NSArray *nmsArray = [self.svmClassifier detect:
@@ -198,7 +171,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                       minimumThreshold:detectionThreshold
                                               pyramids:self.numPyramids
                                               usingNms:YES
-                                     deviceOrientation:orientation];
+                                     deviceOrientation:[[UIDevice currentDevice] orientation]];
         
         
         // set boundaries of the detection and redraw

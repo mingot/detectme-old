@@ -22,9 +22,8 @@
 
 @end
 
+
 @interface UIImage (HOG)
-
-
 
 - (HogFeature *) obtainHogFeatures;
 - (int *) obtainDimensionsOfHogFeatures;

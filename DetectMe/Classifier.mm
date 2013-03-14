@@ -137,7 +137,7 @@ using namespace cv;
 //Sets the size of the template and obtain the dimension of the features from it.
 - (void) obtainTemplateSize:(TrainingSet *) trainingSet;
 
-
+//Show just the histogram features for debugging purposes
 - (void) showOrientationHistogram;
 
 @end
@@ -167,7 +167,7 @@ using namespace cv;
         
         int numberOfSvmWeights = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2] + 1; //+1 for the bias 
         self.svmWeights = (double *) malloc(numberOfSvmWeights*sizeof(double));
-        for(int i=0; i <numberOfSvmWeights; i++) 
+        for(int i=0; i<numberOfSvmWeights; i++) 
             self.svmWeights[i] = templateWeights[3 + i];
     }
     
@@ -179,12 +179,9 @@ using namespace cv;
 - (void) printListHogFeatures:(float *) listOfHogFeaturesFloat
 {
     //Print unoriented hog features for debugging purposes
-    for(int y=0; y<7; y++)
-    {
-        for(int x=0; x<5; x++)
-        {
-            for(int f = 18; f<27; f++)
-            {
+    for(int y=0; y<self.weightsDimensions[0]; y++){
+        for(int x=0; x<self.weightsDimensions[1]; x++){
+            for(int f = 18; f<27; f++){
                 printf("%f ", listOfHogFeaturesFloat[y + x*7 + f*7*5]);
 //                if(f==17 || f==26) printf("  |  ");
             }
@@ -225,6 +222,7 @@ using namespace cv;
         
     //Initialization of weights: initial train with initial positives and random negatives
     [trainingSet initialFill];
+    //TODO: max size for the buffers
     trainingSet.imageFeatures = (float *) malloc(MAX_BUFFER_SIZE);
     trainingSet.labels = (float *) malloc(3000*sizeof(float));
     [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize: templateSize withNumSV:0];
@@ -247,14 +245,6 @@ using namespace cv;
             
         }
         
-        
-//        //print the positives
-//        for(int i=0; i<trainingSet.numberOfTrainingExamples;i++)
-//            if(trainingSet.labels[i]==1)
-//            {
-//                printf("\n\n POSITIVE EXAMPLE at position: %d \n\n", i);
-//                [self printListHogFeatures:&listOfHogFeaturesFloat[i*7*5*31]];
-//            }
         
         Mat labelsMat(trainingSet.numberOfTrainingExamples,1,CV_32FC1, trainingSet.labels);
         Mat trainingDataMat(trainingSet.numberOfTrainingExamples, numOfFeatures, CV_32FC1, trainingSet.imageFeatures);
@@ -392,7 +382,7 @@ using namespace cv;
     }
     
     NSArray *nmsArray = candidateBoundingBoxes;
-    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:detectionThreshold]; //19
+    if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:detectionThreshold]; 
     
     // Change the resulting orientation of the bounding boxes if the phone orientation requires it
     if(UIInterfaceOrientationIsLandscape(orientation))
@@ -403,10 +393,10 @@ using namespace cv;
             double auxXmin, auxXmax;
             auxXmin = boundingBox.xmin;
             auxXmax = boundingBox.xmax;
-            boundingBox.xmin = (1 - boundingBox.ymin);//*504.0/320;
-            boundingBox.xmax = (1 - boundingBox.ymax);//*504.0/320;
-            boundingBox.ymin = auxXmin;//*320.0/504;
-            boundingBox.ymax = auxXmax;//*320.0/504;
+            boundingBox.xmin = (1 - boundingBox.ymin);//*320.0/504;
+            boundingBox.xmax = (1 - boundingBox.ymax);//*320.0/504;
+            boundingBox.ymin = auxXmin;//*504.0/320;
+            boundingBox.ymax = auxXmax;//*504.0/320;
         }
     }
     
@@ -467,11 +457,12 @@ using namespace cv;
     NSLog(@"w:%f, h:%f",wholeImage.size.width, wholeImage.size.height);
     NSLog(@"w:%f, h:%f",img.size.width, img.size.height);
     
-    templateSize.height = img.size.height*0.6; //0.6
+    templateSize.height = img.size.height*0.6; 
     templateSize.width = img.size.width*0.6;
     
     // And store dimension of hog features for it
-    self.weightsDimensions = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainDimensionsOfHogFeatures];
+    HogFeature *auxHog = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainHogFeatures];
+    self.weightsDimensions = auxHog.
     
     
 }

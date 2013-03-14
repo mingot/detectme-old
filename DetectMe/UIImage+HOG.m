@@ -11,7 +11,7 @@
 
 #define PI 3.14159265
 #define eps 0.00001
-#define sbin 8 //pixels per block
+#define sbin 6 //pixels per block
 
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
@@ -53,12 +53,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 - (void) printFeaturesOnScreen
 {
     
-    for(int y=0; y<self.numBlocksY; y++)
-    {
-        for(int x=0; x<self.numBlocksX; x++)
-        {
-            for(int f = 0; f<self.numFeatures; f++)
-            {
+    for(int y=0; y<self.numBlocksY; y++){
+        for(int x=0; x<self.numBlocksX; x++){
+            for(int f = 0; f<self.numFeatures; f++){
                 printf("%f ", self.features[y + x*self.numBlocksY + f*self.numBlocksX*self.numBlocksY]);
                 if(f==17 || f==26) printf("  |  ");
             }
@@ -93,9 +90,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 @end
 
+
 @implementation UIImage (HOG)
-
-
 
 
 

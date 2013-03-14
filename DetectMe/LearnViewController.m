@@ -142,7 +142,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if(takePhoto) //Asynch for when the addButton (addAction) is pressed
         {
             // Make the UIImage and change the orientation
-            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation: UIImageOrientationUp];//UIImageOrientationRight];
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationRight];
         
             [self.trainingSet.images addObject:image];
             
@@ -178,8 +178,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [listOfImages addObject:[wholeImage croppedImage:[cp rectangleForImage:wholeImage]]];
         }
             
-//        trainingImagesTVC.listOfImages = listOfImages; 
-        trainingImagesTVC.listOfImages = self.trainingSet.images;
+        trainingImagesTVC.listOfImages = listOfImages; 
+//        trainingImagesTVC.listOfImages = self.trainingSet.images;
     }
 }
 

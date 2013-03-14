@@ -12,6 +12,7 @@
 
 @property (nonatomic,strong) NSArray *corners;
 
+
 -(void)reset;
 
 @end
