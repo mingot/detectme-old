@@ -7,7 +7,6 @@
 //
 
 #include <Accelerate/Accelerate.h>
-
 #import "ConvolutionHelper.h"
 #import "UIImage+HOG.h"
 

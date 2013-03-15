@@ -461,8 +461,7 @@ using namespace cv;
     templateSize.width = img.size.width*0.6;
     
     // And store dimension of hog features for it
-    HogFeature *auxHog = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainHogFeatures];
-    self.weightsDimensions = auxHog.
+    self.weightsDimensions = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainDimensionsOfHogFeatures];
     
     
 }

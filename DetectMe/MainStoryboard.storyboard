@@ -68,13 +68,16 @@
                                 <rect key="frame" x="20" y="353" width="280" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="TEMPLATE PROPERTIES">
+                                <state key="normal" title="EVALUATE CLASSIFIER">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <segue destination="cXj-C6-Qx0" kind="push" id="Szj-4S-DBb"/>
+                                </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Template: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" id="OTb-gW-E2d">
                                 <rect key="frame" x="20" y="72" width="97" height="21"/>
@@ -404,6 +407,85 @@
             </objects>
             <point key="canvasLocation" x="1248" y="1072"/>
         </scene>
+        <!--EvaluateTVC-->
+        <scene sceneID="Jy9-XY-Ye8">
+            <objects>
+                <tableViewController id="cXj-C6-Qx0" customClass="EvaluateTVC" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="rXP-Dw-pjP">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="EvaluationImagesCell" textLabel="apQ-xN-IWV" style="IBUITableViewCellStyleDefault" id="587-R8-tMU">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="apQ-xN-IWV">
+                                            <rect key="frame" x="10" y="0.0" width="300" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="cXj-C6-Qx0" id="Pah-XU-HoC"/>
+                            <outlet property="delegate" destination="cXj-C6-Qx0" id="hyV-lF-Nlc"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="UbJ-48-iJz"/>
+                    <connections>
+                        <segue destination="Kx0-JU-eOq" kind="push" identifier="Show Tag View" id="QMb-cF-CLJ"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7sP-9U-Its" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1248" y="1797"/>
+        </scene>
+        <!--Tag View Controller-->
+        <scene sceneID="AEa-8s-3Ca">
+            <objects>
+                <viewController id="Kx0-JU-eOq" customClass="TagViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jta-Zl-DPu">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="EOj-hU-6Db">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="7GK-hr-UqM">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                    <view contentMode="scaleToFill" id="7sN-8k-gq4" customClass="TagView">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="TUA-dP-cNP"/>
+                    <connections>
+                        <outlet property="imageView" destination="7GK-hr-UqM" id="1OL-wW-QvM"/>
+                        <outlet property="scrollView" destination="EOj-hU-6Db" id="XSc-6j-1L2"/>
+                        <outlet property="tagView" destination="7sN-8k-gq4" id="0Qp-bY-2FJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b0t-C3-5pT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1727" y="1800"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="jnx-Rm-4ch">
             <objects>
@@ -427,67 +509,6 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CameraViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="HOGimageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="detectView" candidateClass="DetectView"/>
-                <relationship kind="outlet" name="detectionThresholdSliderButton" candidateClass="UISlider"/>
-            </relationships>
-        </class>
-        <class className="ChoicesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="photoAction:"/>
-                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="DetectPhotoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="HOGAction:"/>
-                <relationship kind="action" name="detect:"/>
-                <relationship kind="action" name="settings:"/>
-            </relationships>
-        </class>
-        <class className="DetectView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectView.h"/>
-        </class>
-        <class className="LearnViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LearnViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addAction:"/>
-                <relationship kind="action" name="learnAction:"/>
-                <relationship kind="action" name="numberOfTrainingAction:"/>
-                <relationship kind="outlet" name="detectView" candidateClass="DetectView"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="pyramidStepperAction:" candidateClass="UIStepper"/>
-                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="pyramidLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="pyramidStepper" candidateClass="UIStepper"/>
-            </relationships>
-        </class>
-        <class className="ShowTrainingImageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ShowTrainingImageViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="TemplateTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
-        </class>
-        <class className="TrainingImagesTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TrainingImagesTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

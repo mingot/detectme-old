@@ -35,6 +35,7 @@
 		FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */ = {isa = PBXBuildFile; fileRef = FC602B0216DFC9B0005FDAC8 /* Classifier.mm */; };
 		FCA6A1FA16CAD0F200E81581 /* FileStorageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */; };
 		FCB6F54016EF67760032690F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB6F53F16EF67760032690F /* CoreLocation.framework */; };
+		FCB6F54416F214980032690F /* EvaluateTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = FCB6F54316F214980032690F /* EvaluateTVC.m */; };
 		FCB7664D16D7DB0200A5EAE8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB7664C16D7DB0200A5EAE8 /* libz.dylib */; };
 		FCB7665016D7DC7100A5EAE8 /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = FCB7664F16D7DC7100A5EAE8 /* UIImage+OpenCV.mm */; };
 		FCBE9A2816CACEB60024CAE4 /* ChoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1316CACEB60024CAE4 /* ChoicesViewController.m */; };
@@ -49,6 +50,9 @@
 		FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */; };
 		FCFB1BF216D6BF8F004F0B54 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */; };
 		FCFB1BF516D6BF9A004F0B54 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */; };
+		FCFEB03F16F27BF00091E6D6 /* TagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFEB03A16F27BF00091E6D6 /* TagViewController.m */; };
+		FCFEB04016F27BF00091E6D6 /* TagView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFEB03C16F27BF00091E6D6 /* TagView.m */; };
+		FCFEB04116F27BF00091E6D6 /* Box.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFEB03E16F27BF00091E6D6 /* Box.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +99,8 @@
 		FCA6A1F816CAD0F200E81581 /* FileStorageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileStorageHelper.h; sourceTree = "<group>"; };
 		FCA6A1F916CAD0F200E81581 /* FileStorageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileStorageHelper.m; sourceTree = "<group>"; };
 		FCB6F53F16EF67760032690F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		FCB6F54216F214980032690F /* EvaluateTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvaluateTVC.h; sourceTree = "<group>"; };
+		FCB6F54316F214980032690F /* EvaluateTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EvaluateTVC.m; sourceTree = "<group>"; };
 		FCB7664C16D7DB0200A5EAE8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		FCB7664E16D7DC7100A5EAE8 /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
 		FCB7664F16D7DC7100A5EAE8 /* UIImage+OpenCV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+OpenCV.mm"; sourceTree = "<group>"; };
@@ -122,6 +128,12 @@
 		FCFB1BF116D6BF8F004F0B54 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		FCFB1BF316D6BF9A004F0B54 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
 		FCFB1BF416D6BF9A004F0B54 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		FCFEB03916F27BF00091E6D6 /* TagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TagViewController.h; path = /Users/mingot/Projectes/iOS/DetectMe/DetectMe/TagViewController.h; sourceTree = "<absolute>"; };
+		FCFEB03A16F27BF00091E6D6 /* TagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagViewController.m; sourceTree = "<group>"; };
+		FCFEB03B16F27BF00091E6D6 /* TagView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagView.h; sourceTree = "<group>"; };
+		FCFEB03C16F27BF00091E6D6 /* TagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagView.m; sourceTree = "<group>"; };
+		FCFEB03D16F27BF00091E6D6 /* Box.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Box.h; sourceTree = "<group>"; };
+		FCFEB03E16F27BF00091E6D6 /* Box.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Box.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,16 +242,27 @@
 		FCA6A1FD16CAD31300E81581 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FCFEB02C16F26F7C0091E6D6 /* TagView */,
 				FCFB1BE516D68DFB004F0B54 /* Main */,
 				FCFB1BE616D68E06004F0B54 /* Train */,
 				FCFB1BE716D68E29004F0B54 /* Detect Video */,
 				FCFB1BE816D68E37004F0B54 /* Detect Photo */,
+				FCB6F54116F2142C0032690F /* Evaluate */,
 				FCBE9A1616CACEB60024CAE4 /* OptionsViewController.h */,
 				FCBE9A1716CACEB60024CAE4 /* OptionsViewController.m */,
 				FCBE9A2616CACEB60024CAE4 /* DetectView.h */,
 				FCBE9A2716CACEB60024CAE4 /* DetectView.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		FCB6F54116F2142C0032690F /* Evaluate */ = {
+			isa = PBXGroup;
+			children = (
+				FCB6F54216F214980032690F /* EvaluateTVC.h */,
+				FCB6F54316F214980032690F /* EvaluateTVC.m */,
+			);
+			name = Evaluate;
 			sourceTree = "<group>";
 		};
 		FCFB1BE516D68DFB004F0B54 /* Main */ = {
@@ -303,6 +326,19 @@
 				FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */,
 			);
 			name = "UIImage Categories";
+			sourceTree = "<group>";
+		};
+		FCFEB02C16F26F7C0091E6D6 /* TagView */ = {
+			isa = PBXGroup;
+			children = (
+				FCFEB03916F27BF00091E6D6 /* TagViewController.h */,
+				FCFEB03A16F27BF00091E6D6 /* TagViewController.m */,
+				FCFEB03B16F27BF00091E6D6 /* TagView.h */,
+				FCFEB03C16F27BF00091E6D6 /* TagView.m */,
+				FCFEB03D16F27BF00091E6D6 /* Box.h */,
+				FCFEB03E16F27BF00091E6D6 /* Box.m */,
+			);
+			name = TagView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -394,6 +430,10 @@
 				FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */,
 				FC602B0316DFC9B1005FDAC8 /* Classifier.mm in Sources */,
 				FC21495D16E4F4CB00986B7D /* UIImage+Brightness.m in Sources */,
+				FCB6F54416F214980032690F /* EvaluateTVC.m in Sources */,
+				FCFEB03F16F27BF00091E6D6 /* TagViewController.m in Sources */,
+				FCFEB04016F27BF00091E6D6 /* TagView.m in Sources */,
+				FCFEB04116F27BF00091E6D6 /* Box.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

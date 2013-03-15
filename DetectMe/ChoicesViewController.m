@@ -58,7 +58,7 @@
 @synthesize detectPhotoViewController = _detectPhotoViewController;
 @synthesize optionsViewController = _optionsViewController;
 @synthesize templateName = _templateName;
-//@synthesize templateWeights = _templateWeights;
+
 
 
 - (void)viewDidLoad

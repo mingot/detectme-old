@@ -11,7 +11,7 @@
 
 #define PI 3.14159265
 #define eps 0.00001
-#define sbin 6 //pixels per block
+#define sbin 8 //pixels per block
 
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
