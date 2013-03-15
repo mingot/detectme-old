@@ -89,11 +89,6 @@
                                    nil];
 	[captureOutput setVideoSettings:videoSettings]; 
     
-//    AVCaptureConnection *videoConnection = [self connectionWithMediaType:AVMediaTypeVideo fromConnections:[AVCaptureOutput connections]];
-//    if ([videoConnection isVideoOrientationSupported])
-//    {
-//        [videoConnection setVideoOrientation:[UIDevice currentDevice].orientation];
-//    }
     
     //Capture session definition
 	self.captureSession = [[AVCaptureSession alloc] init];

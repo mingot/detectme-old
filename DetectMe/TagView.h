@@ -12,7 +12,6 @@
 @interface TagView : UIView
 {
     CGPoint firstLocation;
-
     BOOL move;
     BOOL size;
     int corner;
@@ -20,23 +19,19 @@
 }
 
 @property (nonatomic, retain) NSMutableDictionary *dictionaryBox;
-@property (nonatomic, retain) UITextField *label;
 @property (nonatomic, retain) NSArray *colorArray;
-@property (nonatomic, retain) UITableView *table;
-
-@property int numLabels;
-@property int selectedBox;
+@property int selectedBox; //index of the current box selected. -1 if none.
 
 
--(void) drawBox:(CGContextRef )context :(Box *)box1 :(CGFloat) alpha;
--(void) drawSelectedBox:(CGContextRef )context :(Box *) box;
+-(void) drawUnselectedBox:(Box *)box onContext:(CGContextRef)context transparency:(CGFloat)alpha;
+-(void) drawSelectedBox:(Box *)box onContext:(CGContextRef)context;
+
+
+// returns the box located at point point. If none found, -1 is returned
+-(int) whereIs:(CGPoint) point;
+-(int) boxInterior:(int)i :(CGPoint)point;
+-(void) copyDictionary:(NSDictionary *)dict;
 -(void) reset;
--(int)whereIs:(CGPoint) point;
--(int)boxInterior:(int)i :(CGPoint)point;
-
-
--(void)copyDictionary:(NSDictionary *)dict;
-
 
 
 @end

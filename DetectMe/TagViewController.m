@@ -12,12 +12,11 @@
 #import "TagViewController.h"
 #import "UIImage+Resize.h"
 
-#define LINEWIDTH 6
+
 #define UPPERBOUND 0
-#define LOWERBOUND 372
+#define LOWERBOUND 504
 #define LEFTBOUND 0
 #define RIGHTBOUND 320
-#define DET 2
 
 #define IMAGES 0
 #define THUMB 1
@@ -26,10 +25,14 @@
 
 @implementation TagViewController
 
-@synthesize tagView, scrollView,deleteButton, label,colorArray;
+@synthesize scrollView = _scrollView;
+@synthesize tagView = _tagView;
 @synthesize imageView = _imageView;
+@synthesize deleteButton = _deleteButton;
+
 @synthesize filename = _filename;
 @synthesize paths = _paths;
+@synthesize delegate = _delegate;
 
 
 
@@ -45,41 +48,25 @@
     NSString *doc = [NSString  stringWithFormat:@"%@/labelme/%@",documentsDirectory,@"Ramon"];
     self.paths = [[NSArray alloc] initWithObjects:[NSString stringWithFormat:@"%@/iphoneimages",doc],[NSString stringWithFormat:@"%@/galleryimages",doc],[NSString stringWithFormat:@"%@/objects",doc], nil];;
     
-    self.colorArray = [[NSArray alloc] initWithObjects:[UIColor blueColor],[UIColor cyanColor],[UIColor greenColor],[UIColor magentaColor],[UIColor orangeColor],[UIColor yellowColor],[UIColor purpleColor],[UIColor brownColor], nil];
     self.filename = [[NSString alloc] init];
     
     //scrollView initialization
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(LEFTBOUND, UPPERBOUND, RIGHTBOUND, LOWERBOUND)];
-    [scrollView setBackgroundColor:[UIColor clearColor]];
-	[scrollView setCanCancelContentTouches:NO];
-	scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
-	scrollView.clipsToBounds = YES;		// default is NO, we want to restrict drawing within our scrollview
-	scrollView.scrollEnabled = YES;
-	// pagingEnabled property default is NO, if set the scroller will stop or snap at each photo
-	// if you want free-flowing scroll, don't set this property.
-	scrollView.pagingEnabled = YES;
-    
+    [self.scrollView setBackgroundColor:[UIColor clearColor]];
+	[self.scrollView setCanCancelContentTouches:NO];
+	self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
+	self.scrollView.clipsToBounds = YES; // default is NO, we want to restrict drawing within our scrollview
+	self.scrollView.scrollEnabled = YES;    
     
     //tagView initialization
     self.tagView = [[TagView alloc] initWithFrame:CGRectMake(LEFTBOUND, UPPERBOUND, RIGHTBOUND, LOWERBOUND)];
-    self.tagView.label = self.label;
     [self.scrollView setContentSize:CGSizeMake(RIGHTBOUND, LOWERBOUND)];
     self.imageView.frame = self.scrollView.frame;
     
     [self.scrollView addSubview:self.imageView];
     [self.scrollView addSubview:self.tagView];
-    label.hidden=YES;
-
-    //Top navigation bar
-    UIBarButtonItem *labelBar = [[UIBarButtonItem alloc] initWithCustomView:self.label];
-    self.navigationItem.leftItemsSupplementBackButton = YES;
-    self.navigationItem.leftBarButtonItems = [NSArray arrayWithObjects:labelBar,nil];
-    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.deleteButton, nil];
-    
     [self.view addSubview:self.scrollView];
 
-    NSLog(@"origeny= %f; height=%f",self.scrollView.bounds.origin.y,self.scrollView.frame.size.height);
-    
     //Push the modal for selecting the picture from the camera
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
@@ -87,15 +74,6 @@
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     [self presentModalViewController:picker animated:YES];
 }
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-
 
 #pragma mark - UIImage Picker Controller
 
@@ -123,60 +101,22 @@
 //
 //}
 
-//-(IBAction)labelFinish:(id)sender
-//{
-//    int selected=[annotationView SelectedBox];
-//    if (![label.text isEqualToString:@""]) {
-//        Box *box = [[annotationView dictionaryBox] objectForKey:[NSString stringWithFormat:@"%d",selected]];
-//        box.label=label.text;
-//        for (int i=0; i<self.annotationView.dictionaryBox.count; i++) {
-//            if (i==selected) {
-//                continue;
-//            }
-//            Box *b=[[self.annotationView dictionaryBox] objectForKey:[NSString stringWithFormat:@"%d",i]];
-//            if ([box.label isEqualToString:b.label]) {
-//                box.color=b.color;
-//                [self.annotationView.dictionaryBox setObject:box forKey:[NSString stringWithFormat:@"%d",selected]];
-//                //[b release];
-//                break;
-//            }
-//            
-//        }
-//    }
-//    
-//    self.navigationItem.hidesBackButton=NO;
-//    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.doneButton, self.deleteButton,nil];
-//
-//    [self.annotationView setNeedsDisplay];
-//    [self.table reloadData];
-//}
 
-
-//-(IBAction)labelAction:(id)sender
-//{
-//    self.navigationItem.hidesBackButton=YES;
-//}
 
 
 -(IBAction)deleteAction:(id)sender
 {
-    int num = [[tagView dictionaryBox] count];
-    if((num<1)||(tagView.selectedBox == -1)){
-        return;
-    }
+    int num = [[self.tagView dictionaryBox] count];
+    
+    if((num<1)||(self.tagView.selectedBox == -1)) return;
+
     Box *b;
-    
-    for (int i = tagView.selectedBox+1; i<num; i++) {
-        b = [[tagView dictionaryBox] objectForKey:[NSString stringWithFormat:@"%d",i]];
-        [[tagView dictionaryBox] setObject:b forKey:[NSString stringWithFormat:@"%d",i-1]];
+    for (int i = self.tagView.selectedBox+1; i<num; i++) {
+        b = [[self.tagView dictionaryBox] objectForKey:[NSString stringWithFormat:@"%d",i]];
+        [[self.tagView dictionaryBox] setObject:b forKey:[NSString stringWithFormat:@"%d",i-1]];
     }
-    [[tagView dictionaryBox] removeObjectForKey:[NSString stringWithFormat:@"%d",num-1]];
-    tagView.numLabels -= 1;
-    tagView.selectedBox=-1;
-    
-    label.hidden=YES;
-    
-    NSLog(@"Borrar");
+    [[self.tagView dictionaryBox] removeObjectForKey:[NSString stringWithFormat:@"%d",num-1]];
+    self.tagView.selectedBox = -1;
     
     [self.tagView setNeedsDisplay];
 }
@@ -189,7 +129,7 @@
     [self.tagView setSelectedBox:-1];
     [self.tagView setNeedsDisplay];
     NSData *image = UIImageJPEGRepresentation(self.imageView.image, 0.75);
-    UIGraphicsBeginImageContext(scrollView.frame.size);
+    UIGraphicsBeginImageContext(self.scrollView.frame.size);
     [self.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

@@ -10,7 +10,7 @@
 
 #define LINEWIDTH 6
 #define UPPERBOUND 0
-#define LOWERBOUND 372
+#define LOWERBOUND 504
 #define LEFTBOUND 0
 #define RIGHTBOUND 320
 
