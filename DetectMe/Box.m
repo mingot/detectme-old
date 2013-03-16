@@ -36,7 +36,7 @@
 }
 
 
--(int) setUpperLeft:(CGPoint ) point
+-(int) setUpperLeft:(CGPoint )point
 {
     int corner=0;
     
@@ -200,7 +200,7 @@
 
 
 - (void) encodeWithCoder:(NSCoder *)aCoder{
-    [aCoder encodeObject: self.label forKey:@"label"];
+    [aCoder encodeObject:self.label forKey:@"label"];
     [aCoder encodeObject:self.color forKey:@"color"];
     [aCoder encodeFloat:upperLeft.x forKey:@"upperLeftx"];
     [aCoder encodeFloat:upperLeft.y forKey:@"upperLefty"];

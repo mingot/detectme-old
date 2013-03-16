@@ -15,12 +15,12 @@
     CGPoint lowerRigth;
 }
 
-@property (retain, nonatomic) NSString *label;
-@property (retain, nonatomic) UIColor *color;
+@property (strong, nonatomic) NSString *label;
+@property (strong, nonatomic) UIColor *color;
 
 - (id)initWithPoints:(CGPoint)upper :(CGPoint)lower;
 
-//Returns the kind of point that is being set: 0,1,2,3
+// Sets the region and returns the corner that is being set(0,1,2,3) in case of change
 -(int) setUpperLeft:(CGPoint)point;
 -(int) setLowerRight:(CGPoint)point;
 

@@ -18,7 +18,7 @@
 
 }
 
-@property (nonatomic, retain) NSMutableDictionary *dictionaryBox;
+@property (nonatomic, retain) NSMutableArray *boxes;
 @property (nonatomic, retain) NSArray *colorArray;
 @property int selectedBox; //index of the current box selected. -1 if none.
 
@@ -26,11 +26,9 @@
 -(void) drawUnselectedBox:(Box *)box onContext:(CGContextRef)context transparency:(CGFloat)alpha;
 -(void) drawSelectedBox:(Box *)box onContext:(CGContextRef)context;
 
-
 // returns the box located at point point. If none found, -1 is returned
--(int) whereIs:(CGPoint) point;
--(int) boxInterior:(int)i :(CGPoint)point;
--(void) copyDictionary:(NSDictionary *)dict;
+-(int) boxIndexForPoint:(CGPoint)point;
+
 -(void) reset;
 
 

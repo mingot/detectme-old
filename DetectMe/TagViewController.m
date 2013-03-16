@@ -29,6 +29,9 @@
 @synthesize tagView = _tagView;
 @synthesize imageView = _imageView;
 @synthesize deleteButton = _deleteButton;
+@synthesize initialImage = _image;
+@synthesize initialBoxes = _initialBoxes;
+@synthesize initialIndex = _initialIndex;
 
 @synthesize filename = _filename;
 @synthesize paths = _paths;
@@ -67,12 +70,38 @@
     [self.scrollView addSubview:self.tagView];
     [self.view addSubview:self.scrollView];
 
-    //Push the modal for selecting the picture from the camera
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.allowsEditing = YES;
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    [self presentModalViewController:picker animated:YES];
+    //Push the modal for selecting the picture from the camera if not image is set
+    if(self.initialImage == nil){
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.allowsEditing = NO;
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        [self presentModalViewController:picker animated:YES];
+                    NSLog(@"Fas potar!!!");
+    }else{
+        self.imageView.image = self.initialImage;
+        self.tagView.boxes = self.initialBoxes;
+    }
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    //When returning to the previous window
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        
+        //Get ThumbNail image
+        [self.tagView setSelectedBox:-1];
+        [self.tagView setNeedsDisplay];
+        UIGraphicsBeginImageContext(self.scrollView.frame.size);
+        [self.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
+        UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        UIImage *thumbnailImage = [viewImage thumbnailImage:100 transparentBorder:0 cornerRadius:0 interpolationQuality:0];
+        
+        //Send the images to store
+        [self.delegate storeImage:self.imageView.image thumbNail:thumbnailImage withBoundingoxes:[NSArray arrayWithArray:self.tagView.boxes] inIndex:self.initialIndex];
+        
+    }
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark - UIImage Picker Controller
@@ -83,52 +112,28 @@
     [picker dismissModalViewControllerAnimated:YES];
 }
 
-//-(IBAction)addAction:(id)sender
-//{
-//    int num = [annotationView numLabels];
-//    Box *box = [[[Box alloc]initWithPoints:CGPointMake(110, 136) :CGPointMake(210, 236)] autorelease];
-//    box.color=[[annotationView colorArray] objectAtIndex:(rand()%8)];
-//    [[annotationView dictionaryBox] setObject:box forKey:[NSString stringWithFormat:@"%d",num]];
-//    [annotationView setSelectedBox:num];
-//    
-//
-//    num++;
-//    [annotationView setNumLabels:num];
-//    label.text=@"";
-//    label.hidden=NO;
-//    [annotationView setNeedsDisplay];
-//    [self.table reloadData];
-//
-//}
-
-
-
 
 -(IBAction)deleteAction:(id)sender
-{
-    int num = [[self.tagView dictionaryBox] count];
-    
-    if((num<1)||(self.tagView.selectedBox == -1)) return;
-
-    Box *b;
-    for (int i = self.tagView.selectedBox+1; i<num; i++) {
-        b = [[self.tagView dictionaryBox] objectForKey:[NSString stringWithFormat:@"%d",i]];
-        [[self.tagView dictionaryBox] setObject:b forKey:[NSString stringWithFormat:@"%d",i-1]];
+{    
+    if((self.tagView.boxes.count>0) && (self.tagView.selectedBox != -1))
+    {
+        [[self.tagView boxes] removeObjectAtIndex:self.tagView.selectedBox];
+        self.tagView.selectedBox = -1;
+        [self.tagView setNeedsDisplay];
     }
-    [[self.tagView dictionaryBox] removeObjectForKey:[NSString stringWithFormat:@"%d",num-1]];
-    self.tagView.selectedBox = -1;
-    
-    [self.tagView setNeedsDisplay];
 }
 
 
 -(void)saveImage
 {
+    //Save big image
     NSFileManager * filemng = [NSFileManager defaultManager];
     //NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     [self.tagView setSelectedBox:-1];
     [self.tagView setNeedsDisplay];
     NSData *image = UIImageJPEGRepresentation(self.imageView.image, 0.75);
+    
+    //Save thumbnail image with the boxes
     UIGraphicsBeginImageContext(self.scrollView.frame.size);
     [self.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -136,35 +141,33 @@
     UIImage *thumbnailImage = [viewImage thumbnailImage:100 transparentBorder:0 cornerRadius:0 interpolationQuality:0];
     NSData *thumImage = UIImageJPEGRepresentation(thumbnailImage, 0.75);
 
-    if([filemng createFileAtPath:[[self.paths objectAtIndex:IMAGES ] stringByAppendingPathComponent:self.filename] contents:image attributes:nil]){
-        NSLog(@"Foto %@ creada correctamente",self.filename);
+    if([filemng createFileAtPath:[[self.paths objectAtIndex:IMAGES] stringByAppendingPathComponent:self.filename] contents:image attributes:nil])
+    {
+        NSLog(@"Photo HQ %@ created correctly",self.filename);
         NSLog(@"Bytes HQ: %d",image.length);
 
-
-        if([filemng createFileAtPath:[[self.paths objectAtIndex:THUMB ] stringByAppendingPathComponent:self.filename] contents:thumImage attributes:nil]){
-            NSLog(@"Foto %@ creada correctamente",self.filename);
-            NSLog(@"Bytes pequeña: %d",thumImage.length);
-
+        if([filemng createFileAtPath:[[self.paths objectAtIndex:THUMB] stringByAppendingPathComponent:self.filename] contents:thumImage attributes:nil])
+        {
+            NSLog(@"Photo thumbnail %@ created correctly",self.filename);
+            NSLog(@"Bytes thumbnail: %d",thumImage.length);
+            
+        } else {
+            NSLog(@"Photo %@ (gallery) not created",self.filename);
         }
-        else {
-            NSLog(@" Foto %@ (gallery)no creada",self.filename);
-
-        }
-    }
-    else {
-        NSLog(@" Foto %@ (HQ)no creada",self.filename);
+    }else {
+        NSLog(@"Photo %@ (HQ) not created",self.filename);
     }
 }
 
 
 -(void)saveDictionary
 {
-    NSString *path = [[self.paths objectAtIndex:OBJECTS ] stringByAppendingPathComponent:self.filename ];
+    NSString *path = [[self.paths objectAtIndex:OBJECTS] stringByAppendingPathComponent:self.filename ];
     
-    if([NSKeyedArchiver archiveRootObject:self.tagView.dictionaryBox toFile:path]){
-        NSLog(@"DICCIONARIO GUARDADO OK");
+    if([NSKeyedArchiver archiveRootObject:self.tagView.boxes toFile:path]){
+        NSLog(@"Diccionary saved");
     }else {
-        NSLog(@"DICCIONARIO no GUARDADO ");
+        NSLog(@"Diccionary NOT saved");
     }
 }
 
@@ -174,9 +177,8 @@
     
     int icnt;
  
-    //change defaultuser to [serverconnect.. username]
     NSString *cnt=[NSString stringWithContentsOfFile:[NSString stringWithFormat:@"%@/labelme/%@/counter_file.txt",documentsDirectory,@"Ramon"] encoding:NSUTF8StringEncoding error:NULL];
-    icnt= [cnt intValue] +1;
+    icnt = [cnt intValue] +1;
         
     NSLog(@"Count file: %d",icnt);
         
@@ -185,5 +187,8 @@
     
     self.filename = [NSString stringWithFormat:@"%@-%@-%d.jpg", [[[NSDate date] description] substringToIndex:19],@"Ramon", icnt];
 }
+
+
+
 
 @end

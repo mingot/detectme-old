@@ -22,7 +22,7 @@
 
 @implementation TagView
 
-@synthesize dictionaryBox = _dictionaryBox;
+@synthesize boxes = _boxes;
 @synthesize colorArray = _colorArray;
 @synthesize selectedBox = _selectedBox;
 
@@ -32,7 +32,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setBackgroundColor:[UIColor clearColor]];
-        self.dictionaryBox = [[NSMutableDictionary alloc] init];
+        self.boxes = [[NSMutableArray alloc] init];
         move = NO;
         size = NO;
         corner = -1;
@@ -47,26 +47,24 @@
 - (void)drawRect:(CGRect)rect
 {
     
-    if (self.dictionaryBox.count < 1) return;
-    
+    if (self.boxes.count < 1) return;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, LINEWIDTH);
 
-    
-    
+
     if (self.selectedBox == -1) //none box selected
     {
-        for (int i=0; i<self.dictionaryBox.count; i++)
-            [self drawUnselectedBox:[self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",i]] onContext:context transparency:1];
+        for (int i=0; i<self.boxes.count; i++)
+            [self drawUnselectedBox:[self.boxes objectAtIndex:i] onContext:context transparency:1];
         
     }else{
-        for (int i=0; i<self.dictionaryBox.count; i++)
+        for (int i=0; i<self.boxes.count; i++)
         {
             if (i != self.selectedBox)
-                [self drawUnselectedBox:[self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",i]] onContext:context transparency:0.3];
+                [self drawUnselectedBox:[self.boxes objectAtIndex:i] onContext:context transparency:0.3];
         }
-        [self drawSelectedBox:[self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]] onContext:context];
+        [self drawSelectedBox:[self.boxes objectAtIndex:self.selectedBox] onContext:context];
     }
 }
 
@@ -108,15 +106,15 @@
 }
 
 
--(int)whereIs:(CGPoint) point
+-(int)boxIndexForPoint:(CGPoint) point
 {
-    for (int j=0; j<self.dictionaryBox.count; j++) {
-        Box *newBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",j]];
+    for (int i=0; i<self.boxes.count; i++) {
+        Box *newBox = [self.boxes objectAtIndex:i];
         
+        //Check if the box is inside a point
         if (CGRectContainsPoint( CGRectMake([newBox upperLeft].x-LINEWIDTH, [newBox upperLeft].y-LINEWIDTH, [newBox lowerRight].x-[newBox upperLeft].x+2*LINEWIDTH, [newBox lowerRight].y-[newBox upperLeft].y+2*LINEWIDTH),point)) {
-            return [self boxInterior:j :point];
+            return [self boxInterior:i :point];
         }
-        
     }    
     return -1;  
 }
@@ -124,11 +122,11 @@
 
 -(int)boxInterior:(int)i :(CGPoint)point
 {
-    for (int j=i+1; j<self.dictionaryBox.count; j++) {
-        Box *newBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",j]];
+    for (int j=i+1; j<self.boxes.count; j++) {
+        Box *newBox = [self.boxes objectAtIndex:j];
         
         if (CGRectContainsPoint( CGRectMake([newBox upperLeft].x-LINEWIDTH, [newBox upperLeft].y-LINEWIDTH, [newBox lowerRight].x-[newBox upperLeft].x+2*LINEWIDTH, [newBox lowerRight].y-[newBox upperLeft].y+2*LINEWIDTH),point)) {
-            Box *currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",i]];
+            Box *currentBox = [self.boxes objectAtIndex:i];
             if (CGRectContainsRect( CGRectMake([newBox upperLeft].x-LINEWIDTH, [newBox upperLeft].y-LINEWIDTH, [newBox lowerRight].x-[newBox upperLeft].x+2*LINEWIDTH, [newBox lowerRight].y-[newBox upperLeft].y+2*LINEWIDTH),CGRectMake([currentBox upperLeft].x-LINEWIDTH, [currentBox upperLeft].y-LINEWIDTH, [currentBox lowerRight].x-[currentBox upperLeft].x+2*LINEWIDTH, [currentBox lowerRight].y-[currentBox upperLeft].y+2*LINEWIDTH))){
                 
                 if ([self boxInterior:j :point]==j) {
@@ -136,25 +134,16 @@
                 }
             }
             return [self boxInterior:j:point];
-            
         }
-        
     }
     return i;
 }
 
--(void)copyDictionary:(NSDictionary *)dict
-{
-    for (int i=0; i<dict.count; i++) {
-        [self.dictionaryBox setObject:[dict objectForKey:[NSString stringWithFormat:@"%d",i]] forKey:[NSString stringWithFormat:@"%d",i]] ;
-         //setObject:[ forKey:[NSString stringWithFormat:@"%d",i]];
-    }
-}
 
 -(void) reset
 {
     self.selectedBox = -1;
-    [self.dictionaryBox removeAllObjects];
+    [self.boxes removeAllObjects];
     move = NO;
     size = NO;
 }
@@ -170,7 +159,7 @@
     
     if (self.selectedBox!=-1) //if a box is selected
     {
-        Box *currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+        Box *currentBox = [self.boxes objectAtIndex:self.selectedBox];
         
         if ((CGRectContainsPoint(CGRectMake([currentBox upperLeft].x-DET*LINEWIDTH, [currentBox upperLeft].y-DET*LINEWIDTH,2*DET*LINEWIDTH,2*DET*LINEWIDTH) , location)))
         {
@@ -197,7 +186,7 @@
             self.selectedBox=-1;
         }
     }else{
-        self.selectedBox = [self whereIs:location];
+        self.selectedBox = [self boxIndexForPoint:location];
         if (self.selectedBox!=-1){
             move=NO;
             size=NO;
@@ -219,35 +208,35 @@
     Box *currentBox;
     if (move)
     {
-        currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+        currentBox = [self.boxes objectAtIndex:self.selectedBox];
         [currentBox updatePoints:firstLocation :location];
-        [self.dictionaryBox setObject:currentBox forKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+//        [self.dictionaryBox setObject:currentBox forKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
         
     }else if (size){
         switch (corner)
         {
             case 0: //New box
                 currentBox = [[Box alloc] initWithPoints:location:location ];
-                currentBox.color=[self.colorArray objectAtIndex:(self.dictionaryBox.count%8)];
+                currentBox.color=[self.colorArray objectAtIndex:(self.boxes.count%8)];
                 corner=1;
-                [self.dictionaryBox setObject:currentBox forKey:[NSString stringWithFormat:@"%d",self.dictionaryBox.count]];
-                self.selectedBox = self.dictionaryBox.count-1;
+                [self.boxes addObject:currentBox];
+                self.selectedBox = self.boxes.count-1;
                 
                 break;
             case 1:
-                currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+                currentBox = [self.boxes objectAtIndex:self.selectedBox];
                 corner+=[currentBox setUpperLeft:location];
                 break;
             case 2:
-                currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+                currentBox = [self.boxes objectAtIndex:self.selectedBox];
                 corner+=[currentBox setUpperLeft:CGPointMake([currentBox upperLeft].x, location.y)]-[currentBox setLowerRight:CGPointMake(location.x, [currentBox lowerRight].y)];
                 break;
             case 3:
-                currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+                currentBox = [self.boxes objectAtIndex: self.selectedBox];
                 corner+=[currentBox setUpperLeft:CGPointMake(location.x, [currentBox upperLeft].y)]-[currentBox setLowerRight:CGPointMake([currentBox lowerRight].x, location.y)];
                 break;
             case 4:
-                currentBox = [self.dictionaryBox objectForKey:[NSString stringWithFormat:@"%d",self.selectedBox]];
+                currentBox = [self.boxes objectAtIndex: self.selectedBox];
                 corner-=[currentBox setLowerRight:location];
                 break;
                 

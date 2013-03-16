@@ -9,12 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "TagView.h"
 #import "Box.h"
-#import "Classifier.h"
 
 
 @protocol TagViewControllerDelegate <NSObject>
 
-- (void) setImage:(UIImage *)image withBoundingBoxes:(NSArray *) Boxes;
+- (void) storeImage:(UIImage *)image thumbNail:(UIImage *)imageTN withBoundingoxes:(NSArray *)boxes inIndex:(int)index;
 
 @end
 
@@ -28,6 +27,10 @@
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
 
+//image and boxes send throug Evaluatetvc
+@property (strong, nonatomic) UIImage *initialImage;
+@property (strong, nonatomic) NSArray *initialBoxes;
+@property int initialIndex;
 
 @property (nonatomic, retain) NSString *filename;
 @property (nonatomic, retain) NSArray *paths;
@@ -41,5 +44,6 @@
 -(void)saveImage;
 -(void)saveDictionary;
 -(void)createFilename;
+
 
 @end

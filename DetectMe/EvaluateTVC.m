@@ -9,27 +9,21 @@
 #import "EvaluateTVC.h"
 #import "ConvolutionHelper.h"
 
-@interface EvaluateTVC ()
 
-@property (strong, nonatomic) NSMutableArray *evaluationImages;
+
+
+@implementation TestImage
+
+@synthesize imageHQ = _imageHQ;
+@synthesize imageTN = _imageTN;
+@synthesize boxes = _boxes;
+@synthesize imageTitle = _imageTitle;
 
 @end
 
 
-
 @implementation EvaluateTVC
 
-@synthesize evaluationImages = _evaluationImages;
-@synthesize trainingSet = _trainingSet;
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -40,12 +34,7 @@
     NSFileManager * filemng = [NSFileManager defaultManager];
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString * path = [NSString stringWithFormat:@"%@/EvaluationImages",documentsDirectory];
-    self.evaluationImages = [[filemng contentsOfDirectoryAtPath:path error:NULL] mutableCopy];
-    if(self.evaluationImages == nil) self.evaluationImages = [[NSMutableArray alloc] init];
-    [self.evaluationImages addObject:@""]; //add last object to contain the plus sign
-    NSLog(@"%d", self.evaluationImages.count);
-    
-//    self.evaluationImages = [[NSMutableArray alloc] initWithObjects:@"SunDay",@"MonDay",@"TuesDay",@"WednesDay",@"ThursDay",@"FriDay",@"SaturDay",@"",nil];
+    self.testImages = [[NSMutableArray alloc] init];
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;    
 }
@@ -55,13 +44,22 @@
 #pragma mark
 #pragma mark - Tag view controller delegate
 
-- (void) setImage:(UIImage *)image withBoundingBoxes:(NSArray *) boxes
+- (void) storeImage:(UIImage *)image thumbNail:(UIImage *)imageTN withBoundingoxes:(NSArray *)boxes inIndex:(int)index
 {
-    [self.trainingSet.images addObject:image];
-    for(ConvolutionPoint *cp in boxes)
-    {
-        cp.imageIndex = self.trainingSet.images.count-1;
+    if(index==-1){ //New image to add
+        TestImage *newTestImage = [[TestImage alloc] init];
+        newTestImage.imageHQ = image;
+        newTestImage.imageTN = imageTN;
+        newTestImage.boxes = boxes;
+        newTestImage.imageTitle = @"random";
+        [self.testImages addObject:newTestImage];
+    }else{ //old image to update
+        TestImage *oldImage = [self.testImages objectAtIndex:index];
+        oldImage.boxes = boxes;
+        oldImage.imageTN = imageTN;
     }
+
+    [self.tableView reloadData];
 }
 
 
@@ -71,7 +69,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.evaluationImages count];
+    return self.testImages.count + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -82,63 +80,52 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"EvaluationImagesCell"];
     }
     
-    NSString *imageName = [self.evaluationImages objectAtIndex:indexPath.row];
-    cell.textLabel.text = imageName;
+    if(self.testImages.count == 0 || indexPath.row == self.testImages.count) cell.textLabel.text = @"Add photo";
+    else{
+        cell.textLabel.text = [[self.testImages objectAtIndex:indexPath.row] imageTitle];
+        cell.imageView.image = [[self.testImages objectAtIndex:indexPath.row] imageTN];
+    }
     return cell;
 }
 
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == self.evaluationImages.count-1) {
-        return UITableViewCellEditingStyleInsert;
-    } else {
+    if (indexPath.row < self.testImages.count)
         return UITableViewCellEditingStyleDelete;
-    }
 }
 
 
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.evaluationImages removeObjectAtIndex:indexPath.row];
+        [self.testImages removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        NSLog(@"Ramonet Added!");
-        [self performSegueWithIdentifier: @"Show Tag View" sender: self];
-    }   
+    }
 }
 
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"Show Tag View"]) {
+    if ([segue.identifier isEqualToString:@"Show Picture"]){
         TagViewController *tagVC = (TagViewController *) segue.destinationViewController;
         tagVC.delegate = self;
+        tagVC.initialIndex =-1;
+        
+        //initialize it with the current image!
+        int row = [[self.tableView indexPathForSelectedRow] row];
+        if(row<self.testImages.count){
+            TestImage *selectedTestImage = [self.testImages objectAtIndex:row];
+            tagVC.initialImage = [selectedTestImage imageHQ];
+            tagVC.initialBoxes = [selectedTestImage boxes];
+            tagVC.initialIndex = row;
+            printf("Entra!!\n");
+        }
     }
     
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark
 #pragma mark - Table view delegate

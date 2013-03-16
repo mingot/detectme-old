@@ -11,9 +11,19 @@
 #import "Classifier.h"
 
 
+@interface TestImage : NSObject
+
+@property (nonatomic, strong) UIImage *imageHQ;
+@property (nonatomic, strong) UIImage *imageTN;
+@property (nonatomic, strong) NSArray *boxes;
+@property (nonatomic, strong) NSString *imageTitle;
+
+@end
+
+
 @interface EvaluateTVC : UITableViewController <TagViewControllerDelegate>
 
 
-@property (nonatomic, strong) TrainingSet *trainingSet;
+@property (nonatomic, strong) NSMutableArray *testImages;
 
 @end
