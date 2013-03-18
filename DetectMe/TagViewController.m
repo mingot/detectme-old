@@ -49,7 +49,7 @@
     
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *doc = [NSString  stringWithFormat:@"%@/labelme/%@",documentsDirectory,@"Ramon"];
-    self.paths = [[NSArray alloc] initWithObjects:[NSString stringWithFormat:@"%@/iphoneimages",doc],[NSString stringWithFormat:@"%@/galleryimages",doc],[NSString stringWithFormat:@"%@/objects",doc], nil];;
+    self.paths = [[NSArray alloc] initWithObjects:[NSString stringWithFormat:@"%@/iphoneimages",doc],[NSString stringWithFormat:@"%@/galleryimages",doc],[NSString stringWithFormat:@"%@/objects",doc], nil];
     
     self.filename = [[NSString alloc] init];
     
@@ -77,7 +77,6 @@
         picker.allowsEditing = NO;
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         [self presentModalViewController:picker animated:YES];
-                    NSLog(@"Fas potar!!!");
     }else{
         self.imageView.image = self.initialImage;
         self.tagView.boxes = self.initialBoxes;

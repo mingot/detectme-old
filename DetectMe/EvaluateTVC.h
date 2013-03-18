@@ -18,12 +18,20 @@
 @property (nonatomic, strong) NSArray *boxes;
 @property (nonatomic, strong) NSString *imageTitle;
 
+
+-(void) saveAtPath:(NSString *)path;
+
+-(void) deleteAtPath:(NSString *)path;
+
++ (TestImage *) getImage:(NSString *)imageTitle formPath:(NSString *)path;
+
 @end
+
 
 
 @interface EvaluateTVC : UITableViewController <TagViewControllerDelegate>
 
-
 @property (nonatomic, strong) NSMutableArray *testImages;
+@property (nonatomic, strong) NSString *path;
 
 @end
