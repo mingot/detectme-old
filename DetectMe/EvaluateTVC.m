@@ -201,6 +201,7 @@
         TagViewController *tagVC = (TagViewController *) segue.destinationViewController;
         tagVC.delegate = self;
         tagVC.initialIndex =-1;
+        tagVC.svmClassifier = self.svmClassifier;
         
         //initialize it with the current image!
         int row = [[self.tableView indexPathForSelectedRow] row];

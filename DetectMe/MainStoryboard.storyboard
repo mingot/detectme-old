@@ -293,7 +293,7 @@
                                 <color key="shadowColor" red="0.50196081400000003" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="3Uv-Zo-kpv"/>
                     <connections>
@@ -479,6 +479,10 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
+                                    <view opaque="NO" contentMode="scaleToFill" id="oPW-xD-p4F" customClass="DetectView">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </view>
                                     <view contentMode="scaleToFill" id="7sN-8k-gq4" customClass="TagView">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -489,15 +493,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="TUA-dP-cNP">
-                        <barButtonItem key="rightBarButtonItem" title="Delete" id="PlG-g3-UnW">
-                            <connections>
-                                <action selector="deleteAction:" destination="Kx0-JU-eOq" id="PYs-tE-GVx"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="TUA-dP-cNP"/>
                     <connections>
-                        <outlet property="deleteButton" destination="PlG-g3-UnW" id="7US-2n-hSu"/>
+                        <outlet property="detectView" destination="oPW-xD-p4F" id="QGf-iD-mlv"/>
                         <outlet property="imageView" destination="7GK-hr-UqM" id="1OL-wW-QvM"/>
                         <outlet property="scrollView" destination="EOj-hU-6Db" id="XSc-6j-1L2"/>
                         <outlet property="tagView" destination="7sN-8k-gq4" id="0Qp-bY-2FJ"/>

@@ -57,9 +57,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 - (IBAction)detect:(id)sender
 {
-    NSLog(@"Orientation: %d",self.imageView.image.imageOrientation);
-    
-    
     //TODO: not hard code the resizing image.
     NSArray *nmsArray = [self.svmClassifier detect:[self.imageView.image scaleImageTo:480.0/2048] minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
     

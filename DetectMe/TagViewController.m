@@ -11,7 +11,7 @@
 
 #import "TagViewController.h"
 #import "UIImage+Resize.h"
-
+#import "ConvolutionHelper.h"
 
 #define UPPERBOUND 0
 #define LOWERBOUND 504
@@ -28,13 +28,13 @@
 @synthesize scrollView = _scrollView;
 @synthesize tagView = _tagView;
 @synthesize imageView = _imageView;
-@synthesize deleteButton = _deleteButton;
 @synthesize initialImage = _image;
 @synthesize initialBoxes = _initialBoxes;
 @synthesize initialIndex = _initialIndex;
 
 @synthesize filename = _filename;
 @synthesize paths = _paths;
+@synthesize svmClassifier = _svmClassifier;
 @synthesize delegate = _delegate;
 
 
@@ -46,6 +46,12 @@
     [super viewDidLoad];
     
     srand(time(NULL));
+    
+    //Navigation buttons
+    UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithTitle:@"Delete Box" style:UIBarButtonItemStylePlain target:self action:@selector(deleteAction:)];
+    UIBarButtonItem *detectButton = [[UIBarButtonItem alloc] initWithTitle:@"Detect" style:UIBarButtonItemStylePlain target:self action:@selector(detectAction:)];
+    self.navigationItem.rightBarButtonItems=[NSArray arrayWithObjects:deleteButton,detectButton, nil];
+    
     
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *doc = [NSString  stringWithFormat:@"%@/labelme/%@",documentsDirectory,@"Ramon"];
@@ -67,6 +73,7 @@
     self.imageView.frame = self.scrollView.frame;
     
     [self.scrollView addSubview:self.imageView];
+    [self.scrollView addSubview:self.detectView];
     [self.scrollView addSubview:self.tagView];
     [self.view addSubview:self.scrollView];
 
@@ -103,23 +110,13 @@
     [super viewWillDisappear:animated];
 }
 
+#pragma mark
 #pragma mark - UIImage Picker Controller
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
     self.imageView.image = image;
     [picker dismissModalViewControllerAnimated:YES];
-}
-
-
--(IBAction)deleteAction:(id)sender
-{    
-    if((self.tagView.boxes.count>0) && (self.tagView.selectedBox != -1))
-    {
-        [self.tagView.boxes removeObjectAtIndex:self.tagView.selectedBox];
-        self.tagView.selectedBox = -1;
-        [self.tagView setNeedsDisplay];
-    }
 }
 
 
@@ -141,6 +138,35 @@
 }
 
 
+
+#pragma mark
+#pragma mark - Navigation buttons actions
+
+-(IBAction)deleteAction:(id)sender
+{
+    if((self.tagView.boxes.count>0) && (self.tagView.selectedBox != -1))
+    {
+        [self.tagView.boxes removeObjectAtIndex:self.tagView.selectedBox];
+        self.tagView.selectedBox = -1;
+        [self.tagView setNeedsDisplay];
+    }
+}
+
+
+-(IBAction)detectAction:(id)sender
+{
+    //TODO: not hard code the resizing image.
+    NSArray *nmsArray = [self.svmClassifier detect:[self.imageView.image scaleImageTo:480.0/2048] minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
+    
+    for(ConvolutionPoint *cp in nmsArray)
+        NSLog(@"xmin:%f, xmax:%f, ymin:%f, ymax:%f", cp.xmin, cp.xmax, cp.ymin, cp.ymax);
+    
+    NSLog(@"IMAGE SIZE: h:%f, w:%f", self.imageView.image.size.height, self.imageView.image.size.width);
+    
+    [self.detectView setCorners:nmsArray];
+    [self.detectView setNeedsDisplay];
+
+}
 
 
 @end

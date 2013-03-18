@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "TagView.h"
 #import "Box.h"
+#import "Classifier.h"
+#import "DetectView.h"
 
 
 @protocol TagViewControllerDelegate <NSObject>
@@ -25,7 +27,7 @@
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet TagView *tagView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+@property (strong, nonatomic) IBOutlet DetectView *detectView;
 
 //image and boxes send throug Evaluatetvc
 @property (strong, nonatomic) UIImage *initialImage;
@@ -34,12 +36,14 @@
 
 @property (nonatomic, retain) NSString *filename;
 @property (nonatomic, retain) NSArray *paths;
+@property (nonatomic, strong) Classifier *svmClassifier;
 
 @property (nonatomic, strong) id <TagViewControllerDelegate> delegate;
 
 
 //Delete selected bounding box
 -(IBAction)deleteAction:(id)sender;
+-(IBAction)detectAction:(id)sender;
 
 -(void)createFilename;
 
