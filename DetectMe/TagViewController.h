@@ -29,7 +29,7 @@
 
 //image and boxes send throug Evaluatetvc
 @property (strong, nonatomic) UIImage *initialImage;
-@property (strong, nonatomic) NSArray *initialBoxes;
+@property (strong, nonatomic) NSMutableArray *initialBoxes;
 @property int initialIndex;
 
 @property (nonatomic, retain) NSString *filename;
@@ -41,8 +41,6 @@
 //Delete selected bounding box
 -(IBAction)deleteAction:(id)sender;
 
--(void)saveImage;
--(void)saveDictionary;
 -(void)createFilename;
 
 

@@ -8,57 +8,15 @@
 
 #import "ChoicesViewController.h"
 #import "CameraViewController.h"
-
-
-#pragma mark
-#pragma mark - Auxiliary class for PhotoDetectVC
-
-@interface FakePhotoViewController:NSObject //Auxiliar class to pass information to the DetectPhotoVC
-
-@property (strong,nonatomic) UIImageView *picture;
-@property (strong,nonatomic) UIImage *originalImage;
-@property (strong,nonatomic) DetectView *detectView;
-@property BOOL photoFromCamera;
-
-@end
-
-
-@implementation FakePhotoViewController
-
-@synthesize picture = _picture;
-@synthesize originalImage = _originalImage;
-@synthesize detectView = _detectView;
-
-//lazy instantiantion
-- (UIImageView *) picture
-{
-    if(!_picture) _picture = [[UIImageView alloc] init];
-    return _picture;
-}
-
-- (DetectView *) detectView
-{
-    if(!_detectView) _detectView = [[DetectView alloc] init];
-    return _detectView;
-    
-}
-@end
-
-
-
-@interface ChoicesViewController ()
-
-@property (strong,nonatomic) FakePhotoViewController *detectPhotoViewController;
-
-@end
+#import "EvaluateTVC.h"
 
 
 @implementation ChoicesViewController
 
-@synthesize detectPhotoViewController = _detectPhotoViewController;
 @synthesize optionsViewController = _optionsViewController;
 @synthesize templateName = _templateName;
-
+@synthesize selectedTemplateLabel = _selectedTemplateLabel;
+@synthesize imageTakeForStillDetect = _imageTakeForStillDetect;
 
 
 - (void)viewDidLoad
@@ -70,9 +28,8 @@
 
 
 
-
 #pragma mark
-#pragma mark - Buttons
+#pragma mark - Segue
 
 // Preapre for segueshowCameraVC showCameraVC
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -87,11 +44,12 @@
 
     }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
         DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
-        detectPhotoVC.picture = self.detectPhotoViewController.picture;
-        detectPhotoVC.originalImage = self.detectPhotoViewController.originalImage;
-        detectPhotoVC.detectView = self.detectPhotoViewController.detectView;
+        detectPhotoVC.originalImage = self.imageTakeForStillDetect;
         detectPhotoVC.templateName = self.templateName;
-
+    }else if ([segue.identifier isEqualToString:@"show EvaluateTVC"]){
+        EvaluateTVC *evaluateTVC = (EvaluateTVC *) segue.destinationViewController;
+        evaluateTVC.templateName = self.templateName;
+        NSLog(@"TEMPLATE NAME: %@", evaluateTVC.templateName);
     }
     
 }
@@ -103,16 +61,14 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIActionSheet *photoSourceSheet = [[UIActionSheet alloc] initWithTitle:@"Select source:" delegate:self
                                            cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-                                           otherButtonTitles:@"Take Photo", @"Choose Existing Photo", @"Test Images", nil];
+                                           otherButtonTitles:@"Take Photo", @"Choose Existing Photo", nil];
         [photoSourceSheet showInView:self.view];
-    }
-    
-    else { // No camera, just use the library.
+        
+    }else { // No camera, just use the library.
         
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
-        //picker.allowsEditing = YES;
         [self presentModalViewController:picker animated:YES];
     }
 }
@@ -134,23 +90,18 @@
 - (void) actionSheet:(UIActionSheet * ) actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     
-    if (buttonIndex == actionSheet.cancelButtonIndex)
-    {
+    if (buttonIndex == actionSheet.cancelButtonIndex){
         NSLog(@"The user cancelled adding an image.");
         return;
     }
     
-    NSFileManager * filemng = [NSFileManager defaultManager];
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString * path = [NSString stringWithFormat:@"%@/TestImages",documentsDirectory];
+    
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    NSArray *items = [filemng contentsOfDirectoryAtPath:path error:NULL ];
 
     picker.delegate = self; //Once choose the photo, we are the delegate to manage the action done
     
-    //picker.allowsEditing = YES;
-    switch (buttonIndex)
-    {
+    switch (buttonIndex){
+            
         case 0: //@"Take Photo"
             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
             [self presentModalViewController:picker animated:YES];
@@ -160,23 +111,6 @@
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             [self presentModalViewController:picker animated:YES];
             break;
-            
-        case 2: //@"Test Images"
-            self.detectPhotoViewController.picture.image = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:[items objectAtIndex:8]]];
-            self.detectPhotoViewController.originalImage = [UIImage imageWithContentsOfFile:[path stringByAppendingPathComponent:[items objectAtIndex:8]]];
-            double f =self.detectPhotoViewController.originalImage.size.height/self.detectPhotoViewController.originalImage.size.width;
-            if (416 - 320*f < 0){
-                [self.detectPhotoViewController.picture setFrame:CGRectMake((320-416/f)/2, 0, 416/f, 416)];
-                [self.detectPhotoViewController.detectView setFrame:CGRectMake((320-416/f)/2, 0, 416/f, 416)];
-            
-            }else {
-                [self.detectPhotoViewController.picture setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
-                [self.detectPhotoViewController.detectView setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
-                
-            }
-        
-            [self performSegueWithIdentifier:@"show DetectPhotoVC" sender:self]; 
-            break;
     }
 }
 
@@ -185,46 +119,10 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    
-    //TODO: clean up this methods
-    self.detectPhotoViewController  = [[FakePhotoViewController alloc] init];
-    self.detectPhotoViewController.picture.image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    self.detectPhotoViewController.originalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    
-    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) //Photo taken with the camera
-    {
-        UIImageWriteToSavedPhotosAlbum([info objectForKey:UIImagePickerControllerOriginalImage], nil, nil, nil);
-        [self.detectPhotoViewController setPhotoFromCamera:YES];
-
-    }else { // Photo chosen from the library
-        if (self.detectPhotoViewController.picture.image.size.width > self.detectPhotoViewController.picture.image.size.height){
-            [self.detectPhotoViewController setPhotoFromCamera:NO];
-
-        }else {
-            [self.detectPhotoViewController setPhotoFromCamera:YES];
-
-        }
-    }
-    
+    self.imageTakeForStillDetect = [info objectForKey:UIImagePickerControllerOriginalImage];
     [self dismissModalViewControllerAnimated:YES];
-    double f = self.detectPhotoViewController.originalImage.size.height / self.detectPhotoViewController.originalImage.size.width;
-    
-    if (416 - 320*f < 0) {
-        [self.detectPhotoViewController.picture setFrame:CGRectMake((320-416/f)/2, 0, 416/f, 416)];
-        [self.detectPhotoViewController.detectView setFrame:CGRectMake((320-416/f)/2, 0, 416/f, 416)];
-
-    }else {
-        [self.detectPhotoViewController.picture setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
-        [self.detectPhotoViewController.detectView setFrame:CGRectMake(0, (416-320*f)/2,320 , 320*f)];
-
-    }
-    
     [self performSegueWithIdentifier:@"show DetectPhotoVC" sender:self]; 
 }
 
-
-- (void) imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self dismissModalViewControllerAnimated:YES];
-}
 
 @end

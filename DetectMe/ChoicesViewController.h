@@ -20,8 +20,8 @@
 
 @property (strong,nonatomic) OptionsViewController *optionsViewController;
 @property (strong, nonatomic) NSString *templateName;
-//@property (strong, nonatomic) double *templateWeights;
 @property (strong, nonatomic) IBOutlet UILabel *selectedTemplateLabel;
+@property (strong, nonatomic) UIImage *imageTakeForStillDetect;
 
 -(IBAction)photoAction:(id)sender;
 

@@ -8,7 +8,8 @@
 
 #import "EvaluateTVC.h"
 #import "ConvolutionHelper.h"
-
+#import "FileStorageHelper.h"
+#import "UIImage+Resize.h"
 
 
 
@@ -28,12 +29,12 @@
     //If it dos not exist, create path and store HQ image
     if(![filemng fileExistsAtPath:totalPath]){
         [filemng createDirectoryAtPath:totalPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    
-    //save imageHQ
-    NSData *imgHQ = UIImageJPEGRepresentation(self.imageHQ, 0.75);
-    if([filemng createFileAtPath:[totalPath stringByAppendingPathComponent:@"imageHQ.jpg"] contents:imgHQ attributes:nil]){
-        NSLog(@"HQ image saved");
+        
+        //save imageHQ
+        NSData *imgHQ = UIImageJPEGRepresentation(self.imageHQ, 0.75);
+        if([filemng createFileAtPath:[totalPath stringByAppendingPathComponent:@"imageHQ.jpg"] contents:imgHQ attributes:nil]){
+            NSLog(@"HQ image saved");
+        }
     }
     
     //save the TN
@@ -86,10 +87,15 @@
 
 @synthesize testImages = _testImages;
 @synthesize path = _path;
+@synthesize templateName = _templateName;
+@synthesize svmClassifier = _svmClassifier;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //Load classifier
+    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     
     self.testImages = [[NSMutableArray alloc] init];
     
@@ -102,13 +108,13 @@
         //Load images
         NSArray *imagesPath = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
         for(NSString *imageName in imagesPath){
-            NSLog(@"imageName: %@", imageName);
             [self.testImages addObject:[TestImage getImage:imageName formPath:self.path]];
         }
     }
     
     //Add edit button for the table
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;    
+    UIBarButtonItem *testButton = [[UIBarButtonItem alloc] initWithTitle:@"Test" style:UIBarButtonItemStyleBordered target:self action:@selector(testAction:)];
+    self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: self.editButtonItem, testButton, nil];
 }
 
 
@@ -170,15 +176,20 @@
 {
     if (indexPath.row < self.testImages.count)
         return UITableViewCellEditingStyleDelete;
-    
 }
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
+        // Delete from the disk
+        TestImage *tiDeleted = [self.testImages objectAtIndex:indexPath.row];
+        [tiDeleted deleteAtPath:self.path];
+        
+        //Delete from memory
         [self.testImages removeObjectAtIndex:indexPath.row];
+        
+        //Delete from table view
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
@@ -196,7 +207,7 @@
         if(row<self.testImages.count){
             TestImage *selectedTestImage = [self.testImages objectAtIndex:row];
             tagVC.initialImage = [selectedTestImage imageHQ];
-            tagVC.initialBoxes = [selectedTestImage boxes];
+            tagVC.initialBoxes = [[selectedTestImage boxes] mutableCopy];
             tagVC.initialIndex = row;
         }
     }
@@ -204,21 +215,32 @@
 }
 
 
-#pragma mark
-#pragma mark - Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(IBAction) testAction:(id)sender
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    NSLog(@"Test begin");
+    //Create training set
+    TrainingSet *testSet = [[TrainingSet alloc] init];
+    for(TestImage *ti in self.testImages){
+        //FIXME: resize hardcoded
+        NSLog(@"Image size: h:%f, w:%f", ti.imageHQ.size.height, ti.imageHQ.size.width);
+        
+        [testSet.images addObject:[ti.imageHQ scaleImageTo:480.0/ti.imageHQ.size.height]];
+        for(Box *bb in ti.boxes){
+            ConvolutionPoint *cp = [[ConvolutionPoint alloc] init];
+            cp.imageIndex = [ti.imageTitle intValue];
+            cp.xmin = bb.upperLeft.x/ti.imageHQ.size.width;
+            cp.ymin = bb.upperLeft.y/ti.imageHQ.size.height;
+            cp.xmax = bb.lowerRight.x/ti.imageHQ.size.width;
+            cp.ymax = bb.lowerRight.y/ti.imageHQ.size.height;
+            
+            [testSet.groundTruthBoundingBoxes addObject:cp];
+        }
+        
+    }
+
+    NSLog(@"Running the test set...");
+    [self.svmClassifier testOnSet:testSet atThresHold:0];
 }
-
-
 
 
 @end

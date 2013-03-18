@@ -46,18 +46,8 @@
     hogOnScreen = NO;
     numMax = 1;
     
-    cameraRoll = NO;
-    printResults = NO;
-    fullScreen = NO;
-    fileWritten = NO;
-    interval = 10;
-    
-    sizeImage = 10; //??
-    
-    
     //Initialization of model properties
-    templateWeights = [FileStorageHelper readTemplate:self.templateName];
-    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:templateWeights];
+    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     self.numPyramids = 10;
     self.maxDetectionScore = -0.9;
     self.locMgr = [[CLLocationManager alloc] init];
@@ -65,7 +55,6 @@
     self.locMgr.desiredAccuracy = kCLLocationAccuracyBest;
     [self.locMgr startUpdatingLocation];
     
-    printf("sieze of double: %lu\n", sizeof(double));
     
     // ********  CAMERA CAPUTRE  ********
     //Capture input specifications
@@ -137,10 +126,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 	   fromConnection:(AVCaptureConnection *)connection 
 {
     
-	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. So we have to create an autorelease pool for the thread we are in.
+	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. 
     @autoreleasepool
     {
-        
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
         CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer ??Why
         

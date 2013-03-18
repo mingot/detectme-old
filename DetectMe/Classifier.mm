@@ -35,6 +35,16 @@ using namespace cv;
 @synthesize labels = _labels;
 
 
+-(id) init
+{
+    self = [super init];
+    if (self) {
+        self.images = [[NSMutableArray alloc] init];
+        self.groundTruthBoundingBoxes = [[NSMutableArray alloc] init];
+        self.boundingBoxes = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
 
 - (void) initialFill
 {
@@ -303,7 +313,7 @@ using namespace cv;
         [trainingSet.boundingBoxes removeAllObjects];
         int positives = 0;
         
-        for(int imageIndex=0; imageIndex <[trainingSet.images count]; imageIndex++)
+        for(int imageIndex=0; imageIndex<[trainingSet.images count]; imageIndex++)
         {
             // Get new bounding boxes by running the detector
             NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:imageIndex] minimumThreshold:-1 pyramids:10 usingNms:NO deviceOrientation:UIImageOrientationUp];
@@ -339,6 +349,9 @@ using namespace cv;
         [self showOrientationHistogram];
         
     }
+    
+    //See the results on training set
+    [self testOnSet:trainingSet atThresHold:0];
 }
 
 
@@ -367,7 +380,7 @@ using namespace cv;
     }
     
     // Maxsize for going faster
-    // TODO: choose a reasonable max size for improve performance
+    // TODO: choose a reasonable max size for improve performance and take it out from the detect logic (in the VC)
     [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[image scaleImageTo:300.0/480]
                                                                    withTemplate:templateWeights]];
     //Pyramid calculation
@@ -404,6 +417,25 @@ using namespace cv;
     return nmsArray;
     
 }
+
+
+- (void) testOnSet:(TrainingSet *)set atThresHold:(float)detectionThreshold
+{
+    
+    NSLog(@"Detection threshold: %f", detectionThreshold);
+    int tp=0, fp=0; //, fn=0, tn=0;
+    for(ConvolutionPoint *groundTruthBoundingBox in set.groundTruthBoundingBoxes){
+        UIImage *selectedImage = [set.images objectAtIndex:groundTruthBoundingBox.imageIndex];
+        NSArray *detectedBoundingBoxes = [self detect:selectedImage minimumThreshold:detectionThreshold pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
+        NSLog(@"For image %d generated %d detecting boxes", groundTruthBoundingBox.imageIndex, detectedBoundingBoxes.count);
+        for(ConvolutionPoint *detectedBoundingBox in detectedBoundingBoxes)
+            if ([detectedBoundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox]>0.5) tp++;
+            else fp++;
+        NSLog(@"tp at image %d: %d", groundTruthBoundingBox.imageIndex, tp);
+        NSLog(@"fp at image %d: %d", groundTruthBoundingBox.imageIndex, fp);
+    }
+}
+
 
 - (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName
 {

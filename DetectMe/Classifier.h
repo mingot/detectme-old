@@ -21,17 +21,12 @@
 @property int numberOfTrainingExamples; // bounding boxes + support vectors added
 
 
-
 // Given a training set of images and ground truth bounding boxes it generates
 // a set of positive and negative bounding boxes for training
 - (void) initialFill;
 
 // Generates the hog features given the bounding boxes
 - (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize) templateSize withNumSV:(int) numSV;
-
-//// Initialize imageFeatures with the desired size
-//- (void) initializeFeatures:(int) numberFeatures forImages:(int) numberExamples;
-
 
 @end
 
@@ -59,6 +54,9 @@
    deviceOrientation:(int) orientation;
 
 
+
+// given a set with ground truth bounding boxes, returns the metric spesified.
+- (void) testOnSet:(TrainingSet *)set atThresHold:(float)detectionThreshold;
 
 // Store the weights of the template to the disk
 - (void) storeSvmWeightsAsTemplateWithName:(NSString *)templateName;

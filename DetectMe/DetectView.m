@@ -15,16 +15,6 @@
 
 @synthesize corners = _corners;
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setBackgroundColor:[UIColor clearColor ]];
-        self.corners = [[NSArray alloc] init];
-    }
-    return self;
-}
-
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

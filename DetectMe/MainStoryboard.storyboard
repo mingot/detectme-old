@@ -76,7 +76,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="cXj-C6-Qx0" kind="push" id="Szj-4S-DBb"/>
+                                    <segue destination="cXj-C6-Qx0" kind="push" identifier="show EvaluateTVC" id="Szj-4S-DBb"/>
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Template: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" id="OTb-gW-E2d">
@@ -399,9 +399,23 @@
                     <view key="view" contentMode="scaleToFill" id="xLm-f9-2LQ">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="QdL-Zd-wlK">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <view opaque="NO" contentMode="scaleToFill" id="FDa-go-CtS" customClass="DetectView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="zgh-9u-rDA"/>
+                    <connections>
+                        <outlet property="detectView" destination="FDa-go-CtS" id="hf5-Z3-D1K"/>
+                        <outlet property="imageView" destination="QdL-Zd-wlK" id="QAO-QC-uZk"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kDf-MW-YA7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -516,83 +530,6 @@
             <point key="canvasLocation" x="61" y="329"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CameraViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CameraViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="HOGimageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="detectView" candidateClass="DetectView"/>
-                <relationship kind="outlet" name="detectionThresholdSliderButton" candidateClass="UISlider"/>
-            </relationships>
-        </class>
-        <class className="ChoicesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ChoicesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="photoAction:"/>
-                <relationship kind="outlet" name="selectedTemplateLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="DetectPhotoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectPhotoViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="HOGAction:"/>
-                <relationship kind="action" name="detect:"/>
-                <relationship kind="action" name="settings:"/>
-            </relationships>
-        </class>
-        <class className="DetectView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DetectView.h"/>
-        </class>
-        <class className="EvaluateTVC" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EvaluateTVC.h"/>
-        </class>
-        <class className="LearnViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LearnViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addAction:"/>
-                <relationship kind="action" name="learnAction:"/>
-                <relationship kind="action" name="numberOfTrainingAction:"/>
-                <relationship kind="outlet" name="detectView" candidateClass="DetectView"/>
-            </relationships>
-        </class>
-        <class className="SettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="hogChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="numMaximumsChangeAction:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="pyramidStepperAction:" candidateClass="UIStepper"/>
-                <relationship kind="outlet" name="hogSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="numMaximumsSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="pyramidLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="pyramidStepper" candidateClass="UIStepper"/>
-            </relationships>
-        </class>
-        <class className="ShowTrainingImageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ShowTrainingImageViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="TagView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TagView.h"/>
-        </class>
-        <class className="TagViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TagViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="deleteAction:"/>
-                <relationship kind="outlet" name="deleteButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="tagView" candidateClass="TagView"/>
-            </relationships>
-        </class>
-        <class className="TemplateTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TemplateTableViewController.h"/>
-        </class>
-        <class className="TrainingImagesTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TrainingImagesTableViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

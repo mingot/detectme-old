@@ -15,22 +15,19 @@
 @interface DetectPhotoViewController : UIViewController
 {
     BOOL isHog;
-    @public BOOL photoFromCamera;
-    double *templateWeights;
 }
 
-@property (strong,nonatomic) UIImageView *picture;
+@property (strong,nonatomic) IBOutlet UIImageView *imageView;
+@property (strong,nonatomic) IBOutlet DetectView *detectView;
 @property (strong,nonatomic) UIImage *originalImage;
-@property (strong,nonatomic) DetectView *detectView;
+
+
 @property (strong, nonatomic) NSString *templateName;
 @property (strong, nonatomic) Classifier *svmClassifier;
 
 
-
--(void)setPhotoFromCamera:(BOOL)value;
 -(IBAction)detect:(id)sender;
 -(IBAction)HOGAction:(id)sender;
--(IBAction)settings:(id)sender;
 
 
 @end

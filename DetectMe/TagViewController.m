@@ -116,59 +116,12 @@
 {    
     if((self.tagView.boxes.count>0) && (self.tagView.selectedBox != -1))
     {
-        [[self.tagView boxes] removeObjectAtIndex:self.tagView.selectedBox];
+        [self.tagView.boxes removeObjectAtIndex:self.tagView.selectedBox];
         self.tagView.selectedBox = -1;
         [self.tagView setNeedsDisplay];
     }
 }
 
-
--(void)saveImage
-{
-    //Save big image
-    NSFileManager * filemng = [NSFileManager defaultManager];
-    //NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    [self.tagView setSelectedBox:-1];
-    [self.tagView setNeedsDisplay];
-    NSData *image = UIImageJPEGRepresentation(self.imageView.image, 0.75);
-    
-    //Save thumbnail image with the boxes
-    UIGraphicsBeginImageContext(self.scrollView.frame.size);
-    [self.scrollView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    UIImage *thumbnailImage = [viewImage thumbnailImage:100 transparentBorder:0 cornerRadius:0 interpolationQuality:0];
-    NSData *thumImage = UIImageJPEGRepresentation(thumbnailImage, 0.75);
-
-    if([filemng createFileAtPath:[[self.paths objectAtIndex:IMAGES] stringByAppendingPathComponent:self.filename] contents:image attributes:nil])
-    {
-        NSLog(@"Photo HQ %@ created correctly",self.filename);
-        NSLog(@"Bytes HQ: %d",image.length);
-
-        if([filemng createFileAtPath:[[self.paths objectAtIndex:THUMB] stringByAppendingPathComponent:self.filename] contents:thumImage attributes:nil])
-        {
-            NSLog(@"Photo thumbnail %@ created correctly",self.filename);
-            NSLog(@"Bytes thumbnail: %d",thumImage.length);
-            
-        } else {
-            NSLog(@"Photo %@ (gallery) not created",self.filename);
-        }
-    }else {
-        NSLog(@"Photo %@ (HQ) not created",self.filename);
-    }
-}
-
-
--(void)saveDictionary
-{
-    NSString *path = [[self.paths objectAtIndex:OBJECTS] stringByAppendingPathComponent:self.filename ];
-    
-    if([NSKeyedArchiver archiveRootObject:self.tagView.boxes toFile:path]){
-        NSLog(@"Diccionary saved");
-    }else {
-        NSLog(@"Diccionary NOT saved");
-    }
-}
 
 -(void)createFilename
 {

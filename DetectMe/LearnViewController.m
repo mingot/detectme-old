@@ -49,17 +49,10 @@
     self.trainingSet = [[TrainingSet alloc] init];
     self.svmClassifier = [[Classifier alloc] init];
     
-    //TODO: initialize where they should go!!
-    self.trainingSet.images = [[NSMutableArray alloc] init];
-    self.trainingSet.groundTruthBoundingBoxes = [[NSMutableArray alloc] init];
-    self.trainingSet.boundingBoxes = [[NSMutableArray alloc] init];
-    
-    
     // NavigatinoBar buttons and labels
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addAction:)];
     UIBarButtonItem *learnButton = [[UIBarButtonItem alloc] initWithTitle:@"Learn" style:UIBarButtonItemStyleBordered target:self action:@selector(learnAction:)];
     self.numberOfTrainingButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d",[self.listOfTrainingImages count]] style:UIBarButtonItemStyleBordered target:self action:@selector(numberOfTrainingAction:)];
-    
     self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects: learnButton, addButton, self.numberOfTrainingButton, nil];
     
     
@@ -191,7 +184,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSLog(@"learn went great");
     
     // write the template to a file
-    [self.svmClassifier storeSvmWeightsAsTemplateWithName:@"prova4.txt"];
+    [self.svmClassifier storeSvmWeightsAsTemplateWithName:@"prova5.txt"];
 
     //Learn creating a new queue
 

@@ -21,20 +21,9 @@
 
 @interface CameraViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, SettingsViewControllerDelegate, CLLocationManagerDelegate>
 {
-
-    int sizeImage;
-    double interval;
-    
     //settings
     BOOL hogOnScreen;
     int numMax;
-    
-    BOOL cameraRoll;
-    BOOL printResults;
-    BOOL fullScreen;
-    BOOL fileWritten;
-    double *templateWeights;
-    
 }
 
 
