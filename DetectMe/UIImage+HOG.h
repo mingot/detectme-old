@@ -13,7 +13,7 @@
 
 @property int numBlocksX;
 @property int numBlocksY;
-@property int numFeatures;
+@property int numFeaturesPerBlock;
 @property int totalNumberOfFeatures;
 @property double *features;
 @property int *dimensionOfHogFeatures;

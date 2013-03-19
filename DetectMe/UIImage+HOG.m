@@ -11,7 +11,7 @@
 
 #define PI 3.14159265
 #define eps 0.00001
-#define sbin 8 //pixels per block
+#define sbin 6 //pixels per block
 
 
 double uu[9] = {1.0000, //non oriented HOG representants, sweeping from (1,0) to (-1,0).
@@ -44,7 +44,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 @synthesize numBlocksX = _numBlocksX;
 @synthesize numBlocksY = _numBlocksY;
-@synthesize numFeatures = _numFeatures;
+@synthesize numFeaturesPerBlock = _numFeaturesPerBlock;
 @synthesize totalNumberOfFeatures = _totalNumberOfFeatures;
 @synthesize features = _features;
 @synthesize dimensionOfHogFeatures = _dimensionOfHogFeatures;
@@ -55,7 +55,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     for(int y=0; y<self.numBlocksY; y++){
         for(int x=0; x<self.numBlocksX; x++){
-            for(int f = 0; f<self.numFeatures; f++){
+            for(int f = 0; f<self.numFeaturesPerBlock; f++){
                 printf("%f ", self.features[y + x*self.numBlocksY + f*self.numBlocksX*self.numBlocksY]);
                 if(f==17 || f==26) printf("  |  ");
             }
@@ -99,7 +99,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 {
     HogFeature *hog = [[HogFeature alloc] init];
 
-    //correct the orientation diference between UIImage and the underlying CGImage 
+    //correct the orientation diference between UIImage and the underlying CGImage to make them coincide
     UIImage *correctedImage = [self fixOrientation];
     
     // Inizialization
@@ -139,7 +139,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     //and store the values
     hog.numBlocksX = hogSize[1];
     hog.numBlocksY = hogSize[0];
-    hog.numFeatures = hogSize[2];
+    hog.numFeaturesPerBlock = hogSize[2];
     hog.totalNumberOfFeatures = hogSize[0]*hogSize[1]*hogSize[2];
     hog.dimensionOfHogFeatures = (int *) malloc(3*sizeof(int));
     hog.dimensionOfHogFeatures[0] = hogSize[0];

@@ -21,11 +21,10 @@
 @property int numberOfTrainingExamples; // bounding boxes + support vectors added
 
 
-// Given a training set of images and ground truth bounding boxes it generates
-// a set of positive and negative bounding boxes for training
+// Given a training set of images and ground truth bounding boxes it generates a set of positive and negative bounding boxes for training
 - (void) initialFill;
 
-// Generates the hog features given the bounding boxes
+// Generates the hog features given the bounding boxes begining after numSV positions, corresponding to the sv
 - (void) generateFeaturesForBoundingBoxesWithTemplateSize:(CGSize) templateSize withNumSV:(int) numSV;
 
 @end

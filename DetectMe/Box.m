@@ -109,22 +109,18 @@
 
 -(void) updatePoints:(CGPoint)start :(CGPoint)end
 {
-    if (upperLeft.y + end.y - start.y < UPPERBOUND + LINEWIDTH/2) {
+    if (upperLeft.y + end.y - start.y < UPPERBOUND + LINEWIDTH/2)
         end.y = UPPERBOUND + LINEWIDTH/2 - upperLeft.y + start.y;
-        
-    }
-    if (lowerRigth.y + end.y - start.y > LOWERBOUND-LINEWIDTH/2) {
+    
+    if (lowerRigth.y + end.y - start.y > LOWERBOUND - LINEWIDTH/2)
         end.y = LOWERBOUND - LINEWIDTH/2 - lowerRigth.y + start.y;
-        
-        
-    }
-    if (upperLeft.x + end.x - start.x < LEFTBOUND + LINEWIDTH/2) {
+    
+    if (upperLeft.x + end.x - start.x < LEFTBOUND + LINEWIDTH/2)
         end.x = LEFTBOUND + LINEWIDTH/2 - upperLeft.x + start.x;
-        
-    }
-    if (lowerRigth.x + end.x - start.x > RIGHTBOUND - LINEWIDTH/2) {
+    
+    if (lowerRigth.x + end.x - start.x > RIGHTBOUND - LINEWIDTH/2)
         end.x = RIGHTBOUND - LINEWIDTH/2 - lowerRigth.x + start.x;
-    }
+
     
     upperLeft.x = upperLeft.x + end.x - start.x;
     upperLeft.y = upperLeft.y + end.y - start.y;

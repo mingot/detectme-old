@@ -215,17 +215,16 @@
     NSLog(@"Test begin");
     //Create training set
     TrainingSet *testSet = [[TrainingSet alloc] init];
+    
     for(TestImage *ti in self.testImages){
-        //FIXME: resize hardcoded
-        
         [testSet.images addObject:ti.imageHQ];
         for(Box *bb in ti.boxes){
             ConvolutionPoint *cp = [[ConvolutionPoint alloc] init];
             cp.imageIndex = [ti.imageTitle intValue];
-            cp.xmin = bb.upperLeft.x/ti.imageHQ.size.width;
-            cp.ymin = bb.upperLeft.y/ti.imageHQ.size.height;
-            cp.xmax = bb.lowerRight.x/ti.imageHQ.size.width;
-            cp.ymax = bb.lowerRight.y/ti.imageHQ.size.height;
+            cp.xmin = bb.upperLeft.x/self.tableView.frame.size.width; 
+            cp.ymin = bb.upperLeft.y/self.tableView.frame.size.height; 
+            cp.xmax = bb.lowerRight.x/self.tableView.frame.size.width; 
+            cp.ymax = bb.lowerRight.y/self.tableView.frame.size.height; 
             
             [testSet.groundTruthBoundingBoxes addObject:cp];
         }

@@ -69,6 +69,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     intersectionArea = (min(self.xmax, cp.xmax) - max(self.xmin, cp.xmin))*(min(self.ymax, cp.ymax) - max(self.ymin, cp.ymin));
     unionArea = area1 + area2 - intersectionArea;
+    if (intersectionArea == area1 || intersectionArea == area2) //one bb contain the other
+        intersectionArea = unionArea;
     
     return intersectionArea/unionArea>0 ? intersectionArea/unionArea : 0;
 }
@@ -166,24 +168,17 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 
 
-+ (NSArray *)convTempFeat:(UIImage *)image
-             withTemplate:(double *)templateValues
-
++ (NSArray *) convolve:(UIImage *)image
+        withClassifier:(Classifier *)svmClassifier
 {
-    int templateSize[3]; //template sizes
-    templateSize[0] = (int)(*templateValues);
-    templateSize[1] = (int)(*(templateValues+1));
-    templateSize[2] = (int)(*(templateValues+2));
-    
-    double *w = templateValues + 3; //template weights
-    double b = templateValues[3 + templateSize[0]*templateSize[1]*templateSize[2]]; //template bias parameter
+
     
     HogFeature *hogFeature = [image obtainHogFeatures];
     int blocks[2] = {hogFeature.numBlocksY, hogFeature.numBlocksX};
     
     int convolutionSize[2];
-    convolutionSize[0] = blocks[0] - templateSize[0] + 1; //convolution size
-    convolutionSize[1] = blocks[1] - templateSize[1] + 1;
+    convolutionSize[0] = blocks[0] - svmClassifier.weightsDimensions[0] + 1; //convolution size
+    convolutionSize[1] = blocks[1] - svmClassifier.weightsDimensions[1] + 1;
     if ((convolutionSize[0]<=0) || (convolutionSize[1]<=0))
         return NULL;
     
@@ -192,31 +187,32 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     
     // Make the convolution for each feature.
-    for (int f = 0; f < templateSize[2]; f++)
+    for (int f = 0; f < svmClassifier.weightsDimensions[2]; f++)
     {
         double *dst = c;
         double *A_src = hogFeature.features + f*blocks[0]*blocks[1]; //Select the block of features to do the convolution with
-        double *B_src = w + f*templateSize[0]*templateSize[1];
+        double *B_src = svmClassifier.svmWeights + f*svmClassifier.weightsDimensions[0]*svmClassifier.weightsDimensions[1];
         
         // convolute and add the results to dst
-        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
+        [ConvolutionHelper convolution:dst matrixA:A_src :blocks matrixB:B_src :svmClassifier.weightsDimensions];
         //[ConvolutionHelper convolutionWithVDSP:dst matrixA:A_src :blocks matrixB:B_src :templateSize];
-
+        
     }
     
     //Once done the convolution, detect if something is the object!
+    double bias = svmClassifier.svmWeights[svmClassifier.weightsDimensions[0]*svmClassifier.weightsDimensions[1]*svmClassifier.weightsDimensions[2]];
     for (int x = 0; x < convolutionSize[1]; x++) {
         for (int y = 0; y < convolutionSize[0]; y++) {
             
             ConvolutionPoint *p = [[ConvolutionPoint alloc] init];
-            p.score = (*(c + x*convolutionSize[0] + y) - b);
+            p.score = (*(c + x*convolutionSize[0] + y) - bias);
             if( p.score > -1 )
             {
                 p.xmin = (double)(x + 1)/((double)blocks[1] + 2);
-                p.xmax = (double)(x + 1)/((double)blocks[1] + 2) + ((double)templateSize[1]/((double)blocks[1] + 2));
+                p.xmax = (double)(x + 1)/((double)blocks[1] + 2) + ((double)svmClassifier.weightsDimensions[1]/((double)blocks[1] + 2));
                 p.ymin = (double)(y + 1)/((double)blocks[0] + 2);
-                p.ymax = (double)(y + 1)/((double)blocks[0] + 2) + ((double)templateSize[0]/((double)blocks[0] + 2));
-
+                p.ymax = (double)(y + 1)/((double)blocks[0] + 2) + ((double)svmClassifier.weightsDimensions[0]/((double)blocks[0] + 2));
+                
                 [result addObject:p];
             }
         }
@@ -226,6 +222,8 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     return result;
 }
+
+
 
 
 + (NSArray *) nms:(NSArray *)convolutionPointsCandidates
@@ -243,8 +241,7 @@ minScoreThreshold:(double)scoreThreshold
     NSMutableArray *result = [[NSMutableArray alloc] init];
     
     // select only those bounding boxes with score above the threshold and non overlapping areas
-    for (int i = 0; i<sortedArray.count; i++)
-    {
+    for (int i = 0; i<sortedArray.count; i++){
         BOOL selected = YES;
         ConvolutionPoint *point = [sortedArray objectAtIndex:i];
     
@@ -252,8 +249,7 @@ minScoreThreshold:(double)scoreThreshold
             break;
         
         for (int j = 0; j<result.count; j++)
-            if ([[result objectAtIndex:j] fractionOfAreaOverlappingWith:point] > overlap)
-            {
+            if ([[result objectAtIndex:j] fractionOfAreaOverlappingWith:point] > overlap){
                 selected = NO;
                 break;
             }

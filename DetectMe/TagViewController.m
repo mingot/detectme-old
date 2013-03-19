@@ -90,7 +90,8 @@
     }
 }
 
--(void) viewWillDisappear:(BOOL)animated {
+-(void) viewWillDisappear:(BOOL)animated
+{
     //When returning to the previous window
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         

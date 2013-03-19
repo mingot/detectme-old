@@ -52,7 +52,6 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, LINEWIDTH);
 
-
     if (self.selectedBox == -1) //none box selected
     {
         for (int i=0; i<self.boxes.count; i++)

@@ -18,8 +18,8 @@
 using namespace cv;
 
 #define debugging YES
-#define MAX_BUFFER_SIZE 300000000 //300MB as the maximum buffersize
-
+#define MAX_NUMBER_EXAMPLES 20000
+#define MAX_NUMBER_FEATURES 2000
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -103,14 +103,15 @@ using namespace cv;
             ConvolutionPoint *boundingBox = [self.boundingBoxes objectAtIndex:i];
             
             //get the image contained in the bounding box and resized it with the template size
+            //TODO: From cut -> HOG to HOG -> cut
             UIImage *wholeImage = [self.images objectAtIndex:boundingBox.imageIndex];
-            UIImage *resizedImage = [[wholeImage croppedImage:[boundingBox rectangleForImage:wholeImage]] resizedImage:templateSize interpolationQuality:kCGInterpolationDefault]; //
+            UIImage *resizedImage = [[wholeImage croppedImage:[boundingBox rectangleForImage:wholeImage]] resizedImage:templateSize interpolationQuality:kCGInterpolationDefault];
             
             //calculate the hogfeatures of the image
             HogFeature *hogFeature = [resizedImage obtainHogFeatures];
             
             //check if it has enough space to allocate it
-            if((i+1+numSV)*hogFeature.totalNumberOfFeatures > MAX_BUFFER_SIZE)
+            if((i+1+numSV)*hogFeature.totalNumberOfFeatures > MAX_NUMBER_EXAMPLES*MAX_NUMBER_FEATURES*sizeof(float))
             {
                 NSLog(@"BUFFER FULL!!");
                 break;
@@ -224,8 +225,7 @@ using namespace cv;
     [self obtainTemplateSize:trainingSet];
     int numOfFeatures = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2];
     
-    if(debugging)
-    {
+    if(debugging){
         NSLog(@"template size: %f, %f", templateSize.height, templateSize.width);
         NSLog(@"dimensions of hog features: %d %d %d", self.weightsDimensions[0],self.weightsDimensions[1],self.weightsDimensions[2]);
     }
@@ -233,8 +233,8 @@ using namespace cv;
     //Initialization of weights: initial train with initial positives and random negatives
     [trainingSet initialFill];
     //TODO: max size for the buffers
-    trainingSet.imageFeatures = (float *) malloc(MAX_BUFFER_SIZE);
-    trainingSet.labels = (float *) malloc(3000*sizeof(float));
+    trainingSet.imageFeatures = (float *) malloc(MAX_NUMBER_EXAMPLES*MAX_NUMBER_FEATURES*sizeof(float));
+    trainingSet.labels = (float *) malloc(MAX_NUMBER_EXAMPLES*sizeof(float));
     [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize: templateSize withNumSV:0];
     
     // Set up SVM's parameters
@@ -245,11 +245,9 @@ using namespace cv;
     
     //convergence loop
     int numIterations = 5;
-    for (int i=0; i<numIterations; i++)
-    {
+    for (int i=0; i<numIterations; i++){
         // Set up training data
-        if(debugging)
-        {
+        if(debugging){
             NSLog(@"\n\n ************************ Iteration %d ********************************", i);
             NSLog(@"Number of Training Examples: %d", trainingSet.numberOfTrainingExamples);
             
@@ -270,13 +268,11 @@ using namespace cv;
         
         //update weights and store the support vectors
         int numSupportVectors = SVM.get_support_vector_count();
-        
         const CvSVMDecisionFunc *dec = SVM.decision_func;
         self.svmWeights = (double *) calloc((numOfFeatures+1),sizeof(double)); //TODO: not to be allocated in every iteration
-        
         printf("Num of support vectors: %d\n", numSupportVectors);
-        for (int i = 0; i < numSupportVectors; ++i)
-        {
+        
+        for (int i = 0; i<numSupportVectors; ++i){
             float alpha = dec[0].alpha[i];
             const float *supportVector = SVM.get_support_vector(i);
             float *sv_aux = (float *) malloc(numOfFeatures*sizeof(float));
@@ -288,9 +284,8 @@ using namespace cv;
             trainingSet.labels[i] = SVM.predict(supportVectorMat);
             printf("label: %f   alpha: %f \n", trainingSet.labels[i], alpha);
             
-            for(int j=0;j<numOfFeatures;j++)
-            {
-                // add to get the weights
+            for(int j=0;j<numOfFeatures;j++){
+                // add to get the svm weights
                 self.svmWeights[j] -= (double) alpha * supportVector[j];
                 
                 //store the support vector as the first features
@@ -299,8 +294,7 @@ using namespace cv;
         }
         self.svmWeights[numOfFeatures] = - (double) dec[0].rho; // The sign of the bias and rho have opposed signs.
         
-        if(debugging)
-        {
+        if(debugging){
             NSLog(@"bias: %f", self.svmWeights[numOfFeatures]);
         }
         
@@ -313,22 +307,19 @@ using namespace cv;
         [trainingSet.boundingBoxes removeAllObjects];
         int positives = 0;
         
-        for(int imageIndex=0; imageIndex<[trainingSet.images count]; imageIndex++)
-        {
+        for(int imageIndex=0; imageIndex<trainingSet.images.count; imageIndex++){
             // Get new bounding boxes by running the detector
             NSArray *newBoundingBoxes = [self detect:[trainingSet.images objectAtIndex:imageIndex] minimumThreshold:-1 pyramids:10 usingNms:NO deviceOrientation:UIImageOrientationUp];
             if(debugging) NSLog(@"Number of new bb obtained: %d", [newBoundingBoxes count]);
             
             //the rest that are less than an overlap threshold are considered negatives
             ConvolutionPoint *groundTruthBoundingBox = [trainingSet.groundTruthBoundingBoxes objectAtIndex:0];
-            for(int j=0; j<[newBoundingBoxes count]; j++)
-            {
+            for(int j=0; j<[newBoundingBoxes count]; j++){
                 ConvolutionPoint *boundingBox = [newBoundingBoxes objectAtIndex:j];
                 boundingBox.imageIndex = imageIndex;
                 double overlapArea = [boundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox];
                 
-                if (overlapArea < 0.25)
-                {
+                if (overlapArea < 0.25){
                     boundingBox.label = -1;
                     [trainingSet.boundingBoxes addObject:boundingBox];
                     
@@ -341,18 +332,20 @@ using namespace cv;
             }
         }
         printf("added:%d positives\n", positives);
-        printf("total of new bounding boxes: %d\n", [trainingSet.boundingBoxes count]);
+        printf("total of new bounding boxes: %d\n", trainingSet.boundingBoxes.count);
         
         //generate the hog features for the new bounding boxes
         [trainingSet generateFeaturesForBoundingBoxesWithTemplateSize:templateSize withNumSV:numSupportVectors];
         
-        [self showOrientationHistogram];
+        //[self showOrientationHistogram];
         
     }
     
     //See the results on training set
     [self testOnSet:trainingSet atThresHold:0];
 }
+
+#define MAX_IMAGE_SIZE 300.0
 
 
 - (NSArray *) detect:(UIImage *)image
@@ -361,47 +354,30 @@ using namespace cv;
             usingNms:(BOOL)useNms
    deviceOrientation:(int)orientation
 {
-    int totalFeatures = self.weightsDimensions[0]*self.weightsDimensions[1]*self.weightsDimensions[2];
-    double *templateWeights = (double *) calloc((3 + totalFeatures + 1),sizeof(double));
-    templateWeights[0] = self.weightsDimensions[0];
-    templateWeights[1] = self.weightsDimensions[1];
-    templateWeights[2] = self.weightsDimensions[2];
-    
-    for(int i=0; i<totalFeatures + 1; i++) //+1 for the bias term
-        templateWeights[3+i] = self.svmWeights[i];
     
     NSMutableArray *candidateBoundingBoxes = [[NSMutableArray alloc] init];
-    
-    double scale = pow(2, 1.0/numberPyramids), initialScale = 300.0/image.size.height;
     
     //rotate image depending on the orientation
     if(UIDeviceOrientationIsLandscape(orientation)){
         image = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation: UIImageOrientationUp];
     }
-    
-    // Maxsize for going faster
-    // TODO: choose a reasonable max size for improve performance and take it out from the detect logic (in the VC)
-    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[image scaleImageTo:initialScale]
-                                                                   withTemplate:templateWeights]];
+
+    double initialScale = MAX_IMAGE_SIZE/image.size.height;
+    double scale = pow(3, 1.0/numberPyramids);
+
     //Pyramid calculation
-    for (int i = 1; i<numberPyramids; i++)
-    {
-        
-        NSArray *result = [ConvolutionHelper convTempFeat:[image scaleImageTo:initialScale/pow(scale, i)]
-                                             withTemplate:templateWeights];
-        
+    for (int i = 0; i<numberPyramids; i++){
+        NSArray *result = [ConvolutionHelper convolve:[image scaleImageTo:initialScale/pow(scale, i)]
+                                       withClassifier:self];
         [candidateBoundingBoxes addObjectsFromArray:result];
-        
     }
     
     NSArray *nmsArray = candidateBoundingBoxes;
     if(useNms) nmsArray = [ConvolutionHelper nms:candidateBoundingBoxes maxOverlapArea:0.25 minScoreThreshold:detectionThreshold]; 
     
     // Change the resulting orientation of the bounding boxes if the phone orientation requires it
-    if(UIInterfaceOrientationIsLandscape(orientation))
-    {
-        for(int i=0; i<nmsArray.count; i++)
-        {
+    if(UIInterfaceOrientationIsLandscape(orientation)){
+        for(int i=0; i<nmsArray.count; i++){
             ConvolutionPoint *boundingBox = [nmsArray objectAtIndex:i];
             double auxXmin, auxXmax;
             auxXmin = boundingBox.xmin;
@@ -413,9 +389,7 @@ using namespace cv;
         }
     }
     
-    free(templateWeights);
     return nmsArray;
-    
 }
 
 
@@ -423,17 +397,26 @@ using namespace cv;
 {
     
     NSLog(@"Detection threshold: %f", detectionThreshold);
-    int tp=0, fp=0; //, fn=0, tn=0;
+    int tp=0, fp=0, fn=0;// tn=0;
     for(ConvolutionPoint *groundTruthBoundingBox in set.groundTruthBoundingBoxes){
+        bool found = NO;
         UIImage *selectedImage = [set.images objectAtIndex:groundTruthBoundingBox.imageIndex];
         NSArray *detectedBoundingBoxes = [self detect:selectedImage minimumThreshold:detectionThreshold pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
         NSLog(@"For image %d generated %d detecting boxes", groundTruthBoundingBox.imageIndex, detectedBoundingBoxes.count);
         for(ConvolutionPoint *detectedBoundingBox in detectedBoundingBoxes)
-            if ([detectedBoundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox]>0.5) tp++;
-            else fp++;
+            if ([detectedBoundingBox fractionOfAreaOverlappingWith:groundTruthBoundingBox]>0.5){
+                tp++;
+                found = YES;
+            }else fp++;
+        
+        if(!found) fn++;
         NSLog(@"tp at image %d: %d", groundTruthBoundingBox.imageIndex, tp);
         NSLog(@"fp at image %d: %d", groundTruthBoundingBox.imageIndex, fp);
+        NSLog(@"fn at image %d: %d", groundTruthBoundingBox.imageIndex, fn);
+        
     }
+    NSLog(@"PRECISION: %f", tp*1.0/(tp+fp));
+    NSLog(@"RECALL: %f", tp*1.0/(tp+fn));
 }
 
 
@@ -486,16 +469,14 @@ using namespace cv;
     
     UIImage *wholeImage = [trainingSet.images objectAtIndex:sampleBoundingBox.imageIndex];
     UIImage *img = [wholeImage croppedImage:[sampleBoundingBox rectangleForImage:wholeImage]];
-    NSLog(@"w:%f, h:%f",wholeImage.size.width, wholeImage.size.height);
-    NSLog(@"w:%f, h:%f",img.size.width, img.size.height);
+    NSLog(@"whole image sizes: w:%f, h:%f",wholeImage.size.width, wholeImage.size.height);
+    NSLog(@"cropped image sizes: w:%f, h:%f",img.size.width, img.size.height);
     
     templateSize.height = img.size.height*0.6; 
     templateSize.width = img.size.width*0.6;
     
     // And store dimension of hog features for it
     self.weightsDimensions = [[img resizedImage:templateSize interpolationQuality:kCGInterpolationDefault] obtainDimensionsOfHogFeatures];
-    
-    
 }
 
 

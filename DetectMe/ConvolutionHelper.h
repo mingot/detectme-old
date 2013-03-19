@@ -8,14 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "DetectView.h"
-
+#import "Classifier.h"
 
 
 
 @interface ConvolutionHelper : NSObject
 
-+ (NSArray *)convTempFeat:(UIImage *)image //Return the points with a score greater than -1
-             withTemplate:(double *)templateValues;
+
+//Return the points with a score greater than -1
++ (NSArray *) convolve:(UIImage *)image
+        withClassifier:(Classifier *)svmClassifier;
 
 + (void) convolution:(double *)result matrixA:(double *)matrixA :(int *)sizeA matrixB:(double *)matrixB :(int *)sizeB;
 

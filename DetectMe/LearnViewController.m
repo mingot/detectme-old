@@ -167,7 +167,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         {
             ConvolutionPoint *cp = [self.trainingSet.boundingBoxes objectAtIndex:i];
             UIImage *wholeImage = [self.trainingSet.images objectAtIndex:cp.imageIndex];
-            [listOfImages addObject:[wholeImage croppedImage:[cp rectangleForImage:wholeImage]]];
+            CGSize templateSize;
+            templateSize.height = 72;
+            templateSize.width = 54;
+            UIImage *croppedImage = [wholeImage croppedImage:[cp rectangleForImage:wholeImage]];
+            [listOfImages addObject:[croppedImage resizedImage:templateSize interpolationQuality:kCGInterpolationDefault]];
         }
             
         trainingImagesTVC.listOfImages = listOfImages; 
@@ -213,4 +217,5 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self setDetectView:nil];
     [super viewDidUnload];
 }
+
 @end
