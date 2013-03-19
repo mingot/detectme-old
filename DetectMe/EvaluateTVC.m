@@ -8,8 +8,6 @@
 
 #import "EvaluateTVC.h"
 #import "ConvolutionHelper.h"
-#import "FileStorageHelper.h"
-#import "UIImage+Resize.h"
 
 
 
@@ -87,15 +85,11 @@
 
 @synthesize testImages = _testImages;
 @synthesize path = _path;
-@synthesize templateName = _templateName;
 @synthesize svmClassifier = _svmClassifier;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    //Load classifier
-    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     
     self.testImages = [[NSMutableArray alloc] init];
     
@@ -223,9 +217,8 @@
     TrainingSet *testSet = [[TrainingSet alloc] init];
     for(TestImage *ti in self.testImages){
         //FIXME: resize hardcoded
-        NSLog(@"Image size: h:%f, w:%f", ti.imageHQ.size.height, ti.imageHQ.size.width);
         
-        [testSet.images addObject:[ti.imageHQ scaleImageTo:480.0/ti.imageHQ.size.height]];
+        [testSet.images addObject:ti.imageHQ];
         for(Box *bb in ti.boxes){
             ConvolutionPoint *cp = [[ConvolutionPoint alloc] init];
             cp.imageIndex = [ti.imageTitle intValue];

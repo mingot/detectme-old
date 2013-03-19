@@ -28,7 +28,6 @@
 
 
 //model properties
-@property (nonatomic, strong) NSString *templateName;
 @property (nonatomic,strong) Classifier *svmClassifier;
 @property int numPyramids;
 @property double maxDetectionScore;

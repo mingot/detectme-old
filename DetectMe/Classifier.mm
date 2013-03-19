@@ -372,7 +372,7 @@ using namespace cv;
     
     NSMutableArray *candidateBoundingBoxes = [[NSMutableArray alloc] init];
     
-    double scale = pow(2, 1.0/numberPyramids);
+    double scale = pow(2, 1.0/numberPyramids), initialScale = 300.0/image.size.height;
     
     //rotate image depending on the orientation
     if(UIDeviceOrientationIsLandscape(orientation)){
@@ -381,13 +381,13 @@ using namespace cv;
     
     // Maxsize for going faster
     // TODO: choose a reasonable max size for improve performance and take it out from the detect logic (in the VC)
-    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[image scaleImageTo:300.0/480]
+    [candidateBoundingBoxes addObjectsFromArray:[ConvolutionHelper convTempFeat:[image scaleImageTo:initialScale]
                                                                    withTemplate:templateWeights]];
     //Pyramid calculation
     for (int i = 1; i<numberPyramids; i++)
     {
         
-        NSArray *result = [ConvolutionHelper convTempFeat:[image scaleImageTo:(300.0/480)*1/pow(scale, i)]
+        NSArray *result = [ConvolutionHelper convTempFeat:[image scaleImageTo:initialScale/pow(scale, i)]
                                              withTemplate:templateWeights];
         
         [candidateBoundingBoxes addObjectsFromArray:result];

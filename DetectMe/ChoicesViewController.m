@@ -9,7 +9,7 @@
 #import "ChoicesViewController.h"
 #import "CameraViewController.h"
 #import "EvaluateTVC.h"
-
+#import "FileStorageHelper.h"
 
 @implementation ChoicesViewController
 
@@ -40,16 +40,16 @@
         
     } else if ([segue.identifier isEqualToString:@"show CameraVC"]) {
         CameraViewController *cameraVC = (CameraViewController *) segue.destinationViewController;
-        cameraVC.templateName = self.templateName;
+        cameraVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
 
     }else if ([segue.identifier isEqualToString:@"show DetectPhotoVC"]) {
         DetectPhotoViewController *detectPhotoVC = (DetectPhotoViewController *) segue.destinationViewController;
         detectPhotoVC.originalImage = self.imageTakeForStillDetect;
-        detectPhotoVC.templateName = self.templateName;
+        detectPhotoVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
+        
     }else if ([segue.identifier isEqualToString:@"show EvaluateTVC"]){
         EvaluateTVC *evaluateTVC = (EvaluateTVC *) segue.destinationViewController;
-        evaluateTVC.templateName = self.templateName;
-        NSLog(@"TEMPLATE NAME: %@", evaluateTVC.templateName);
+        evaluateTVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     }
     
 }

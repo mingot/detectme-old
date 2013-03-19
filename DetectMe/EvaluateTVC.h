@@ -33,7 +33,6 @@
 
 @property (nonatomic, strong) NSMutableArray *testImages;
 @property (nonatomic, strong) NSString *path;
-@property (nonatomic, strong) NSString *templateName;
 @property (nonatomic, strong) Classifier *svmClassifier;
 
 

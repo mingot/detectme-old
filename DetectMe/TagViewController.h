@@ -43,6 +43,7 @@
 
 //Delete selected bounding box
 -(IBAction)deleteAction:(id)sender;
+//run the detector on the current image
 -(IBAction)detectAction:(id)sender;
 
 -(void)createFilename;

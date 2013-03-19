@@ -6,11 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <Math.h>
-#include <math.h>
-
 #import "CameraViewController.h"
-#import "FileStorageHelper.h"
 #import "ConvolutionHelper.h"
 #import "UIImage+HOG.h"
 #import "UIImage+Resize.h"
@@ -20,7 +16,6 @@
 
 
 @synthesize svmClassifier = _svmClassifier;
-@synthesize templateName = _templateName;
 @synthesize numPyramids = _numPyramids;
 @synthesize maxDetectionScore = _maxDetectionScore;
 @synthesize locMgr = _locMgr;
@@ -47,7 +42,6 @@
     numMax = 1;
     
     //Initialization of model properties
-    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     self.numPyramids = 10;
     self.maxDetectionScore = -0.9;
     self.locMgr = [[CLLocationManager alloc] init];
@@ -207,7 +201,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    CLLocation *currentLocation = [locations objectAtIndex:0];
+//    CLLocation *currentLocation = [locations objectAtIndex:0];
 //    NSLog(@"latitude: %f, longitude: %f", currentLocation.coordinate.latitude, currentLocation.coordinate.longitude);
 }
 

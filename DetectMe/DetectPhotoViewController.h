@@ -21,8 +21,6 @@
 @property (strong,nonatomic) IBOutlet DetectView *detectView;
 @property (strong,nonatomic) UIImage *originalImage;
 
-
-@property (strong, nonatomic) NSString *templateName;
 @property (strong, nonatomic) Classifier *svmClassifier;
 
 

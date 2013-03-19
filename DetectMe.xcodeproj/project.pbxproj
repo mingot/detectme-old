@@ -242,7 +242,6 @@
 		FCA6A1FD16CAD31300E81581 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FCFEB02C16F26F7C0091E6D6 /* TagView */,
 				FCFB1BE516D68DFB004F0B54 /* Main */,
 				FCFB1BE616D68E06004F0B54 /* Train */,
 				FCFB1BE716D68E29004F0B54 /* Detect Video */,
@@ -261,6 +260,12 @@
 			children = (
 				FCB6F54216F214980032690F /* EvaluateTVC.h */,
 				FCB6F54316F214980032690F /* EvaluateTVC.m */,
+				FCFEB03916F27BF00091E6D6 /* TagViewController.h */,
+				FCFEB03A16F27BF00091E6D6 /* TagViewController.m */,
+				FCFEB03B16F27BF00091E6D6 /* TagView.h */,
+				FCFEB03C16F27BF00091E6D6 /* TagView.m */,
+				FCFEB03D16F27BF00091E6D6 /* Box.h */,
+				FCFEB03E16F27BF00091E6D6 /* Box.m */,
 			);
 			name = Evaluate;
 			sourceTree = "<group>";
@@ -326,19 +331,6 @@
 				FC21495C16E4F4CB00986B7D /* UIImage+Brightness.m */,
 			);
 			name = "UIImage Categories";
-			sourceTree = "<group>";
-		};
-		FCFEB02C16F26F7C0091E6D6 /* TagView */ = {
-			isa = PBXGroup;
-			children = (
-				FCFEB03916F27BF00091E6D6 /* TagViewController.h */,
-				FCFEB03A16F27BF00091E6D6 /* TagViewController.m */,
-				FCFEB03B16F27BF00091E6D6 /* TagView.h */,
-				FCFEB03C16F27BF00091E6D6 /* TagView.m */,
-				FCFEB03D16F27BF00091E6D6 /* Box.h */,
-				FCFEB03E16F27BF00091E6D6 /* Box.m */,
-			);
-			name = TagView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

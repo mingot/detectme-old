@@ -156,12 +156,7 @@
 -(IBAction)detectAction:(id)sender
 {
     //TODO: not hard code the resizing image.
-    NSArray *nmsArray = [self.svmClassifier detect:[self.imageView.image scaleImageTo:480.0/2048] minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
-    
-    for(ConvolutionPoint *cp in nmsArray)
-        NSLog(@"xmin:%f, xmax:%f, ymin:%f, ymax:%f", cp.xmin, cp.xmax, cp.ymin, cp.ymax);
-    
-    NSLog(@"IMAGE SIZE: h:%f, w:%f", self.imageView.image.size.height, self.imageView.image.size.width);
+    NSArray *nmsArray = [self.svmClassifier detect:[self.imageView.image scaleImageTo:480.0/self.imageView.image.size.height] minimumThreshold:0 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
     
     [self.detectView setCorners:nmsArray];
     [self.detectView setNeedsDisplay];

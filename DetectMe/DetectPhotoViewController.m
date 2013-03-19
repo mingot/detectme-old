@@ -9,9 +9,7 @@
 
 #import "DetectPhotoViewController.h"
 #import "ConvolutionHelper.h"
-#import "FileStorageHelper.h"
 #import "UIImage+HOG.h"
-#import "UIImage+Resize.h"
 
 
 static inline double min(double x, double y) { return (x <= y ? x : y); }
@@ -25,7 +23,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 @synthesize imageView = _picture;
 @synthesize detectView = _detectView;
 @synthesize originalImage = _originalImage;
-@synthesize templateName = _templateName;
 @synthesize svmClassifier = _svmClassifier;
 
 
@@ -42,9 +39,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     [self.view addSubview:self.imageView];
     [self.view addSubview:self.detectView];
-
-    //Load the classifier
-    self.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
 }
 
 
@@ -57,13 +51,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 - (IBAction)detect:(id)sender
 {
-    //TODO: not hard code the resizing image.
-    NSArray *nmsArray = [self.svmClassifier detect:[self.imageView.image scaleImageTo:480.0/2048] minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
-    
-    for(ConvolutionPoint *cp in nmsArray)
-        NSLog(@"xmin:%f, xmax:%f, ymin:%f, ymax:%f", cp.xmin, cp.xmax, cp.ymin, cp.ymax);
-    
-    NSLog(@"IMAGE SIZE: h:%f, w:%f", self.imageView.image.size.height, self.imageView.image.size.width);
+    NSArray *nmsArray = [self.svmClassifier detect:self.imageView.image minimumThreshold:-1 pyramids:10 usingNms:YES deviceOrientation:UIImageOrientationUp];
     
     [self.detectView setCorners:nmsArray];
     [self.detectView setNeedsDisplay];
