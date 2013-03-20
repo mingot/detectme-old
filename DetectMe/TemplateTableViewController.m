@@ -42,9 +42,9 @@
         double *templateWeights = [FileStorageHelper readTemplate:[self.templateList objectAtIndex:selectedPath.row]];
         
         int blocks[3];
-        blocks[0] = *(templateWeights); //size 1
-        blocks[1] = *(templateWeights+1); //size 2
-        blocks[2] = *(templateWeights+2); //number of features per block
+        blocks[0] = templateWeights[0]; //size 1
+        blocks[1] = templateWeights[1]; //size 2
+        blocks[2] = templateWeights[2]; //number of features per block
     
         showImageVC.image = [UIImage hogImageFromFeatures:templateWeights+3 withSize:blocks];
     }

@@ -8,7 +8,7 @@
 
 #import "ChoicesViewController.h"
 #import "CameraViewController.h"
-#import "EvaluateTVC.h"
+#import "SelectSetTVC.h"
 #import "FileStorageHelper.h"
 
 @implementation ChoicesViewController
@@ -47,9 +47,9 @@
         detectPhotoVC.originalImage = self.imageTakeForStillDetect;
         detectPhotoVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
         
-    }else if ([segue.identifier isEqualToString:@"show EvaluateTVC"]){
-        EvaluateTVC *evaluateTVC = (EvaluateTVC *) segue.destinationViewController;
-        evaluateTVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
+    }else if ([segue.identifier isEqualToString:@"show SelectSetTVC"]){
+        SelectSetTVC *selectSetTVC = (SelectSetTVC *) segue.destinationViewController;
+        selectSetTVC.svmClassifier = [[Classifier alloc] initWithTemplateWeights:[FileStorageHelper readTemplate:self.templateName]];
     }
     
 }

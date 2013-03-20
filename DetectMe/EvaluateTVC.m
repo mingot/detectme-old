@@ -93,17 +93,10 @@
     
     self.testImages = [[NSMutableArray alloc] init];
     
-    //load all the images present
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    self.path = [NSString  stringWithFormat:@"%@/TestsSets",documentsDirectory];
-    if(![[NSFileManager defaultManager] fileExistsAtPath:self.path]){
-       [[NSFileManager defaultManager] createDirectoryAtPath:self.path withIntermediateDirectories:YES attributes:nil error:nil];
-    }else{
-        //Load images
-        NSArray *imagesPath = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
-        for(NSString *imageName in imagesPath){
-            [self.testImages addObject:[TestImage getImage:imageName formPath:self.path]];
-        }
+    //Load images in the present path
+    NSArray *imagesPath = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
+    for(NSString *imageName in imagesPath){
+        [self.testImages addObject:[TestImage getImage:imageName formPath:self.path]];
     }
     
     //Add edit button for the table
@@ -151,8 +144,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
-    cell = [tableView dequeueReusableCellWithIdentifier:@"EvaluationImagesCell"];
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EvaluationImagesCell"];
     if(!cell){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"EvaluationImagesCell"];
     }
@@ -189,6 +182,9 @@
 }
 
 
+#pragma mark
+#pragma mark - Segue
+
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"Show Picture"]){
@@ -209,6 +205,8 @@
     
 }
 
+#pragma mark
+#pragma mark - Button actions
 
 -(IBAction) testAction:(id)sender
 {

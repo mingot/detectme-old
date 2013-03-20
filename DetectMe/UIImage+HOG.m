@@ -104,7 +104,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     
     // Inizialization
     CGImageRef imageRef = correctedImage.CGImage;
-    int hogSize[3];
     
     // Get the image in bits: Create a context and draw the image there to get the image in bits
     NSUInteger width = CGImageGetWidth(imageRef); //#pixels width
@@ -132,21 +131,12 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     double *norm = (double *) calloc(blocks[0]*blocks[1],sizeof(double)); //pointer to end value of histogram
     
     //define hog dimensions
-    hogSize[0] = max(blocks[0]-2, 0); // do not take into account the strip of blocks surrounding the image
-    hogSize[1] = max(blocks[1]-2, 0);
-    hogSize[2] = 18 + 9 + 4; // 18 oriented features + 9 unoriented features + 4 texture features
+    hog.numBlocksY = max(blocks[0]-2, 0); // do not take into account the strip of blocks surrounding the image
+    hog.numBlocksX = max(blocks[1]-2, 0);
+    hog.numFeaturesPerBlock = 18 + 9 + 4; // 18 oriented features + 9 unoriented features + 4 texture features
+    hog.totalNumberOfFeatures = hog.numBlocksY*hog.numBlocksX*hog.numFeaturesPerBlock;
     
-    //and store the values
-    hog.numBlocksX = hogSize[1];
-    hog.numBlocksY = hogSize[0];
-    hog.numFeaturesPerBlock = hogSize[2];
-    hog.totalNumberOfFeatures = hogSize[0]*hogSize[1]*hogSize[2];
-    hog.dimensionOfHogFeatures = (int *) malloc(3*sizeof(int));
-    hog.dimensionOfHogFeatures[0] = hogSize[0];
-    hog.dimensionOfHogFeatures[1] = hogSize[1];
-    hog.dimensionOfHogFeatures[2] = hogSize[2];
-    
-    hog.features = malloc(hogSize[0]*hogSize[1]*hogSize[2]*sizeof(double)); // pointer to the HOG features (this is the return value!)
+    hog.features = malloc(hog.totalNumberOfFeatures*sizeof(double)); // pointer to the HOG features (this is the return value!)
     double *feat = hog.features;
     int visible[2]; // Each visible pixel (ie taking into account the round made in defining blocks size and neglecting the edge pixels)
     visible[0] = blocks[0]*sbin;
@@ -220,7 +210,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             double vy1 = 1.0-vy0;
             v = sqrt(v); //strongest gradient (the selected) modulus
             
-            //?? They are not exactly the 4 surrounding blocks, but the four uphead.
             //The surroundings blocks are 5:(0,0);(1,0);(0,1);(-1,0);(0,-1)
             if (ixp >= 0 && iyp >= 0) {
                 *(hist + ixp*blocks[0] + iyp + best_o*blocks[0]*blocks[1]) +=
@@ -258,10 +247,10 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     }
     
     // Normalization of each block of cells
-    for (int x = 0; x < hogSize[1]; x++) {
-        for (int y = 0; y < hogSize[0]; y++)
+    for (int x = 0; x < hog.numBlocksX; x++) {
+        for (int y = 0; y < hog.numBlocksY; y++)
         {
-            double *dst = feat + x*hogSize[0] + y;
+            double *dst = feat + x*hog.numBlocksY + y;
             double *src, *p, n1, n2, n3, n4;
             
             p = norm + (x+1)*blocks[0] + y+1; //norm pointer
@@ -291,7 +280,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                 t2 += h2;
                 t3 += h3;
                 t4 += h4;
-                dst += hogSize[0]*hogSize[1];
+                dst += hog.numBlocksY*hog.numBlocksX;
                 src += blocks[0]*blocks[1];
             }
             
@@ -305,17 +294,17 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
                 double h3 = min(sum * n3, 0.2);
                 double h4 = min(sum * n4, 0.2);
                 *dst = 0.5 * (h1 + h2 + h3 + h4);
-                dst += hogSize[0]*hogSize[1];
+                dst += hog.numBlocksY*hog.numBlocksX;
                 src += blocks[0]*blocks[1];
             }
             
             // texture features //?? what do they do?
             *dst = 0.2357 * t1;
-            dst += hogSize[0]*hogSize[1];
+            dst += hog.numBlocksY*hog.numBlocksX;
             *dst = 0.2357 * t2;
-            dst += hogSize[0]*hogSize[1];
+            dst += hog.numBlocksY*hog.numBlocksX;
             *dst = 0.2357 * t3;
-            dst += hogSize[0]*hogSize[1];
+            dst += hog.numBlocksY*hog.numBlocksX;
             *dst = 0.2357 * t4;
             
         }
@@ -361,13 +350,14 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 - (UIImage *) convertToHogImage
 {
     HogFeature *hog = [self obtainHogFeatures];
-    UIImage *image = [UIImage hogImageFromFeatures:hog.features withSize:hog.dimensionOfHogFeatures];
+    int dimensions[3] = {hog.numBlocksY, hog.numBlocksX, hog.numFeaturesPerBlock};
+    UIImage *image = [UIImage hogImageFromFeatures:hog.features withSize:dimensions];
     return(image);
 }
 
 
 
-+ (UIImage *) hogImageFromFeatures:(double *) hogFeatures withSize:(int *) blocks
++ (UIImage *) hogImageFromFeatures:(double *)hogFeatures withSize:(int *)blocks
 {
     int pix = 12;
     

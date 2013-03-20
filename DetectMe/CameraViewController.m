@@ -24,7 +24,7 @@
 @synthesize HOGimageView = _HOGimageView;
 @synthesize detectView = _detectView;
 @synthesize detectionThresholdSliderButton = _detectionThresholdSliderButton;
-
+@synthesize  fpsLabel = _fpsLabel;
 
 - (BOOL) shouldAutorotate
 {
@@ -40,6 +40,8 @@
     
     hogOnScreen = NO;
     numMax = 1;
+    
+    self.fpsLabel.text = @"0 FPS";
     
     //Initialization of model properties
     self.numPyramids = 10;
@@ -123,6 +125,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. 
     @autoreleasepool
     {
+        //compute FPS
+        NSDate * start = [NSDate date];
+        
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
         CVPixelBufferLockBaseAddress(imageBuffer,0); //Lock the image buffer ??Why
         
@@ -176,6 +181,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         //We unlock the  image buffer
         CVPixelBufferUnlockBaseAddress(imageBuffer,0);
         CGImageRelease(imageRef);
+        
+        [self.fpsLabel performSelectorOnMainThread:@selector(setText:) withObject:[NSString stringWithFormat:@"%.1f FPS",-1.0/[start timeIntervalSinceNow]] waitUntilDone:YES];
+        
+        
     }
 } 
 
@@ -210,6 +219,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark Memory management
 
 - (void)viewDidUnload {
+    [self setFpsLabel:nil];
     [self setDetectionThresholdSliderButton:nil];
     NSLog(@"viewdidunload");
 

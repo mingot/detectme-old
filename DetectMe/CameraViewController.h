@@ -44,6 +44,7 @@
 @property (nonatomic, weak) IBOutlet DetectView *detectView;
 
 @property (weak, nonatomic) IBOutlet UISlider *detectionThresholdSliderButton;
+@property (weak, nonatomic) IBOutlet UILabel *fpsLabel;
 
 
 

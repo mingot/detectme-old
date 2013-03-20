@@ -29,6 +29,7 @@
 		FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B6B716CADE9300BF4048 /* CoreMedia.framework */; };
 		FC43B6BB16CB093500BF4048 /* TemplateTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */; };
 		FC43B73016CD725B00BF4048 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC43B72F16CD725A00BF4048 /* Accelerate.framework */; };
+		FC4C12F316F9046200D9A738 /* SelectSetTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = FC4C12F216F9046100D9A738 /* SelectSetTVC.m */; };
 		FC602AFB16DBB265005FDAC8 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC602AFA16DBB265005FDAC8 /* opencv2.framework */; };
 		FC602AFD16DBFE1D005FDAC8 /* aux.png in Resources */ = {isa = PBXBuildFile; fileRef = FC602AFC16DBFE1D005FDAC8 /* aux.png */; };
 		FC602B0016DD6FF9005FDAC8 /* UIImage+HOG.m in Sources */ = {isa = PBXBuildFile; fileRef = FC602AFF16DD6FF8005FDAC8 /* UIImage+HOG.m */; };
@@ -90,6 +91,8 @@
 		FC43B6B916CB093400BF4048 /* TemplateTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateTableViewController.h; sourceTree = "<group>"; };
 		FC43B6BA16CB093400BF4048 /* TemplateTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateTableViewController.m; sourceTree = "<group>"; };
 		FC43B72F16CD725A00BF4048 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		FC4C12F116F9046000D9A738 /* SelectSetTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectSetTVC.h; sourceTree = "<group>"; };
+		FC4C12F216F9046100D9A738 /* SelectSetTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectSetTVC.m; sourceTree = "<group>"; };
 		FC602AFA16DBB265005FDAC8 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		FC602AFC16DBFE1D005FDAC8 /* aux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = aux.png; sourceTree = "<group>"; };
 		FC602AFE16DD6FF7005FDAC8 /* UIImage+HOG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HOG.h"; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 		FCB6F54116F2142C0032690F /* Evaluate */ = {
 			isa = PBXGroup;
 			children = (
+				FC4C12F116F9046000D9A738 /* SelectSetTVC.h */,
+				FC4C12F216F9046100D9A738 /* SelectSetTVC.m */,
 				FCB6F54216F214980032690F /* EvaluateTVC.h */,
 				FCB6F54316F214980032690F /* EvaluateTVC.m */,
 				FCFEB03916F27BF00091E6D6 /* TagViewController.h */,
@@ -426,6 +431,7 @@
 				FCFEB03F16F27BF00091E6D6 /* TagViewController.m in Sources */,
 				FCFEB04016F27BF00091E6D6 /* TagView.m in Sources */,
 				FCFEB04116F27BF00091E6D6 /* Box.m in Sources */,
+				FC4C12F316F9046200D9A738 /* SelectSetTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

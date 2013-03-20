@@ -244,7 +244,7 @@ using namespace cv;
     params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 1000, 1e-6);
     
     //convergence loop
-    int numIterations = 5;
+    int numIterations = 2;
     for (int i=0; i<numIterations; i++){
         // Set up training data
         if(debugging){
@@ -323,7 +323,7 @@ using namespace cv;
                     boundingBox.label = -1;
                     [trainingSet.boundingBoxes addObject:boundingBox];
                     
-                }else if (overlapArea > 0.8){
+                }else if (overlapArea > 0.8 && overlapArea<1){
                     boundingBox.label = 1;
                     positives ++;
                     [trainingSet.boundingBoxes addObject:boundingBox];
