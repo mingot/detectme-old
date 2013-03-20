@@ -10,6 +10,8 @@
 #import "ConvolutionHelper.h"
 #import "UIImage+HOG.h"
 #import "UIImage+Resize.h"
+#import "GPUImage.h"
+
 
 
 @implementation CameraViewController
@@ -125,7 +127,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 	//We create an autorelease pool because as we are not in the main_queue our code is not executed in the main thread. 
     @autoreleasepool
     {
-        //compute FPS
+        //start recording FPS
         NSDate * start = [NSDate date];
         
         CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -182,6 +184,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         CVPixelBufferUnlockBaseAddress(imageBuffer,0);
         CGImageRelease(imageRef);
         
+        //update label with the current FPS
         [self.fpsLabel performSelectorOnMainThread:@selector(setText:) withObject:[NSString stringWithFormat:@"%.1f FPS",-1.0/[start timeIntervalSinceNow]] waitUntilDone:YES];
         
         

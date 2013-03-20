@@ -46,6 +46,7 @@
 		FCBE9A2D16CACEB60024CAE4 /* DetectPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A1D16CACEB60024CAE4 /* DetectPhotoViewController.m */; };
 		FCBE9A2F16CACEB60024CAE4 /* ConvolutionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */; };
 		FCBE9A3216CACEB60024CAE4 /* DetectView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCBE9A2716CACEB60024CAE4 /* DetectView.m */; };
+		FCE5D64016FA107C00F092EE /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE5D63B16FA105C00F092EE /* libGPUImage.a */; };
 		FCFB1BE416D675FF004F0B54 /* TrainingImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */; };
 		FCFB1BEB16D6909D004F0B54 /* ShowTrainingImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BEA16D6909D004F0B54 /* ShowTrainingImageViewController.m */; };
 		FCFB1BEE16D6BEE6004F0B54 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFB1BED16D6BEE5004F0B54 /* UIImage+Resize.m */; };
@@ -55,6 +56,30 @@
 		FCFEB04016F27BF00091E6D6 /* TagView.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFEB03C16F27BF00091E6D6 /* TagView.m */; };
 		FCFEB04116F27BF00091E6D6 /* Box.m in Sources */ = {isa = PBXBuildFile; fileRef = FCFEB03E16F27BF00091E6D6 /* Box.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FCE5D63A16FA105C00F092EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		FCE5D63C16FA105C00F092EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		FCE5D63E16FA107600F092EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		FC00AC9616C539C800BE112E /* DetectMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DetectMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +146,7 @@
 		FCBE9A2116CACEB60024CAE4 /* ConvolutionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvolutionHelper.m; sourceTree = "<group>"; };
 		FCBE9A2616CACEB60024CAE4 /* DetectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetectView.h; sourceTree = "<group>"; };
 		FCBE9A2716CACEB60024CAE4 /* DetectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetectView.m; sourceTree = "<group>"; };
+		FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = GPUImageFramework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 		FCFB1BE216D675FF004F0B54 /* TrainingImagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingImagesTableViewController.h; sourceTree = "<group>"; };
 		FCFB1BE316D675FF004F0B54 /* TrainingImagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingImagesTableViewController.m; sourceTree = "<group>"; };
 		FCFB1BE916D6909D004F0B54 /* ShowTrainingImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShowTrainingImageViewController.h; path = ../ShowTrainingImageViewController.h; sourceTree = "<group>"; };
@@ -146,6 +172,7 @@
 			files = (
 				FCB6F54016EF67760032690F /* CoreLocation.framework in Frameworks */,
 				FCB7664D16D7DB0200A5EAE8 /* libz.dylib in Frameworks */,
+				FCE5D64016FA107C00F092EE /* libGPUImage.a in Frameworks */,
 				FC43B73016CD725B00BF4048 /* Accelerate.framework in Frameworks */,
 				FC43B6B816CADE9300BF4048 /* CoreMedia.framework in Frameworks */,
 				FC43B6B616CADB0C00BF4048 /* AudioToolbox.framework in Frameworks */,
@@ -185,6 +212,7 @@
 		FC00AC9816C539C800BE112E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */,
 				FCB7664C16D7DB0200A5EAE8 /* libz.dylib */,
 				FC602AFA16DBB265005FDAC8 /* opencv2.framework */,
 				FC43B72F16CD725A00BF4048 /* Accelerate.framework */,
@@ -275,6 +303,15 @@
 			name = Evaluate;
 			sourceTree = "<group>";
 		};
+		FCE5D63516FA105C00F092EE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FCE5D63B16FA105C00F092EE /* libGPUImage.a */,
+				FCE5D63D16FA105C00F092EE /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		FCFB1BE516D68DFB004F0B54 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,6 +389,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FCE5D63F16FA107600F092EE /* PBXTargetDependency */,
 			);
 			name = DetectMe;
 			productName = DetectMe;
@@ -377,12 +415,35 @@
 			mainGroup = FC00AC8D16C539C800BE112E;
 			productRefGroup = FC00AC9716C539C800BE112E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FCE5D63516FA105C00F092EE /* Products */;
+					ProjectRef = FCE5D63416FA105C00F092EE /* GPUImage.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				FC00AC9516C539C800BE112E /* DetectMe */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		FCE5D63B16FA105C00F092EE /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = FCE5D63A16FA105C00F092EE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FCE5D63D16FA105C00F092EE /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = FCE5D63C16FA105C00F092EE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FC00AC9416C539C800BE112E /* Resources */ = {
@@ -437,6 +498,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FCE5D63F16FA107600F092EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = FCE5D63E16FA107600F092EE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		FC00ACA216C539C800BE112E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -474,7 +543,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../opencv2**";
+				HEADER_SEARCH_PATHS = (
+					"../opencv2**",
+					"./GPUImageFramework/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -499,7 +571,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../opencv2**";
+				HEADER_SEARCH_PATHS = (
+					"../opencv2**",
+					"./GPUImageFramework/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
